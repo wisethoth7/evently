@@ -1,2 +1,3 @@
-# evently
-Nile Dreams Digital — Horus Pantheon
+# Evently
+Free local events discovery PWA — Nile Dreams Digital
+Live: https://evently2.netlify.app
