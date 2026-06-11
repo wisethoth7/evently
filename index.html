@@ -16,100 +16,112 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:4px;z-index:9
 
 /* HEADER */
 header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px solid #E5E7EB;padding:10px 16px;display:flex;align-items:center;gap:10px}
-.logo{font-size:22px;font-weight:800;color:#16a34a;flex-shrink:0;font-style:italic;letter-spacing:-.5px}
-.search-wrap{flex:1;display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #D1D5DB;border-radius:24px;padding:7px 14px;transition:border-color .2s}
+.logo{font-size:22px;font-weight:800;color:#16a34a;flex-shrink:0;font-style:italic;letter-spacing:-.5px;cursor:pointer}
+.search-wrap{flex:1;display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #D1D5DB;border-radius:24px;padding:7px 14px;transition:border-color .2s;min-width:0}
 .search-wrap:focus-within{border-color:#7C3AED}
-.search-wrap svg{flex-shrink:0;color:#9CA3AF}
-.search-wrap input{background:none;border:none;outline:none;color:#111827;font-size:13px;width:100%}
+.search-wrap input{background:none;border:none;outline:none;color:#111827;font-size:13px;width:100%;min-width:0}
 .search-wrap input::placeholder{color:#9CA3AF}
+.search-clear{background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:14px;flex-shrink:0;padding:0;display:none}
 .icon-btn{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:15px;border:none;transition:all .15s}
 .icon-btn.gray{background:#F3F4F6;border:1px solid #E5E7EB}
-.icon-btn.gray:hover{background:#E5E7EB}
 .icon-btn.purple{background:#7C3AED;color:#fff;font-weight:700}
 .post-btn{padding:8px 16px;background:#7C3AED;color:#fff;border:none;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
-.post-btn:hover{background:#6D28D9}
 
 /* STRIPS */
-.strip{background:#F9FAFB;border-bottom:1px solid #E5E7EB;padding:8px 16px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;align-items:center}
+.strip{border-bottom:1px solid #F3F4F6;padding:8px 16px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;align-items:center;background:#fff}
 .strip::-webkit-scrollbar{display:none}
-.strip.white{background:#fff;border-bottom-color:#F3F4F6}
+.strip.gray-bg{background:#F9FAFB;border-bottom-color:#E5E7EB}
 .lang-pill{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;background:#fff;border:1px solid #E5E7EB;color:#374151;transition:all .15s}
 .lang-pill.active{background:#111827;color:#fff;border-color:#111827}
 .cat-pill{display:flex;align-items:center;gap:5px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;background:#fff;border:1px solid #D1D5DB;color:#374151;transition:all .15s}
 .cat-pill.active{background:#111827;color:#fff;border-color:#111827}
 .cat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.strip-sep{width:1px;height:20px;background:#E5E7EB;flex-shrink:0;margin:0 4px}
-.dist-label{font-size:11px;font-weight:700;color:#6B7280;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
-.dist-pill{padding:5px 12px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;background:#fff;border:1px solid #D1D5DB;color:#374151;transition:all .15s}
-.dist-pill.active{background:#111827;color:#fff;border-color:#111827}
-.free-toggle{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;background:#fff;border:1.5px solid #D1D5DB;color:#374151;transition:all .15s}
-.free-toggle.active{background:#F0FDF4;border-color:#16A34A;color:#16A34A}
+.sep{width:1px;height:20px;background:#E5E7EB;flex-shrink:0}
+.filter-pill{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;background:#fff;border:1px solid #D1D5DB;color:#374151;transition:all .15s}
+.filter-pill.active{background:#111827;color:#fff;border-color:#111827}
+.free-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;background:#fff;border:1.5px solid #D1D5DB;color:#374151;transition:all .15s}
+.free-btn.active{background:#F0FDF4;border-color:#16A34A;color:#16A34A}
 
-/* CITY + VIEW */
-.city-bar{background:#fff;border-bottom:1px solid #F3F4F6;padding:8px 16px;display:flex;align-items:center;gap:8px}
-.city-sel{flex:1;padding:6px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:12px;color:#374151;background:#F9FAFB;cursor:pointer;outline:none}
-.city-sel:focus{border-color:#7C3AED}
-.view-btns{display:flex;gap:4px;flex-shrink:0}
-.toggle-btn{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid #E5E7EB;background:#fff;cursor:pointer;font-size:16px;transition:all .15s}
+/* LOCATION BAR */
+.loc-bar{padding:8px 16px;background:#F9FAFB;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;gap:8px;font-size:12px;color:#6B7280}
+.loc-bar .loc-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.loc-btn{padding:5px 12px;border:1px solid #7C3AED;border-radius:16px;color:#7C3AED;font-size:11px;font-weight:700;background:transparent;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.loc-btn:hover{background:#EDE9FE}
+
+/* VIEW ROW */
+.view-row{padding:8px 16px;background:#fff;border-bottom:1px solid #F3F4F6;display:flex;justify-content:flex-end;gap:6px}
+.toggle-btn{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid #E5E7EB;background:#fff;cursor:pointer;font-size:15px;transition:all .15s}
 .toggle-btn.active{background:#111827;color:#fff;border-color:#111827}
 
 /* MAIN */
 .main{position:relative}
 .view{display:none}
 .view.active{display:block}
-#view-map{height:calc(100vh - 250px);min-height:300px}
-#leaflet-map{width:100%;height:100%}
 
-/* DATE GROUP HEADERS */
-.date-group-hdr{padding:10px 16px 4px;font-size:11px;font-weight:800;letter-spacing:1px;color:#6B7280;background:#F9FAFB;border-bottom:1px solid #F3F4F6;position:sticky;top:0;z-index:5}
+/* MAP — FIXED: full height with back button */
+#view-map{position:relative}
+#leaflet-map{width:100%;height:calc(100vh - 220px);min-height:300px}
+.map-back-btn{
+  position:absolute;top:12px;left:12px;z-index:1000;
+  display:flex;align-items:center;gap:6px;
+  background:#fff;border:2px solid #7C3AED;color:#7C3AED;
+  padding:9px 16px;border-radius:20px;font-size:13px;font-weight:800;
+  cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.15);
+  transition:all .15s;
+}
+.map-back-btn:hover{background:#7C3AED;color:#fff}
+
+/* DATE HEADERS */
+.date-hdr{padding:10px 16px 4px;font-size:11px;font-weight:800;letter-spacing:1px;color:#6B7280;background:#F9FAFB;border-bottom:1px solid #F3F4F6;border-top:1px solid #F3F4F6;margin-top:4px}
 
 /* EVENT LIST */
 .event-list{padding:0 16px 90px}
 
 /* EVENT CARD */
-.event-card{border:2px solid #F59E0B;border-radius:14px;margin:10px 0;overflow:hidden;cursor:pointer;transition:box-shadow .2s,transform .15s;background:#fff;position:relative}
+.event-card{border:2px solid #F59E0B;border-radius:14px;margin:10px 0;overflow:hidden;cursor:pointer;transition:box-shadow .2s,transform .15s;background:#fff}
 .event-card:hover{box-shadow:0 4px 16px rgba(245,158,11,.2);transform:translateY(-1px)}
-.event-card-header{height:110px;position:relative;display:flex;align-items:center;justify-content:center;font-size:48px;user-select:none}
+.ec-header{height:110px;position:relative;display:flex;align-items:center;justify-content:center;font-size:48px;user-select:none}
 .cat-badge{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:12px;font-size:10px;font-weight:800;letter-spacing:.5px;color:#fff;text-transform:uppercase}
 .featured-badge{position:absolute;top:10px;right:10px;background:#F59E0B;color:#fff;padding:4px 10px;border-radius:12px;font-size:10px;font-weight:800}
-.countdown-badge{position:absolute;bottom:8px;left:10px;background:rgba(0,0,0,.55);color:#fff;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700}
+.countdown-badge{position:absolute;bottom:8px;left:10px;background:rgba(0,0,0,.58);color:#fff;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.dist-badge{position:absolute;bottom:8px;right:44px;background:rgba(255,255,255,.9);color:#374151;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:600}
 .bm-btn{position:absolute;bottom:8px;right:10px;background:rgba(255,255,255,.92);border:none;font-size:15px;cursor:pointer;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;transition:transform .2s;z-index:2}
 .bm-btn:hover{transform:scale(1.2)}
 .ec-body{padding:10px 14px 12px}
-.ec-title{font-size:14px;font-weight:700;color:#111827;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ec-title{font-size:14px;font-weight:700;color:#111827;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ec-meta{font-size:11.5px;color:#6B7280;line-height:1.55;margin-bottom:7px}
-.ec-footer{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.ec-org{font-size:11.5px;color:#7C3AED;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ec-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.ec-going{font-size:11.5px;color:#7C3AED;font-weight:600;white-space:nowrap}
+.ec-footer{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}
+.ec-org{font-size:11.5px;color:#7C3AED;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px}
+.ec-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.ec-going{font-size:11.5px;color:#6B7280;white-space:nowrap}
 .going-btn{padding:4px 10px;border:1.5px solid #7C3AED;border-radius:14px;font-size:11px;font-weight:700;background:#fff;color:#7C3AED;cursor:pointer;transition:all .15s;white-space:nowrap}
 .going-btn.going{background:#7C3AED;color:#fff}
-.going-btn:hover{background:#EDE9FE}
-.going-btn.going:hover{background:#6D28D9}
-.age-badge{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:8px;background:#F3F4F6;color:#6B7280}
-.recurring-badge{font-size:9.5px;font-weight:700;color:#0891B2}
+.age-badge{font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:8px;background:#FEF3C7;color:#92400E;flex-shrink:0}
+.rec-badge{font-size:10px;color:#0891B2;flex-shrink:0}
 
-/* Category bg colors */
+/* Category backgrounds */
 .bg-festivals{background:#EDE9FE}.bg-yard-sales{background:#FEF9C3}.bg-religious{background:#DBEAFE}
 .bg-open-house{background:#DCFCE7}.bg-markets{background:#FEF3C7}.bg-music{background:#FCE7F3}
 .bg-sports{background:#CFFAFE}.bg-food{background:#FFE4E6}.bg-community{background:#FEE2E2}
-.bg-arts{background:#F3E8FF}.bg-sales{background:#ECFDF5}.bg-default{background:#F3F4F6}
+.bg-arts{background:#F3E8FF}.bg-sales{background:#ECFDF5}.bg-business{background:#EFF6FF}
+.bg-default{background:#F3F4F6}
 /* Category badge colors */
 .badge-festivals{background:#7C3AED}.badge-yard-sales{background:#CA8A04}.badge-religious{background:#2563EB}
 .badge-open-house{background:#16A34A}.badge-markets{background:#D97706}.badge-music{background:#DB2777}
 .badge-sports{background:#0891B2}.badge-food{background:#DC2626}.badge-community{background:#EA580C}
-.badge-arts{background:#9333EA}.badge-sales{background:#059669}.badge-default{background:#6B7280}
+.badge-arts{background:#9333EA}.badge-sales{background:#059669}.badge-business{background:#1D4ED8}
+.badge-default{background:#6B7280}
 
-/* SAVED HEADER */
-.view-header{padding:16px 16px 4px}
-.view-header h2{font-size:18px;font-weight:800}
-.view-header p{font-size:12px;color:#9CA3AF;margin-top:2px}
+/* SAVED */
+.view-hdr{padding:16px 16px 4px}
+.view-hdr h2{font-size:18px;font-weight:800}
+.view-hdr p{font-size:12px;color:#9CA3AF;margin-top:2px}
 
 /* NOTIF BANNER */
-.notif-banner{margin:12px 16px;background:#EDE9FE;border:1px solid #DDD6FE;border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.notif-banner{margin:10px 16px;background:#EDE9FE;border:1px solid #DDD6FE;border-radius:12px;padding:13px 14px;display:flex;gap:12px;align-items:flex-start}
 .nb-title{font-size:13px;font-weight:700;color:#5B21B6;margin-bottom:3px}
 .nb-body{font-size:12px;color:#6D28D9;line-height:1.5}
-.nb-btns{display:flex;gap:8px;margin-top:10px}
+.nb-btns{display:flex;gap:8px;margin-top:9px}
 .nb-allow{padding:6px 14px;background:#7C3AED;color:#fff;font-size:12px;font-weight:700;border-radius:20px;border:none;cursor:pointer}
 .nb-skip{padding:6px 14px;background:transparent;color:#6B7280;font-size:12px;border-radius:20px;border:1px solid #D1D5DB;cursor:pointer}
 
@@ -121,59 +133,56 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end}
 .modal-bg.open{display:flex}
 .modal{width:100%;background:#fff;border-radius:20px 20px 0 0;padding:0 20px 48px;max-height:92vh;overflow-y:auto;position:relative}
-.modal-drag{width:40px;height:4px;background:#E5E7EB;border-radius:2px;margin:14px auto 20px}
+.modal-drag{width:40px;height:4px;background:#E5E7EB;border-radius:2px;margin:14px auto 18px}
 .modal-close{position:absolute;top:14px;right:16px;background:#F3F4F6;border:none;width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#6B7280}
 
 /* SHEET */
-#sheet .sh-header{height:130px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:52px;margin-bottom:16px}
-#sheet .sh-cat{font-size:11px;font-weight:700;letter-spacing:1px;color:#7C3AED;margin-bottom:6px}
-#sheet .sh-title{font-size:20px;font-weight:800;margin-bottom:14px;line-height:1.2}
-#sheet .sh-row{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#6B7280;margin-bottom:9px}
-#sheet .sh-icon{font-size:15px;flex-shrink:0;margin-top:1px}
-#sheet .sh-price{text-align:center;padding:12px;border-radius:10px;font-size:17px;font-weight:800;margin:12px 0}
+.sh-header{border-radius:12px;height:128px;display:flex;align-items:center;justify-content:center;font-size:52px;margin-bottom:14px}
+.sh-cat{font-size:11px;font-weight:700;letter-spacing:1px;color:#7C3AED;margin-bottom:5px}
+.sh-title{font-size:20px;font-weight:800;margin-bottom:12px;line-height:1.2}
+.sh-row{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#6B7280;margin-bottom:9px}
+.sh-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.sh-price{text-align:center;padding:12px;border-radius:10px;font-size:17px;font-weight:800;margin:12px 0}
 .price-free{background:#F0FDF4;color:#16A34A}
 .price-paid{background:#FFFBEB;color:#D97706}
 .sh-ticket-link{display:block;text-align:center;padding:11px;background:#7C3AED;color:#fff;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;margin-bottom:10px}
-.sh-actions{display:flex;gap:8px;margin-top:4px}
+.sh-actions{display:flex;gap:8px;margin-top:6px}
 .btn-going-sheet{flex:1;padding:11px;background:#F5F3FF;border:1.5px solid #7C3AED;color:#7C3AED;font-size:13px;font-weight:700;border-radius:10px;cursor:pointer;transition:all .15s}
 .btn-going-sheet.going{background:#7C3AED;color:#fff}
 .btn-wa{flex:1;padding:11px;background:#25D366;color:#fff;font-size:13px;font-weight:700;border-radius:10px;border:none;cursor:pointer}
-.btn-share-other{padding:11px 14px;background:#F3F4F6;color:#374151;font-size:13px;font-weight:600;border-radius:10px;border:none;cursor:pointer}
+.btn-share{padding:11px 14px;background:#F3F4F6;color:#374151;font-size:13px;font-weight:600;border-radius:10px;border:none;cursor:pointer}
 
-/* NOTIF SUB MODAL */
-.nsub-form h2{font-size:19px;font-weight:800;margin-bottom:6px}
-.nsub-form p{font-size:13px;color:#6B7280;margin-bottom:18px;line-height:1.6}
-.nsub-cats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
-.nsub-cat{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #E5E7EB;background:#fff;color:#374151;transition:all .15s}
-.nsub-cat.on{background:#EDE9FE;border-color:#7C3AED;color:#7C3AED}
+/* FORMS */
 .fi{width:100%;padding:10px 14px;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:9px;color:#111827;font-size:14px;outline:none;margin-bottom:12px;font-family:inherit;transition:border-color .15s}
 .fi:focus{border-color:#7C3AED;background:#fff}
 .fi::placeholder{color:#9CA3AF}
-.nsub-btn{width:100%;padding:13px;background:#7C3AED;color:#fff;font-size:14px;font-weight:800;border-radius:10px;border:none;cursor:pointer}
-.push-btn{padding:9px 16px;background:#F3F4F6;border:1px solid #E5E7EB;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;color:#374151;width:100%;text-align:left;margin-bottom:14px}
+.fl{font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;letter-spacing:.3px}
+.fl .req{color:#EF4444}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nsub-cats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.nsub-cat{padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #E5E7EB;background:#fff;color:#374151;transition:all .15s}
+.nsub-cat.on{background:#EDE9FE;border-color:#7C3AED;color:#7C3AED}
+.push-btn{padding:9px 14px;background:#F3F4F6;border:1px solid #E5E7EB;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;color:#374151;width:100%;text-align:left;margin-bottom:12px}
+.sub-btn{width:100%;padding:13px;background:#7C3AED;color:#fff;font-size:14px;font-weight:800;border-radius:10px;border:none;cursor:pointer}
 
-/* POST FORM */
+/* POST PLAN CARDS */
 .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
 .plan-card{border:2px solid #E5E7EB;border-radius:12px;padding:13px;cursor:pointer;transition:border-color .15s}
 .plan-card:hover{border-color:#7C3AED}
 .plan-card.selected{border-color:#7C3AED;background:#F5F3FF}
-.plan-card.gold-card{border-color:#F59E0B}
-.plan-card.gold-card.selected{background:#FFFBEB}
-.plan-card.pro-card{background:#FFFBEB}
-.plan-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
-.plan-name{font-size:13px;font-weight:800}
-.plan-price{font-size:15px;font-weight:800;color:#7C3AED}
-.plan-price.gold{color:#D97706}
-.plan-tag{display:inline-block;background:#7C3AED;color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:10px;margin-left:4px;vertical-align:middle}
-.plan-tag.gold{background:#D97706}
-.plan-feats{font-size:11px;color:#6B7280;line-height:1.65}
-.fl{font-size:11px;font-weight:700;color:#6B7280;display:block;margin-bottom:5px;letter-spacing:.3px}
-.fl .req{color:#EF4444}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan-card.gold{border-color:#F59E0B}.plan-card.gold.selected{background:#FFFBEB}
+.plan-card.amber{background:#FFFBEB}.plan-card.blue{border-color:#1D4ED8;background:#EFF6FF}
+.ph{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.pn{font-size:13px;font-weight:800}
+.pp{font-size:15px;font-weight:800;color:#7C3AED}
+.pp.gold{color:#D97706}.pp.blue{color:#1D4ED8}.pp.gray{color:#374151}
+.ptag{display:inline-block;font-size:9px;font-weight:800;padding:2px 7px;border-radius:10px;margin-left:4px;vertical-align:middle}
+.ptag.purple{background:#7C3AED;color:#fff}.ptag.gold{background:#D97706;color:#fff}.ptag.blue{background:#1D4ED8;color:#fff}
+.pf{font-size:11px;color:#6B7280;line-height:1.65}
 .price-row{display:flex;gap:8px;margin-bottom:12px}
 .price-opt{flex:1;padding:10px;border-radius:9px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;border:1px solid #E5E7EB;background:#F9FAFB;color:#6B7280;transition:all .15s}
-.price-opt.sel-free{background:#F0FDF4;border-color:#16A34A;color:#16A34A}
-.price-opt.sel-paid{background:#FFFBEB;border-color:#D97706;color:#D97706}
+.price-opt.free{background:#F0FDF4;border-color:#16A34A;color:#16A34A}
+.price-opt.paid{background:#FFFBEB;border-color:#D97706;color:#D97706}
 .email-tip{background:#F0F9FF;border:1px solid #BAE6FD;border-radius:9px;padding:10px 12px;font-size:12px;color:#0369A1;margin-bottom:12px;line-height:1.5}
 .submit-btn{width:100%;padding:13px;background:#7C3AED;color:#fff;font-size:14px;font-weight:800;border-radius:10px;border:none;cursor:pointer}
 .submit-btn:hover{background:#6D28D9}
@@ -194,18 +203,20 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
-  <div class="logo">evently</div>
+  <div class="logo" onclick="resetFilters()">evently</div>
   <div class="search-wrap">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="search-input" placeholder="Search events, cities, artists..." oninput="filterAndRender()">
+    <input type="text" id="search-input" placeholder="Search events, cities, artists..." oninput="onSearch()" autocomplete="off">
+    <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
   </div>
-  <button class="icon-btn gray" onclick="document.getElementById('search-input').focus()" title="Search">🔍</button>
-  <button class="icon-btn purple" onclick="openNotifSub()" title="Notifications & Alerts">?</button>
+  <button class="icon-btn purple" onclick="openNotifSub()" title="Notifications">?</button>
   <button class="post-btn" onclick="openPost()">+ Post</button>
 </header>
 
-<div class="strip" id="lang-strip">
+<!-- LANGUAGE STRIP -->
+<div class="strip gray-bg" id="lang-strip">
   <div class="lang-pill active" onclick="setLang(this)">🇺🇸 EN</div>
   <div class="lang-pill" onclick="setLang(this)">🇸🇦 عربي</div>
   <div class="lang-pill" onclick="setLang(this)">🇪🇸 ES</div>
@@ -216,65 +227,73 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
   <div class="lang-pill" onclick="setLang(this)">🇷🇺 RU</div>
 </div>
 
-<div class="strip white" id="cat-strip"></div>
+<!-- CATEGORY STRIP -->
+<div class="strip" id="cat-strip"></div>
 
-<div class="strip white">
-  <span class="dist-label">📍 DISTANCE:</span>
-  <div class="dist-pill active" onclick="setDist('any',this)">Any</div>
-  <div class="dist-pill" onclick="setDist('5',this)">5 mi</div>
-  <div class="dist-pill" onclick="setDist('10',this)">10 mi</div>
-  <div class="dist-pill" onclick="setDist('25',this)">25 mi</div>
-  <div class="dist-pill" onclick="setDist('50',this)">50+ mi</div>
-  <div class="strip-sep"></div>
-  <div class="free-toggle" id="free-toggle" onclick="toggleFreeOnly()">🟢 Free Only</div>
+<!-- FILTER STRIP: distance + free toggle -->
+<div class="strip">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="#9CA3AF" style="flex-shrink:0"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+  <div class="filter-pill active" onclick="setDist('any',this)">Any</div>
+  <div class="filter-pill" onclick="setDist('5',this)">5 mi</div>
+  <div class="filter-pill" onclick="setDist('10',this)">10 mi</div>
+  <div class="filter-pill" onclick="setDist('25',this)">25 mi</div>
+  <div class="filter-pill" onclick="setDist('50',this)">50 mi</div>
+  <div class="sep"></div>
+  <div class="free-btn" id="free-btn" onclick="toggleFree()">🟢 Free Only</div>
 </div>
 
-<div class="city-bar">
-  <select class="city-sel" id="city-sel" onchange="filterAndRender()">
-    <option value="all">🌎 All Cities & Countries</option>
-    <option value="nj">📍 New Jersey</option>
-    <option value="nyc">🗽 New York City</option>
-    <option value="chicago">🏙️ Chicago, IL</option>
-    <option value="nashville">🎸 Nashville, TN</option>
-    <option value="tennessee">🎵 Tennessee</option>
-    <option value="milwaukee">🍺 Milwaukee, WI</option>
-    <option value="toronto">🍁 Toronto, Canada</option>
-    <option value="montreal">🎷 Montreal, Canada</option>
-    <option value="calgary">🤠 Calgary, Canada</option>
-    <option value="vancouver">🌲 Vancouver, Canada</option>
-  </select>
-  <div class="view-btns">
-    <div class="toggle-btn active" id="tgl-list" onclick="switchView('list')" title="List">☰</div>
-    <div class="toggle-btn" id="tgl-map" onclick="switchView('map')" title="Map">🗺</div>
-    <div class="toggle-btn" id="tgl-saved" onclick="switchView('saved')" title="Saved">🔖</div>
-  </div>
+<!-- LOCATION BAR -->
+<div class="loc-bar">
+  <span style="font-size:14px;flex-shrink:0">📍</span>
+  <span class="loc-text" id="loc-text">Tap to enable location for nearby events</span>
+  <button class="loc-btn" id="loc-btn" onclick="requestLocation()">Use My Location</button>
 </div>
 
+<!-- VIEW ROW -->
+<div class="view-row">
+  <div class="toggle-btn active" id="tgl-list" onclick="switchView('list')" title="List view">☰</div>
+  <div class="toggle-btn" id="tgl-map" onclick="switchView('map')" title="Map view">🗺</div>
+  <div class="toggle-btn" id="tgl-saved" onclick="switchView('saved')" title="Saved">🔖</div>
+</div>
+
+<!-- MAIN -->
 <div class="main">
+
+  <!-- LIST VIEW -->
   <div class="view active" id="view-list">
     <div class="notif-banner" id="notif-banner" style="display:none">
       <div style="font-size:20px;flex-shrink:0">🔔</div>
       <div>
-        <div class="nb-title">Get event alerts near you</div>
-        <div class="nb-body">Subscribe by email or enable push notifications for new events in your area.</div>
+        <div class="nb-title">Never miss events near you</div>
+        <div class="nb-body">Subscribe by email or push for alerts when new events are posted in your area.</div>
         <div class="nb-btns">
           <button class="nb-allow" onclick="openNotifSub()">Set Up Alerts</button>
           <button class="nb-skip" onclick="dismissNotif()">Not now</button>
         </div>
       </div>
     </div>
-    <div id="event-list"></div>
+    <div class="event-list" id="event-list"></div>
   </div>
-  <div class="view" id="view-map"><div id="leaflet-map"></div></div>
+
+  <!-- MAP VIEW — with back button -->
+  <div class="view" id="view-map">
+    <button class="map-back-btn" onclick="switchView('list')">
+      ← Back to Events
+    </button>
+    <div id="leaflet-map"></div>
+  </div>
+
+  <!-- SAVED VIEW -->
   <div class="view" id="view-saved">
-    <div class="view-header"><h2>Saved Events</h2><p>Events you've bookmarked</p></div>
-    <div id="saved-list" style="padding:0 0 80px"></div>
+    <div class="view-hdr"><h2>Saved Events</h2><p>Events you've bookmarked</p></div>
+    <div class="event-list" id="saved-list"></div>
   </div>
+
 </div>
 
 <button class="fab" onclick="openPost()">+</button>
 
-<!-- EVENT SHEET -->
+<!-- EVENT DETAIL SHEET -->
 <div class="modal-bg" id="sheet" onclick="if(event.target.id==='sheet')closeSheet()">
   <div class="modal">
     <button class="modal-close" onclick="closeSheet()">✕</button>
@@ -285,87 +304,89 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
     <div class="sh-row"><span class="sh-icon">📅</span><span id="sh-date"></span></div>
     <div class="sh-row"><span class="sh-icon">📍</span><span id="sh-loc"></span></div>
     <div class="sh-row"><span class="sh-icon">👤</span><span id="sh-org"></span></div>
+    <div class="sh-row" id="sh-dist-row" style="display:none"><span class="sh-icon">📏</span><span id="sh-dist"></span></div>
     <div class="sh-row" id="sh-age-row" style="display:none"><span class="sh-icon">🔞</span><span id="sh-age"></span></div>
     <div class="sh-row" id="sh-rec-row" style="display:none"><span class="sh-icon">🔄</span><span id="sh-rec"></span></div>
     <div id="sh-price" class="sh-price price-free">FREE EVENT</div>
-    <a id="sh-ticket-link" href="#" class="sh-ticket-link" target="_blank" style="display:none">🎟️ Get Tickets →</a>
+    <a id="sh-ticket" href="#" class="sh-ticket-link" target="_blank" style="display:none">🎟️ Get Tickets →</a>
     <p id="sh-desc" style="font-size:13px;color:#6B7280;line-height:1.7;margin-bottom:14px"></p>
     <div class="sh-actions">
-      <button class="btn-going-sheet" id="sh-going-btn" onclick="sheetToggleGoing()">✓ I'm Going</button>
+      <button class="btn-going-sheet" id="sh-going" onclick="sheetGoing()">✓ I'm Going</button>
       <button class="btn-wa" id="sh-wa">📱 WhatsApp</button>
-      <button class="btn-share-other" id="sh-share">Share</button>
+      <button class="btn-share" id="sh-share">Share</button>
     </div>
   </div>
 </div>
 
-<!-- NOTIF SUBSCRIBE -->
+<!-- NOTIFICATION SUBSCRIBE MODAL -->
 <div class="modal-bg" id="notif-modal" onclick="if(event.target.id==='notif-modal')closeNotifSub()">
   <div class="modal">
     <button class="modal-close" onclick="closeNotifSub()">✕</button>
     <div class="modal-drag"></div>
-    <div class="nsub-form">
-      <h2>🔔 Get Event Alerts</h2>
-      <p>Choose your interests and we'll notify you when matching events are posted. No spam — only real events.</p>
-      <label class="fl">Categories (select all that apply)</label>
-      <div class="nsub-cats">
-        <div class="nsub-cat on" onclick="this.classList.toggle('on')">🎪 Festivals</div>
-        <div class="nsub-cat" onclick="this.classList.toggle('on')">🛋️ Yard Sales</div>
-        <div class="nsub-cat on" onclick="this.classList.toggle('on')">🛒 Markets</div>
-        <div class="nsub-cat on" onclick="this.classList.toggle('on')">🎵 Music</div>
-        <div class="nsub-cat on" onclick="this.classList.toggle('on')">⚽ Sports</div>
-        <div class="nsub-cat on" onclick="this.classList.toggle('on')">🤝 Community</div>
-        <div class="nsub-cat" onclick="this.classList.toggle('on')">🍕 Food & Drink</div>
-        <div class="nsub-cat" onclick="this.classList.toggle('on')">🎨 Arts</div>
-      </div>
-      <label class="fl">Your Email <span class="req">*</span></label>
-      <input class="fi" type="email" id="nsub-email" placeholder="you@email.com">
-      <label class="fl">City or Zip Code</label>
-      <input class="fi" type="text" id="nsub-loc" placeholder="e.g. Jersey City, NJ or 07302">
-      <button class="push-btn" id="push-btn" onclick="requestPush()">📲 Also enable push notifications (instant alerts)</button>
-      <button class="nsub-btn" onclick="subscribeEmail()">Subscribe to Event Alerts</button>
-      <p style="font-size:11px;color:#9CA3AF;text-align:center;margin-top:10px">Unsubscribe anytime · No spam · Real events only</p>
+    <h2 style="font-size:19px;font-weight:800;margin-bottom:6px">🔔 Get Event Alerts</h2>
+    <p style="font-size:13px;color:#6B7280;margin-bottom:16px;line-height:1.6">Choose your interests and we'll notify you when matching events are posted. No spam.</p>
+    <label class="fl">What kind of events?</label>
+    <div class="nsub-cats">
+      <div class="nsub-cat on" onclick="this.classList.toggle('on')">🎪 Festivals</div>
+      <div class="nsub-cat on" onclick="this.classList.toggle('on')">🎵 Music</div>
+      <div class="nsub-cat on" onclick="this.classList.toggle('on')">⚽ Sports</div>
+      <div class="nsub-cat on" onclick="this.classList.toggle('on')">🤝 Community</div>
+      <div class="nsub-cat" onclick="this.classList.toggle('on')">🛒 Markets</div>
+      <div class="nsub-cat" onclick="this.classList.toggle('on')">🍕 Food & Drink</div>
+      <div class="nsub-cat" onclick="this.classList.toggle('on')">💼 Business</div>
+      <div class="nsub-cat" onclick="this.classList.toggle('on')">🎨 Arts</div>
+      <div class="nsub-cat" onclick="this.classList.toggle('on')">🛋️ Yard Sales</div>
     </div>
+    <label class="fl">Your Email <span class="req">*</span></label>
+    <input class="fi" type="email" id="nsub-email" placeholder="you@email.com">
+    <label class="fl">City or Zip Code</label>
+    <input class="fi" type="text" id="nsub-loc" placeholder="e.g. Jersey City, NJ or 07302">
+    <button class="push-btn" id="push-btn" onclick="requestPush()">📲 Enable push notifications (instant alerts)</button>
+    <button class="sub-btn" onclick="subscribeEmail()">Subscribe to Event Alerts</button>
+    <p style="font-size:11px;color:#9CA3AF;text-align:center;margin-top:10px">Unsubscribe anytime · No spam · Real events only</p>
   </div>
 </div>
 
-<!-- POST MODAL -->
+<!-- POST EVENT MODAL -->
 <div class="modal-bg" id="post-modal" onclick="if(event.target.id==='post-modal')closePost()">
   <div class="modal">
     <button class="modal-close" onclick="closePost()">✕</button>
     <div class="modal-drag"></div>
-    <h2 style="font-size:20px;font-weight:800;margin-bottom:16px">Post Your Event</h2>
+    <h2 style="font-size:20px;font-weight:800;margin-bottom:14px">Post Your Event</h2>
     <p style="font-size:11px;font-weight:700;color:#6B7280;letter-spacing:.5px;margin-bottom:10px">CHOOSE HOW YOU WANT TO POST</p>
     <div class="plan-grid">
       <div class="plan-card selected" onclick="selectPlan(this)">
-        <div class="plan-hdr"><div class="plan-name">Free</div><div class="plan-price" style="color:#374151">$0</div></div>
-        <div class="plan-feats">✓ Post 1 event<br>✓ Show in list & map<br>✓ Going counter<br>✓ Share button<br><em>Yard sales, one-off events</em></div>
+        <div class="ph"><div class="pn">Free</div><div class="pp gray">$0</div></div>
+        <div class="pf">✓ Post 1 event<br>✓ List & map<br>✓ Going counter<br><em>Yard sales, one-offs</em></div>
       </div>
-      <div class="plan-card gold-card" onclick="selectPlan(this)">
-        <div class="plan-hdr"><div class="plan-name">Boost <span class="plan-tag gold">POPULAR</span></div><div class="plan-price gold">$2.99</div></div>
-        <div class="plan-feats">⭐ Featured for 3 days<br>✓ Top of feed in your area<br>✓ Gold highlighted border<br><em>Small events & community</em></div>
+      <div class="plan-card gold" onclick="selectPlan(this)">
+        <div class="ph"><div class="pn">Boost <span class="ptag gold">POPULAR</span></div><div class="pp gold">$2.99</div></div>
+        <div class="pf">⭐ Featured 3 days<br>✓ Top of feed<br>✓ Gold border<br><em>Community events</em></div>
       </div>
-      <div class="plan-card gold-card" onclick="selectPlan(this)">
-        <div class="plan-hdr"><div class="plan-name">Boost Plus</div><div class="plan-price gold">$4.99</div></div>
-        <div class="plan-feats">⭐ Featured for 7 days<br>✓ Top of feed<br>✓ Priority in search<br><em>Markets, open houses</em></div>
+      <div class="plan-card gold" onclick="selectPlan(this)">
+        <div class="ph"><div class="pn">Boost Plus</div><div class="pp gold">$4.99</div></div>
+        <div class="pf">⭐ Featured 7 days<br>✓ Top of feed<br>✓ Priority search<br><em>Markets, open houses</em></div>
       </div>
-      <div class="plan-card pro-card" onclick="selectPlan(this)">
-        <div class="plan-hdr"><div class="plan-name">Pro <span class="plan-tag">PRO</span></div><div class="plan-price gold">$9.99/mo</div></div>
-        <div class="plan-feats">⭐ Unlimited events/month<br>✓ 7-day boost every post<br>✓ Organiser profile page<br><em>Churches, markets, clubs</em></div>
+      <div class="plan-card amber" onclick="selectPlan(this)">
+        <div class="ph"><div class="pn">Pro <span class="ptag purple">PRO</span></div><div class="pp gold">$9.99/mo</div></div>
+        <div class="pf">⭐ Unlimited events<br>✓ 7-day boost always<br>✓ Organiser profile<br><em>Clubs, churches</em></div>
       </div>
     </div>
-    <div class="plan-card" style="margin-bottom:20px;border-color:#1D4ED8;background:#EFF6FF" onclick="selectPlan(this)">
-      <div class="plan-hdr"><div class="plan-name">Business <span class="plan-tag" style="background:#1D4ED8">BIZ</span></div><div class="plan-price" style="color:#1D4ED8">$29/mo</div></div>
-      <div class="plan-feats">🏆 Unlimited events · 7-day boost every post · Branded organiser profile · Multi-user team · Custom logo & banner · Analytics · Priority placement · Dedicated support<br><em>Venues, event companies, large organisations</em></div>
+    <div class="plan-card blue" style="margin-bottom:18px" onclick="selectPlan(this)">
+      <div class="ph"><div class="pn">Business <span class="ptag blue">BIZ</span></div><div class="pp blue">$29/mo</div></div>
+      <div class="pf">🏆 Unlimited events · 7-day boost · Branded organiser profile · Multi-user team · Custom logo · Analytics · Priority placement · Dedicated support<br><em>Venues, event companies, large organisations</em></div>
     </div>
-    <h3 style="font-size:13px;font-weight:700;color:#374151;margin-bottom:14px">EVENT DETAILS</h3>
+
+    <h3 style="font-size:13px;font-weight:700;color:#374151;margin-bottom:12px">EVENT DETAILS</h3>
     <label class="fl">Event Title <span class="req">*</span></label>
-    <input class="fi" type="text" id="f-title" placeholder="e.g. Summer Yard Sale, Friday Prayer, Block Party...">
+    <input class="fi" type="text" id="f-title" placeholder="e.g. Summer Yard Sale, Block Party...">
     <label class="fl">Category <span class="req">*</span></label>
     <select class="fi" id="f-cat">
       <option value="">Select category</option>
-      <option>Festivals</option><option>Yard Sales</option><option>Religious</option><option>Open House</option>
-      <option>Markets</option><option>Sales/Specials</option><option>Music</option><option>Sports</option>
-      <option>Food & Drink</option><option>Community</option><option>Arts</option><option>Other</option>
+      <option>Festivals</option><option>Yard Sales</option><option>Religious</option>
+      <option>Open House</option><option>Markets</option><option>Sales/Specials</option>
+      <option>Music</option><option>Sports</option><option>Food & Drink</option>
+      <option>Community</option><option>Business</option><option>Arts</option><option>Other</option>
     </select>
     <div class="grid2">
       <div><label class="fl">Date <span class="req">*</span></label><input class="fi" type="date" id="f-date"></div>
@@ -373,17 +394,15 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
     </div>
     <label class="fl">Location / Address <span class="req">*</span></label>
     <input class="fi" type="text" id="f-loc-post" placeholder="Full address or venue name">
-    <label class="fl">City <span class="req">*</span></label>
-    <input class="fi" type="text" id="f-city" placeholder="e.g. Jersey City, NJ or Toronto, ON">
     <label class="fl">Organiser / Name <span class="req">*</span></label>
     <input class="fi" type="text" id="f-org" placeholder="Your name or organisation">
     <label class="fl">Your Email <span class="req">*</span></label>
     <input class="fi" type="email" id="f-email" placeholder="you@email.com">
-    <div class="email-tip">📧 We'll send a confirmation when your event is approved and live. Your email is never shown publicly.</div>
+    <div class="email-tip">📧 We'll email you when your event is approved and live. Your email stays private.</div>
     <label class="fl">Admission</label>
     <div class="price-row">
-      <div class="price-opt sel-free" id="opt-free" onclick="setFree(true)">Free Entry</div>
-      <div class="price-opt" id="opt-paid" onclick="setFree(false)">Paid Event</div>
+      <div class="price-opt free" id="opt-free" onclick="setFreePost(true)">Free Entry</div>
+      <div class="price-opt" id="opt-paid" onclick="setFreePost(false)">Paid Event</div>
     </div>
     <div id="price-wrap" style="display:none">
       <label class="fl">Ticket Price</label>
@@ -391,7 +410,7 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
       <label class="fl">Ticket Link (optional)</label>
       <input class="fi" type="url" id="f-ticket-url" placeholder="https://ticketmaster.com/...">
     </div>
-    <label class="fl">Is this a recurring event?</label>
+    <label class="fl">Recurring?</label>
     <select class="fi" id="f-recurring">
       <option value="">One-time event</option>
       <option value="weekly">Every week</option>
@@ -399,7 +418,7 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
       <option value="daily">Every day</option>
     </select>
     <label class="fl">Promo Code</label>
-    <input class="fi" type="text" id="f-promo" placeholder="Have a promo code? Enter it here">
+    <input class="fi" type="text" id="f-promo" placeholder="Have a promo code?">
     <label class="fl">Description</label>
     <textarea class="fi" id="f-desc-post" rows="3" style="resize:vertical" placeholder="Tell people what to expect..."></textarea>
     <button class="submit-btn" onclick="submitPost()">Post Event</button>
@@ -409,195 +428,171 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
 <div class="toast" id="toast"></div>
 
 <script>
-// ── ALL REAL EVENTS USA + CANADA ──────────────────────────────────────
+// ══════════════════════════════════════════════════════
+// EVENTS DATA
+// ══════════════════════════════════════════════════════
 const EVENTS = [
-  // ── NJ / NYC ──
-  {id:1,title:"Brazil vs. Morocco — FIFA World Cup",cat:"Sports",slug:"sports",
-   date:"2026-06-13",time:"6:00 PM",city:"nj",
+  // NJ / NYC
+  {id:1,title:"Brazil vs. Morocco — FIFA World Cup",cat:"Sports",slug:"sports",date:"2026-06-13",time:"6:00 PM",
    loc:"MetLife Stadium, East Rutherford, NJ",lat:40.8135,lng:-74.0745,
    org:"FIFA",orgLink:"https://www.metlifestadium.com",going:78576,featured:true,free:false,price:"From $100",
    ticketLink:"https://www.fifa.com/tickets",age:"All ages",recurring:null,
-   desc:"Opening World Cup match in the NY/NJ area. Brazil faces Morocco in a packed MetLife Stadium. First of eight World Cup games hosted here including the Final."},
-  {id:2,title:"France vs. Senegal — FIFA World Cup",cat:"Sports",slug:"sports",
-   date:"2026-06-16",time:"3:00 PM",city:"nj",
+   desc:"Opening World Cup match in the NY/NJ area. Brazil faces Morocco at MetLife Stadium. First of eight World Cup games hosted here including the Final."},
+  {id:2,title:"France vs. Senegal — FIFA World Cup",cat:"Sports",slug:"sports",date:"2026-06-16",time:"3:00 PM",
    loc:"MetLife Stadium, East Rutherford, NJ",lat:40.8135,lng:-74.0745,
    org:"FIFA",orgLink:"https://www.metlifestadium.com",going:76000,featured:true,free:false,price:"From $80",
    ticketLink:"https://www.fifa.com/tickets",age:"All ages",recurring:null,
-   desc:"Group Stage match at MetLife Stadium. France takes on Senegal in one of the most anticipated matchups of the tournament."},
-  {id:3,title:"Ecuador vs. Germany — FIFA World Cup",cat:"Sports",slug:"sports",
-   date:"2026-06-25",time:"4:00 PM",city:"nj",
+   desc:"Group Stage match at MetLife Stadium. France takes on Senegal."},
+  {id:3,title:"Ecuador vs. Germany — FIFA World Cup",cat:"Sports",slug:"sports",date:"2026-06-25",time:"4:00 PM",
    loc:"MetLife Stadium, East Rutherford, NJ",lat:40.8135,lng:-74.0745,
-   org:"FIFA",orgLink:"https://www.metlifestadium.com",going:75000,featured:true,free:false,price:"From $90",
+   org:"FIFA",going:75000,featured:true,free:false,price:"From $90",
    ticketLink:"https://www.fifa.com/tickets",age:"All ages",recurring:null,
-   desc:"Group Stage match — Ecuador faces Germany at MetLife Stadium. Part of the 2026 FIFA World Cup hosted in the NY/NJ area."},
-  {id:4,title:"Panama vs. England — FIFA World Cup",cat:"Sports",slug:"sports",
-   date:"2026-06-27",time:"5:00 PM",city:"nj",
+   desc:"Group Stage match — Ecuador vs. Germany at MetLife Stadium."},
+  {id:4,title:"Panama vs. England — FIFA World Cup",cat:"Sports",slug:"sports",date:"2026-06-27",time:"5:00 PM",
    loc:"MetLife Stadium, East Rutherford, NJ",lat:40.8135,lng:-74.0745,
-   org:"FIFA",orgLink:"https://www.metlifestadium.com",going:76000,featured:true,free:false,price:"From $85",
+   org:"FIFA",going:76000,featured:true,free:false,price:"From $85",
    ticketLink:"https://www.fifa.com/tickets",age:"All ages",recurring:null,
    desc:"Group Stage match — Panama vs. England at MetLife Stadium."},
-  {id:5,title:"FIFA World Cup Final 2026",cat:"Sports",slug:"sports",
-   date:"2026-07-19",time:"3:00 PM",city:"nj",
+  {id:5,title:"FIFA World Cup Final 2026",cat:"Sports",slug:"sports",date:"2026-07-19",time:"3:00 PM",
    loc:"MetLife Stadium, East Rutherford, NJ",lat:40.8135,lng:-74.0745,
-   org:"FIFA",orgLink:"https://www.fifa.com",going:78576,featured:true,free:false,price:"From $500",
+   org:"FIFA",going:78576,featured:true,free:false,price:"From $500",
    ticketLink:"https://www.fifa.com/tickets",age:"All ages",recurring:null,
-   desc:"THE FIFA World Cup 2026 Final at MetLife Stadium — the championship match. First World Cup Final in the New York metropolitan area. Historic moment for New Jersey."},
-  {id:6,title:"SoccerFest26 — Free World Cup Fan Festival",cat:"Sports",slug:"sports",
-   date:"2026-06-25",time:"All Day",city:"nj",
+   desc:"THE FIFA World Cup 2026 Final at MetLife Stadium. First World Cup Final in the New York metropolitan area. Historic moment for New Jersey."},
+  {id:6,title:"SoccerFest26 — Free World Cup Fan Festival",cat:"Sports",slug:"sports",date:"2026-06-25",time:"All Day",
    loc:"Wiggins Waterfront Park, Camden, NJ",lat:39.944,lng:-75.1246,
-   org:"Camden County / NJ EDA",orgLink:"#",going:12000,featured:true,free:true,
+   org:"Camden County / NJ EDA",going:12000,featured:true,free:true,
    ticketLink:null,age:"All ages",recurring:null,
-   desc:"Three-day free fan festival with 12 World Cup match screenings on giant screens, free youth soccer clinics, food vendors, and live entertainment. No ticket needed."},
-  {id:7,title:"Governors Ball 2026",cat:"Music",slug:"music",
-   date:"2026-06-05",time:"12:00 PM",city:"nyc",
-   loc:"Flushing Meadows Corona Park, Queens, NY",lat:40.7396,lng:-73.8440,
-   org:"Governors Ball",orgLink:"https://www.governorsballmusicfestival.com",going:150000,featured:true,free:false,price:"From $200 (3-day GA)",
+   desc:"3-day free fan festival with 12 World Cup match screenings on giant screens, free youth soccer clinics, food vendors, and live entertainment."},
+  {id:7,title:"Governors Ball 2026",cat:"Music",slug:"music",date:"2026-06-05",time:"12:00 PM",
+   loc:"Flushing Meadows Corona Park, Queens, NY",lat:40.7396,lng:-73.844,
+   org:"Governors Ball",orgLink:"https://www.governorsballmusicfestival.com",going:150000,featured:true,free:false,price:"From $200 (3-day)",
    ticketLink:"https://www.governorsballmusicfestival.com/tickets",age:"All ages",recurring:null,
-   desc:"New York City's biggest music festival. 2026 headliners: Lorde, A$AP Rocky, Stray Kids, Baby Keem, Kali Uchis. 3 days, 3 stages at Flushing Meadows Corona Park in Queens."},
-  {id:8,title:"NYC Puerto Rican Day Parade",cat:"Community",slug:"community",
-   date:"2026-06-14",time:"11:00 AM",city:"nyc",
-   loc:"Fifth Avenue, 44th to 79th St, Manhattan, NY",lat:40.7614,lng:-73.9776,
-   org:"National Puerto Rican Day Parade",orgLink:"#",going:80000,featured:true,free:true,
+   desc:"NYC's biggest music festival. Headliners: Lorde, A$AP Rocky, Stray Kids, Kali Uchis, Baby Keem. 3 days, 3 stages at Flushing Meadows Corona Park in Queens."},
+  {id:8,title:"NYC Puerto Rican Day Parade",cat:"Community",slug:"community",date:"2026-06-14",time:"11:00 AM",
+   loc:"Fifth Avenue, 44th–79th St, Manhattan, NY",lat:40.7614,lng:-73.9776,
+   org:"National Puerto Rican Day Parade",going:80000,featured:true,free:true,
    ticketLink:null,age:"All ages",recurring:null,
-   desc:"One of the largest parades in the US, celebrating Puerto Rican culture and community. March runs along Fifth Avenue from 44th to 79th Street. Free to watch along the route."},
-  {id:9,title:"Union Square Greenmarket",cat:"Markets",slug:"markets",
-   date:"2026-06-13",time:"8:00 AM",city:"nyc",
+   desc:"One of the largest parades in the US. Free to watch along Fifth Avenue from 44th to 79th Street."},
+  {id:9,title:"Union Square Greenmarket",cat:"Markets",slug:"markets",date:"2026-06-13",time:"8:00 AM",
    loc:"Union Square, 14th St & Broadway, Manhattan, NY",lat:40.7359,lng:-73.9911,
    org:"GrowNYC",orgLink:"https://www.grownyc.org",going:5000,featured:true,free:true,
    ticketLink:null,age:"All ages",recurring:"Every Saturday, 8 AM – 6 PM",
-   desc:"NYC's largest and most iconic farmers market. Over 140 regional farmers and food producers every Saturday. Fresh produce, baked goods, meat, cheese, flowers, and more."},
-  {id:10,title:"Barefoot Country Music Fest",cat:"Music",slug:"music",
-   date:"2026-06-18",time:"12:00 PM",city:"nj",
-   loc:"Wildwood Beach, Wildwood, NJ 08260",lat:39.0020,lng:-74.8136,
-   org:"Barefoot Country Music Fest",orgLink:"#",going:30000,featured:true,free:false,price:"From $99 (single day)",
+   desc:"NYC's largest farmers market. 140+ regional farmers and food producers every Saturday — produce, baked goods, meat, cheese, flowers."},
+  {id:10,title:"Barefoot Country Music Fest",cat:"Music",slug:"music",date:"2026-06-18",time:"12:00 PM",
+   loc:"Wildwood Beach, Wildwood, NJ",lat:39.002,lng:-74.8136,
+   org:"Barefoot Country Music Fest",going:30000,featured:true,free:false,price:"From $99/day",
    ticketLink:"https://www.barefootcountrymusicfest.com",age:"All ages",recurring:null,
-   desc:"4-day country music festival on the beaches of Wildwood, NJ. Headliners: Miranda Lambert, Kelsea Ballerini, Post Malone, Eric Church. One of the largest country music events on the East Coast."},
-  {id:11,title:"Juneteenth NJ — Newark Celebration",cat:"Community",slug:"community",
-   date:"2026-06-19",time:"12:00 PM",city:"nj",
-   loc:"Military Park, Newark, NJ 07102",lat:40.7363,lng:-74.1724,
-   org:"Juneteenth NJ",orgLink:"#",going:4500,featured:true,free:true,
+   desc:"4-day country music festival on the beaches of Wildwood, NJ (June 18–21). Headliners: Miranda Lambert, Kelsea Ballerini, Post Malone, Eric Church."},
+  {id:11,title:"Juneteenth Newark Celebration",cat:"Community",slug:"community",date:"2026-06-19",time:"12:00 PM",
+   loc:"Military Park, Newark, NJ",lat:40.7363,lng:-74.1724,
+   org:"Juneteenth NJ",going:4500,featured:true,free:true,
    ticketLink:null,age:"All ages",recurring:null,
-   desc:"Official New Jersey Juneteenth celebration at Military Park. Music, food vendors, community organizations, and cultural programming honoring Emancipation Day."},
-  {id:12,title:"Riverview Farmers Market",cat:"Markets",slug:"markets",
-   date:"2026-06-14",time:"9:00 AM",city:"nj",
+   desc:"Official NJ Juneteenth celebration at Military Park. Music, food vendors, community organizations, and cultural programming."},
+  {id:12,title:"Riverview Farmers Market",cat:"Markets",slug:"markets",date:"2026-06-14",time:"9:00 AM",
    loc:"Riverview Park, Jersey City, NJ",lat:40.7378,lng:-74.0507,
-   org:"Riverview Farmers Market",orgLink:"#",going:340,featured:false,free:true,
+   org:"Riverview Farmers Market",going:340,featured:false,free:true,
    ticketLink:null,age:"All ages",recurring:"Every Sunday, 9 AM – 2 PM",
-   desc:"Local farmers market in Jersey City with fresh produce, local vendors, and community events. This week: Sustainability Day with free bike tune-ups and electronics recycling."},
-  {id:13,title:"Montclair Pride 2026",cat:"Community",slug:"community",
-   date:"2026-06-13",time:"12:00 PM",city:"nj",
+   desc:"Local farmers market with fresh produce, local vendors, and community events."},
+  {id:13,title:"Montclair Pride 2026",cat:"Community",slug:"community",date:"2026-06-13",time:"12:00 PM",
    loc:"Montclair Center, Montclair, NJ",lat:40.8257,lng:-74.2088,
-   org:"Montclair Pride",orgLink:"#",going:2100,featured:false,free:true,
+   org:"Montclair Pride",going:2100,featured:false,free:true,
    ticketLink:null,age:"All ages",recurring:null,
-   desc:"Annual Pride celebration with performances, food, crafts, vendors, and family-friendly activities for all ages."},
-  {id:14,title:"Warren County Hot Air Balloon Festival",cat:"Festivals",slug:"festivals",
-   date:"2026-07-25",time:"All Day",city:"nj",
-   loc:"1350 Strykers Rd, Phillipsburg, NJ 08865",lat:40.6887,lng:-75.1974,
-   org:"Warren County Farmers' Fair",orgLink:"#",going:15000,featured:true,free:false,price:"$12 admission",
+   desc:"Annual Pride celebration with performances, food, crafts, vendors, and family-friendly activities."},
+  {id:14,title:"Warren County Hot Air Balloon Festival",cat:"Festivals",slug:"festivals",date:"2026-07-25",time:"All Day",
+   loc:"1350 Strykers Rd, Phillipsburg, NJ",lat:40.6887,lng:-75.1974,
+   org:"Warren County Farmers' Fair",going:15000,featured:true,free:false,price:"$12 admission",
    ticketLink:null,age:"All ages",recurring:null,
-   desc:"88th annual Warren County Farmers' Fair & Hot Air Balloon Festival. Classic county fair: hot air balloons, horse shows, arts expo, 4-H exhibits, rides, and carnival food. Runs July 25–August 1."},
-
-  // ── CHICAGO ──
-  {id:15,title:"Lollapalooza 2026",cat:"Music",slug:"music",
-   date:"2026-07-30",time:"11:00 AM",city:"chicago",
-   loc:"Grant Park, 337 E Randolph St, Chicago, IL",lat:41.8827,lng:-87.6189,
-   org:"Lollapalooza",orgLink:"https://www.lollapalooza.com",going:400000,featured:true,free:false,price:"From $135 (single day)",
+   desc:"88th annual festival (July 25–August 1). Hot air balloons, horse shows, arts expo, 4-H exhibits, rides, carnival food."},
+  // NEW: BUSINESS EVENTS NJ/NYC
+  {id:15,title:"NJ Tech Startup Meetup — June",cat:"Business",slug:"business",date:"2026-06-17",time:"6:30 PM",
+   loc:"WeWork Hoboken, 200 Hudson St, Hoboken, NJ",lat:40.744,lng:-74.0324,
+   org:"NJ Tech Community",going:120,featured:false,free:false,price:"$10",
+   ticketLink:null,age:"18+",recurring:"Monthly — 3rd Wednesday",
+   desc:"Monthly networking meetup for NJ startup founders, engineers, and investors. Pitches, demos, and networking over drinks. Great for early-stage founders."},
+  {id:16,title:"NYC Small Business Expo 2026",cat:"Business",slug:"business",date:"2026-06-11",time:"9:00 AM",
+   loc:"Javits Center, 429 11th Ave, New York, NY",lat:40.7575,lng:-74.0020,
+   org:"Small Business Expo",orgLink:"#",going:8000,featured:true,free:true,
+   ticketLink:"#",age:"All ages",recurring:null,
+   desc:"The country's largest B2B networking event and trade show for small business owners. Free to attend — educational seminars, exhibitors, and networking across 100+ booths."},
+  {id:17,title:"Arab American Business Summit",cat:"Business",slug:"business",date:"2026-07-12",time:"10:00 AM",
+   loc:"Hilton Meadowlands, 2 Meadowlands Plaza, East Rutherford, NJ",lat:40.8134,lng:-74.0782,
+   org:"Arab American Chamber of Commerce",going:350,featured:true,free:false,price:"$75",
+   ticketLink:null,age:"All ages",recurring:null,
+   desc:"Annual summit connecting Arab American entrepreneurs, investors, and business leaders. Keynotes, panels, and B2B networking sessions. Bilingual (English/Arabic)."},
+  // CHICAGO
+  {id:18,title:"Lollapalooza 2026",cat:"Music",slug:"music",date:"2026-07-30",time:"11:00 AM",
+   loc:"Grant Park, Chicago, IL",lat:41.8827,lng:-87.6189,
+   org:"Lollapalooza",orgLink:"https://www.lollapalooza.com",going:400000,featured:true,free:false,price:"From $135/day",
    ticketLink:"https://www.lollapalooza.com",age:"All ages",recurring:null,
-   desc:"One of the world's iconic music festivals returns to Chicago's Grant Park, July 30–August 2. 2026 headliners: Charli XCX, Lorde, Tate McRae, The Smashing Pumpkins, John Summit, The XX. 8 stages, 170+ artists."},
-
-  // ── NASHVILLE ──
-  {id:16,title:"CMA Fest 2026",cat:"Music",slug:"music",
-   date:"2026-06-04",time:"11:00 AM",city:"nashville",
-   loc:"Nissan Stadium & Downtown Nashville, Nashville, TN",lat:36.1665,lng:-86.7713,
+   desc:"Iconic 4-day festival at Grant Park (July 30–Aug 2). Headliners: Charli XCX, Lorde, Tate McRae, The Smashing Pumpkins, John Summit, The XX. 8 stages, 170+ artists."},
+  // NASHVILLE
+  {id:19,title:"CMA Fest 2026",cat:"Music",slug:"music",date:"2026-06-04",time:"11:00 AM",
+   loc:"Nissan Stadium & Downtown Nashville, TN",lat:36.1665,lng:-86.7713,
    org:"Country Music Association",orgLink:"https://cmafest.com",going:80000,featured:true,free:false,price:"From $35 (daytime)",
    ticketLink:"https://cmafest.com",age:"All ages",recurring:null,
-   desc:"Country music's biggest party — 4 days in Nashville, June 4–7. Headliners: Blake Shelton, Keith Urban, Luke Bryan, Tim McGraw, Lainey Wilson. Free daytime stages throughout the city plus nightly stadium concerts."},
-
-  // ── TENNESSEE ──
-  {id:17,title:"Bonnaroo Music & Arts Festival 2026",cat:"Music",slug:"music",
-   date:"2026-06-11",time:"10:00 AM",city:"tennessee",
-   loc:"Great Stage Park, Manchester, TN 37355",lat:35.4873,lng:-86.0847,
+   desc:"Country music's biggest party — 4 days in Nashville (June 4–7). Headliners: Blake Shelton, Keith Urban, Luke Bryan, Tim McGraw. Free daytime stages + nightly stadium concerts."},
+  // TENNESSEE
+  {id:20,title:"Bonnaroo 2026",cat:"Music",slug:"music",date:"2026-06-11",time:"10:00 AM",
+   loc:"Great Stage Park, Manchester, TN",lat:35.4873,lng:-86.0847,
    org:"Bonnaroo",orgLink:"https://www.bonnaroo.com",going:80000,featured:true,free:false,price:"From $350 (4-day camping)",
    ticketLink:"https://www.bonnaroo.com",age:"All ages",recurring:null,
-   desc:"4-day camping music festival in Manchester, Tennessee, June 11–14. Headliners: Skrillex, The Strokes, Rüfüs Du Sol, Noah Kahan, Teddy Swims, Kesha. Multiple stages across the 700-acre farm."},
-
-  // ── MILWAUKEE ──
-  {id:18,title:"Summerfest 2026 — World's Largest Music Festival",cat:"Music",slug:"music",
-   date:"2026-06-18",time:"12:00 PM",city:"milwaukee",
+   desc:"4-day camping music festival (June 11–14). Headliners: Skrillex, The Strokes, Rüfüs Du Sol, Noah Kahan, Teddy Swims, Kesha. 700-acre farm, multiple stages."},
+  // MILWAUKEE
+  {id:21,title:"Summerfest 2026",cat:"Music",slug:"music",date:"2026-06-18",time:"12:00 PM",
    loc:"Henry Maier Festival Park, Milwaukee, WI",lat:43.0266,lng:-87.8996,
-   org:"Summerfest",orgLink:"https://www.summerfest.com",going:800000,featured:true,free:false,price:"$35/day (advance)",
+   org:"Summerfest",orgLink:"https://www.summerfest.com",going:800000,featured:true,free:false,price:"$35/day",
    ticketLink:"https://www.summerfest.com",age:"All ages",recurring:null,
-   desc:"The world's largest music festival runs across 3 weekends (June 18–20, June 25–27, July 2–4) on the shores of Lake Michigan. Headliners include Garth Brooks, Ed Sheeran, Post Malone, Muse, and Jelly Roll. 12 stages, 600+ artists."},
-
-  // ── CANADA: TORONTO ──
-  {id:19,title:"All Things Go Toronto 2026",cat:"Music",slug:"music",
-   date:"2026-06-06",time:"12:00 PM",city:"toronto",
+   desc:"The world's largest music festival — 3 weekends (June 18–20, 25–27, July 2–4) on Lake Michigan. Headliners: Garth Brooks, Ed Sheeran, Post Malone, Muse, Jelly Roll. 12 stages."},
+  // CANADA - TORONTO
+  {id:22,title:"All Things Go — Toronto 2026",cat:"Music",slug:"music",date:"2026-06-06",time:"12:00 PM",
    loc:"RBC Amphitheatre, Toronto, ON, Canada",lat:43.6273,lng:-79.4154,
-   org:"All Things Go",orgLink:"#",going:20000,featured:true,free:false,price:"From $85 CAD",
+   org:"All Things Go",going:20000,featured:true,free:false,price:"From $85 CAD",
    ticketLink:"#",age:"All ages",recurring:null,
-   desc:"2-day indie/pop festival at RBC Amphitheatre in Toronto, June 6–7. Lineup: Lorde, Kesha, The Beaches, Wet Leg, Holly Humberstone, Rachel Chinouriri. Perfect weekend trip from Buffalo or NYC."},
-  {id:20,title:"Veld Music Festival 2026",cat:"Music",slug:"music",
-   date:"2026-08-01",time:"2:00 PM",city:"toronto",
+   desc:"2-day indie/pop festival (June 6–7). Lineup: Lorde, Kesha, The Beaches, Wet Leg, Holly Humberstone. Great option from the Buffalo/Niagara area."},
+  {id:23,title:"Veld Music Festival 2026",cat:"Music",slug:"music",date:"2026-08-01",time:"2:00 PM",
    loc:"Downsview Park, Toronto, ON, Canada",lat:43.7384,lng:-79.4745,
-   org:"Veld Festival",orgLink:"#",going:35000,featured:true,free:false,price:"From $159 CAD",
+   org:"Veld Festival",going:35000,featured:true,free:false,price:"From $159 CAD",
    ticketLink:"#",age:"19+",recurring:null,
-   desc:"Toronto's biggest electronic music festival. Aug 1–3 at Downsview Park. Headliners: Armin van Buuren, Kx5, Subtronics, James Hype, Galantis, Charlotte De Witte. The only outdoor EDM destination in Canada of this scale."},
-
-  // ── CANADA: MONTREAL ──
-  {id:21,title:"Festival International de Jazz de Montréal 2026",cat:"Music",slug:"music",
-   date:"2026-06-25",time:"All Day",city:"montreal",
+   desc:"Toronto's biggest EDM festival (Aug 1–3). Headliners: Armin van Buuren, Kx5, Subtronics, James Hype, Galantis, Charlotte De Witte."},
+  // CANADA - MONTREAL
+  {id:24,title:"Festival International de Jazz de Montréal",cat:"Music",slug:"music",date:"2026-06-25",time:"All Day",
    loc:"Quartier des Spectacles, Montreal, QC, Canada",lat:45.5088,lng:-73.5614,
    org:"Festival Jazz de Montréal",orgLink:"https://www.montrealjazzfest.com",going:200000,featured:true,free:true,
    ticketLink:"https://www.montrealjazzfest.com",age:"All ages",recurring:null,
-   desc:"The world's largest jazz festival runs June 25–July 4 in downtown Montreal. Over 350 shows — more than two-thirds are FREE outdoors. World-class performers from jazz, blues, soul, and more across 10+ stages."},
-  {id:22,title:"Osheaga Music and Arts Festival 2026",cat:"Music",slug:"music",
-   date:"2026-07-31",time:"11:00 AM",city:"montreal",
-   loc:"Parc Jean-Drapeau, Montreal, QC, Canada",lat:45.5085,lng:-73.5340,
-   org:"Osheaga",orgLink:"#",going:135000,featured:true,free:false,price:"From $130 CAD/day",
+   desc:"World's largest jazz festival (June 25–July 4). 350+ shows — two-thirds are FREE outdoors. Jazz, blues, soul, and more across 10+ stages in downtown Montreal."},
+  {id:25,title:"Osheaga Music and Arts Festival",cat:"Music",slug:"music",date:"2026-07-31",time:"11:00 AM",
+   loc:"Parc Jean-Drapeau, Montreal, QC, Canada",lat:45.5085,lng:-73.534,
+   org:"Osheaga",going:135000,featured:true,free:false,price:"From $130 CAD/day",
    ticketLink:"#",age:"All ages",recurring:null,
-   desc:"Canada's biggest all-genre music festival, July 31–August 2. Headliners: Twenty One Pilots, Tate McRae, The XX, Turnstile, Kehlani. Set in the beautiful Parc Jean-Drapeau with views of the St. Lawrence River."},
-
-  // ── CANADA: CALGARY ──
-  {id:23,title:"Calgary Stampede 2026",cat:"Festivals",slug:"festivals",
-   date:"2026-07-03",time:"9:00 AM",city:"calgary",
+   desc:"Canada's biggest all-genre festival (July 31–Aug 2). Headliners: Twenty One Pilots, Tate McRae, The XX, Turnstile, Kehlani. Set in Parc Jean-Drapeau on the St. Lawrence River."},
+  // CANADA - CALGARY
+  {id:26,title:"Calgary Stampede 2026",cat:"Festivals",slug:"festivals",date:"2026-07-03",time:"9:00 AM",
    loc:"Stampede Park, Calgary, AB, Canada",lat:51.0348,lng:-114.0515,
-   org:"Calgary Stampede",orgLink:"https://www.calgarystampede.com",going:1200000,featured:true,free:false,price:"From $18 CAD (admission)",
+   org:"Calgary Stampede",orgLink:"https://www.calgarystampede.com",going:1200000,featured:true,free:false,price:"From $18 CAD",
    ticketLink:"https://www.calgarystampede.com",age:"All ages",recurring:null,
-   desc:"The Greatest Outdoor Show on Earth. 11 days (July 3–12) of world-class rodeo, live music, midway rides, chuckwagon races, Indigenous programming, and Calgary's famous stampede breakfast (often free!). Headliners include Shania Twain, Khalid, and Arkells."},
-
-  // ── CANADA: VANCOUVER ──
-  {id:24,title:"FIFA Fan Festival Vancouver 2026",cat:"Sports",slug:"sports",
-   date:"2026-06-11",time:"All Day",city:"vancouver",
+   desc:"The Greatest Outdoor Show on Earth (July 3–12). World-class rodeo, live music (Shania Twain, Khalid, Arkells), midway rides, chuckwagon races, Indigenous programming."},
+  // CANADA - VANCOUVER
+  {id:27,title:"FIFA Fan Festival Vancouver 2026",cat:"Sports",slug:"sports",date:"2026-06-11",time:"All Day",
    loc:"Hastings Park, Vancouver, BC, Canada",lat:49.2827,lng:-123.0346,
-   org:"FIFA / City of Vancouver",orgLink:"#",going:50000,featured:true,free:false,price:"From $10 CAD",
+   org:"FIFA / City of Vancouver",going:50000,featured:true,free:false,price:"From $10 CAD",
    ticketLink:"#",age:"All ages",recurring:null,
-   desc:"Official FIFA Fan Festival running June 11–July 19 at Hastings Park. Live World Cup match screenings on 60-foot screens, concerts, interactive experiences, food, and family-friendly entertainment."},
-  {id:25,title:"Vancouver Dragon Boat Festival — Summer Regatta",cat:"Sports",slug:"sports",
-   date:"2026-08-22",time:"8:00 AM",city:"vancouver",
+   desc:"Official FIFA Fan Festival (June 11–July 19). Live World Cup match screenings on 60-foot screens, concerts, interactive experiences, food vendors."},
+  {id:28,title:"Vancouver Dragon Boat Summer Regatta",cat:"Sports",slug:"sports",date:"2026-08-22",time:"8:00 AM",
    loc:"False Creek, Vancouver, BC, Canada",lat:49.2734,lng:-123.1272,
-   org:"Vancouver Dragon Boat Festival",orgLink:"#",going:50000,featured:false,free:true,
+   org:"Vancouver Dragon Boat Festival",going:50000,featured:false,free:true,
    ticketLink:null,age:"All ages",recurring:null,
-   desc:"Special one-day Summer Regatta (modified from the usual 3-day event due to World Cup). Dragon boat races on False Creek. Free to watch from Olympic Village Waterfront and Concord Pacific Place."},
-
-  // ── MORE NJ/NYC ──
-  {id:26,title:"Hop Sauce Festival — Jersey Shore",cat:"Food",slug:"food",
-   date:"2026-06-13",time:"12:00 PM",city:"nj",
-   loc:"Beach Haven, Long Beach Island, NJ 08008",lat:39.5615,lng:-74.2471,
-   org:"Hop Sauce Fest",orgLink:"#",going:1800,featured:false,free:false,price:"$15 GA",
+   desc:"Special one-day Summer Regatta. Free to watch from Olympic Village Waterfront. Dragon boat races on False Creek."},
+  // MORE NJ
+  {id:29,title:"Hop Sauce Festival — Jersey Shore",cat:"Food",slug:"food",date:"2026-06-13",time:"12:00 PM",
+   loc:"Beach Haven, Long Beach Island, NJ",lat:39.5615,lng:-74.2471,
+   org:"Hop Sauce Fest",going:1800,featured:false,free:false,price:"$15 GA",
    ticketLink:"#",age:"All ages",recurring:null,
-   desc:"Annual celebration of hot sauce, craft beer, and bold flavors at the Jersey Shore. Dozens of sauce vendors, competitions, live music, and spicy food challenges."},
-  {id:27,title:"Morris County Pride 2026",cat:"Community",slug:"community",
-   date:"2026-06-27",time:"11:00 AM",city:"nj",
-   loc:"214 Center Grove Rd, Randolph, NJ 07869",lat:40.8415,lng:-74.5729,
-   org:"Morris County Pride",orgLink:"#",going:870,featured:false,free:true,
+   desc:"Hot sauce, craft beer, and bold flavors at the Jersey Shore. Dozens of sauce vendors, competitions, live music, and food challenges."},
+  {id:30,title:"Morris County Pride 2026",cat:"Community",slug:"community",date:"2026-06-27",time:"11:00 AM",
+   loc:"214 Center Grove Rd, Randolph, NJ",lat:40.8415,lng:-74.5729,
+   org:"Morris County Pride",going:870,featured:false,free:true,
    ticketLink:null,age:"All ages",recurring:null,
-   desc:"Family-friendly Pride event with performances, food, crafts, community groups, and special offerings for children, teens, and adults."},
-  {id:28,title:"National Indigenous Peoples Day",cat:"Community",slug:"community",
-   date:"2026-06-21",time:"All Day",city:"all",
-   loc:"Nationwide — cities across USA & Canada",lat:45.4215,lng:-75.6972,
-   org:"Various Organizers",orgLink:"#",going:50000,featured:false,free:true,
-   ticketLink:null,age:"All ages",recurring:null,
-   desc:"Celebrated nationwide with community events, storytelling, traditional dance, drumming, and cultural performances. Check your local community center for events near you."},
+   desc:"Family-friendly Pride event with performances, food, crafts, and community groups."},
 ];
 
 const CATS = [
@@ -611,56 +606,127 @@ const CATS = [
   {name:'Sports',slug:'sports',dot:'#0891B2',emoji:'⚽'},
   {name:'Food & Drink',slug:'food',dot:'#DC2626',emoji:'🍕'},
   {name:'Community',slug:'community',dot:'#EA580C',emoji:'🤝'},
+  {name:'Business',slug:'business',dot:'#1D4ED8',emoji:'💼'},
   {name:'Arts',slug:'arts',dot:'#9333EA',emoji:'🎨'},
 ];
-const EM = {festivals:'🎪','yard-sales':'🛋️',religious:'🕌','open-house':'🏠',markets:'🛒',music:'🎵',sports:'⚽',food:'🍕',community:'🤝',arts:'🎨',default:'🎉'};
+const EM = {festivals:'🎪','yard-sales':'🛋️',religious:'🕌','open-house':'🏠',markets:'🛒',
+            music:'🎵',sports:'⚽',food:'🍕',community:'🤝',business:'💼',arts:'🎨',default:'🎉'};
 const PROMO = {EARLYBIRD:20,WELCOME10:10,COMMUNITY:5,NILE2026:25};
 
-let activeCat='all', freeOnly=false, mapReady=false, leafMap=null;
+let activeCat='all', freeOnly=false, activeDist='any';
+let userLat=null, userLng=null, locationActive=false;
 let savedIds=JSON.parse(localStorage.getItem('ev_saved')||'[]');
 let goingIds=JSON.parse(localStorage.getItem('ev_going')||'[]');
-let sheetEventId=null, isFreePost=true;
+let mapReady=false, leafMap=null, sheetId=null, isFreePost=true;
+
+// ── DISTANCE UTIL ─────────────────────────────────────────────────────
+function haversine(lat1,lng1,lat2,lng2){
+  const R=3958.8, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+function fmtDist(mi){return mi<1?Math.round(mi*5280/528)/10+' mi':Math.round(mi)+' mi'}
+
+// ── LOCATION ──────────────────────────────────────────────────────────
+function requestLocation(){
+  if(!navigator.geolocation){toast('Geolocation not supported','error');return}
+  document.getElementById('loc-text').textContent='Getting your location...';
+  document.getElementById('loc-btn').textContent='Loading...';
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      userLat=pos.coords.latitude; userLng=pos.coords.longitude;
+      locationActive=true;
+      document.getElementById('loc-text').textContent=`Location active — showing nearest events first`;
+      document.getElementById('loc-btn').textContent='✓ Active';
+      document.getElementById('loc-btn').style.borderColor='#16A34A';
+      document.getElementById('loc-btn').style.color='#16A34A';
+      toast('Location enabled! Events sorted by distance 📍');
+      renderList();
+    },
+    ()=>{
+      document.getElementById('loc-text').textContent='Location unavailable. Search for a city in the search bar.';
+      document.getElementById('loc-btn').textContent='Try Again';
+      toast('Could not get location. Try typing a city in the search bar.','error');
+    }
+  );
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────
+function onSearch(){
+  const q=document.getElementById('search-input').value;
+  document.getElementById('search-clear').style.display=q?'block':'none';
+  renderList();
+}
+function clearSearch(){
+  document.getElementById('search-input').value='';
+  document.getElementById('search-clear').style.display='none';
+  renderList();
+}
+function resetFilters(){
+  clearSearch();
+  activeCat='all'; freeOnly=false; activeDist='any';
+  document.querySelectorAll('.cat-pill').forEach((p,i)=>p.classList.toggle('active',i===0));
+  document.querySelectorAll('.filter-pill').forEach((p,i)=>p.classList.toggle('active',i===0));
+  document.getElementById('free-btn').classList.remove('active');
+  renderList();
+}
+
+// ── FILTER + SORT ─────────────────────────────────────────────────────
+function getFiltered(){
+  const q=(document.getElementById('search-input').value||'').toLowerCase().trim();
+  let evs=EVENTS.filter(e=>{
+    if(activeCat!=='all'&&e.slug!==activeCat) return false;
+    if(freeOnly&&!e.free) return false;
+    if(q){
+      const match=[e.title,e.loc,e.org,e.cat,e.desc||'',e.price||'']
+        .some(f=>(f||'').toLowerCase().includes(q));
+      if(!match) return false;
+    }
+    if(locationActive&&activeDist!=='any'&&e.lat&&e.lng){
+      const d=haversine(userLat,userLng,e.lat,e.lng);
+      if(Number(activeDist)<50&&d>Number(activeDist)) return false;
+    }
+    return true;
+  });
+  // Sort: if location active sort by distance, else by date
+  if(locationActive&&userLat&&userLng){
+    evs.sort((a,b)=>{
+      const da=a.lat?haversine(userLat,userLng,a.lat,a.lng):9999;
+      const db=b.lat?haversine(userLat,userLng,b.lat,b.lng):9999;
+      return da-db;
+    });
+  } else {
+    evs.sort((a,b)=>a.date.localeCompare(b.date));
+  }
+  return evs;
+}
 
 // ── COUNTDOWN ─────────────────────────────────────────────────────────
-function countdown(dateStr){
-  if(dateStr==='various'||dateStr.includes('various')) return null;
+function countdown(ds){
+  if(!ds||ds.toLowerCase().includes('all')||ds.toLowerCase().includes('various')) return null;
   const today=new Date(); today.setHours(0,0,0,0);
-  const evDate=new Date(dateStr); evDate.setHours(0,0,0,0);
-  const diff=Math.round((evDate-today)/(1000*60*60*24));
+  const d=new Date(ds); d.setHours(0,0,0,0);
+  const diff=Math.round((d-today)/86400000);
   if(diff<0) return null;
   if(diff===0) return '🔴 TODAY';
   if(diff===1) return '🟡 TOMORROW';
   if(diff<=3) return `🟠 IN ${diff} DAYS`;
-  if(diff<=7) return `THIS WEEK`;
   return null;
 }
 
-// ── DATE GROUP ────────────────────────────────────────────────────────
-function dateGroup(dateStr){
+// ── DATE GROUPING ─────────────────────────────────────────────────────
+function dateGroup(ds){
+  if(!ds) return '📅 UPCOMING';
   const today=new Date(); today.setHours(0,0,0,0);
-  const evDate=new Date(dateStr); evDate.setHours(0,0,0,0);
-  const diff=Math.round((evDate-today)/(1000*60*60*24));
-  if(diff<0) return 'PAST EVENTS';
+  const d=new Date(ds); d.setHours(0,0,0,0);
+  const diff=Math.round((d-today)/86400000);
+  if(diff<0) return 'PAST';
   if(diff===0) return '📅 TODAY';
   if(diff===1) return '📅 TOMORROW';
   if(diff<=7) return '📅 THIS WEEK';
   if(diff<=14) return '📅 NEXT WEEK';
-  const m=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
-  return '📅 '+m[evDate.getMonth()]+' '+evDate.getFullYear();
-}
-
-// ── FILTER ────────────────────────────────────────────────────────────
-function getFiltered(){
-  const q=(document.getElementById('search-input').value||'').toLowerCase();
-  const city=document.getElementById('city-sel').value;
-  return EVENTS.filter(e=>{
-    if(activeCat!=='all' && e.slug!==activeCat) return false;
-    if(freeOnly && !e.free) return false;
-    if(city!=='all' && e.city!==city && e.city!=='all') return false;
-    if(q && !e.title.toLowerCase().includes(q) && !e.loc.toLowerCase().includes(q)
-         && !e.org.toLowerCase().includes(q) && !(e.desc||'').toLowerCase().includes(q)) return false;
-    return true;
-  }).sort((a,b)=>a.date.localeCompare(b.date));
+  const M=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+  return '📅 '+M[d.getMonth()]+' '+d.getFullYear();
 }
 
 // ── RENDER LIST ───────────────────────────────────────────────────────
@@ -668,30 +734,31 @@ function renderList(){
   const evs=getFiltered();
   const el=document.getElementById('event-list');
   if(!evs.length){
-    el.innerHTML=`<div class="empty"><div class="ico">🔍</div><h3>No events found</h3><p>Try a different filter, city, or search term</p></div>`;
+    el.innerHTML=`<div class="empty"><div class="ico">🔍</div><h3>No events found</h3>
+      <p>Try searching for a different city, artist, or category</p></div>`;
     return;
   }
-  let html='', lastGroup='';
+  let html='', lastGrp='', usingDist=locationActive&&userLat;
   evs.forEach(e=>{
-    const grp=dateGroup(e.date);
-    if(grp!==lastGroup){
-      html+=`<div class="date-group-hdr">${grp}</div>`;
-      lastGroup=grp;
+    if(!usingDist){
+      const g=dateGroup(e.date);
+      if(g!==lastGrp&&g!=='PAST'){html+=`<div class="date-hdr">${g}</div>`;lastGrp=g}
     }
-    html+=eventCard(e);
+    html+=card(e);
   });
   el.innerHTML=html;
 }
 
-function eventCard(e){
+function card(e){
   const bm=savedIds.includes(e.id), going=goingIds.includes(e.id);
-  const em=EM[e.slug]||EM.default;
-  const cd=countdown(e.date);
+  const em=EM[e.slug]||EM.default, cd=countdown(e.date);
+  const dist=locationActive&&userLat&&e.lat?fmtDist(haversine(userLat,userLng,e.lat,e.lng)):null;
   return `<div class="event-card" onclick="openSheet(${e.id})">
-    <div class="event-card-header bg-${e.slug}">
+    <div class="ec-header bg-${e.slug}">
       <span class="cat-badge badge-${e.slug}">${e.cat.toUpperCase()}</span>
       ${e.featured?'<span class="featured-badge">★ FEATURED</span>':''}
       ${cd?`<span class="countdown-badge">${cd}</span>`:''}
+      ${dist?`<span class="dist-badge">📍 ${dist}</span>`:''}
       ${em}
       <button class="bm-btn" onclick="toggleSave(event,${e.id})">${bm?'🔖':'🏷️'}</button>
     </div>
@@ -702,8 +769,8 @@ function eventCard(e){
         <span class="ec-org">by ${e.org}</span>
         <div class="ec-right">
           ${e.age&&e.age!=='All ages'?`<span class="age-badge">${e.age}</span>`:''}
-          ${e.recurring?`<span class="recurring-badge">🔄</span>`:''}
-          <span class="ec-going" id="going-cnt-${e.id}">${(e.going+=(going?1:0)).toLocaleString()} going</span>
+          ${e.recurring?`<span class="rec-badge">🔄</span>`:''}
+          <span class="ec-going">${e.going.toLocaleString()} going</span>
           <button class="going-btn ${going?'going':''}" onclick="toggleGoing(event,${e.id})">${going?'✓ Going':'Going'}</button>
         </div>
       </div>
@@ -714,11 +781,11 @@ function eventCard(e){
 function renderSaved(){
   const items=EVENTS.filter(e=>savedIds.includes(e.id));
   document.getElementById('saved-list').innerHTML=items.length
-    ?items.map(eventCard).join('')
-    :`<div class="empty"><div class="ico">🔖</div><h3>No saved events yet</h3><p>Tap 🏷️ on any event to save it</p></div>`;
+    ?items.map(card).join('')
+    :`<div class="empty"><div class="ico">🔖</div><h3>No saved events yet</h3><p>Tap 🏷️ on any event to bookmark it</p></div>`;
 }
 
-// ── CATS ──────────────────────────────────────────────────────────────
+// ── CATS / FILTERS ────────────────────────────────────────────────────
 function renderCats(){
   document.getElementById('cat-strip').innerHTML=CATS.map(c=>
     `<div class="cat-pill ${c.slug===activeCat?'active':''}" onclick="setCat('${c.slug}',this)">
@@ -727,36 +794,44 @@ function renderCats(){
     </div>`).join('');
 }
 function setCat(s,el){activeCat=s;document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderList()}
-function setDist(d,el){document.querySelectorAll('.dist-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active')}
+function setDist(d,el){activeDist=d;document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderList()}
 function setLang(el){document.querySelectorAll('.lang-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active')}
-function toggleFreeOnly(){freeOnly=!freeOnly;document.getElementById('free-toggle').classList.toggle('active',freeOnly);filterAndRender()}
-function filterAndRender(){renderList()}
+function toggleFree(){freeOnly=!freeOnly;document.getElementById('free-btn').classList.toggle('active',freeOnly);renderList()}
 
-// ── VIEWS ─────────────────────────────────────────────────────────────
+// ── VIEW SWITCH ───────────────────────────────────────────────────────
 function switchView(v){
   ['list','map','saved'].forEach(id=>{
     document.getElementById('view-'+id).classList.toggle('active',id===v);
-    const t=document.getElementById('tgl-'+id); if(t) t.classList.toggle('active',id===v);
+    const t=document.getElementById('tgl-'+id);if(t) t.classList.toggle('active',id===v);
   });
-  if(v==='map') initMap();
+  if(v==='map') setTimeout(initMap,50);
   if(v==='saved') renderSaved();
+  window.scrollTo(0,0);
 }
 
 // ── MAP ───────────────────────────────────────────────────────────────
 function initMap(){
+  const container=document.getElementById('leaflet-map');
+  if(!container) return;
   if(!mapReady){
     mapReady=true;
-    leafMap=L.map('leaflet-map',{zoomControl:true}).setView([40.0,-75.0],5);
+    const center=userLat?[userLat,userLng]:[39.5,-98.35];
+    const zoom=userLat?10:4;
+    leafMap=L.map('leaflet-map',{zoomControl:true}).setView(center,zoom);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(leafMap);
-    const mk=L.divIcon({html:`<div style="background:#7C3AED;width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35)"></div>`,iconSize:[22,22],iconAnchor:[11,22],popupAnchor:[0,-28],className:''});
+    const mk=L.divIcon({html:`<div style="background:#7C3AED;width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4)"></div>`,iconSize:[22,22],iconAnchor:[11,22],popupAnchor:[0,-28],className:''});
+    if(userLat){
+      L.circleMarker([userLat,userLng],{color:'#7C3AED',fillColor:'#7C3AED',fillOpacity:.3,radius:8}).addTo(leafMap).bindTooltip('Your location',{permanent:false});
+    }
     EVENTS.filter(e=>e.lat&&e.lng).forEach(e=>{
       L.marker([e.lat,e.lng],{icon:mk}).addTo(leafMap)
-       .bindPopup(`<b style="font-size:13px;color:#111">${e.title}</b><br><span style="font-size:11px;color:#666">${e.date} · ${e.free?'Free':e.price}</span><br><a href="#" style="display:inline-block;margin-top:6px;padding:4px 10px;background:#7C3AED;color:#fff;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none" onclick="closeMapPopup();openSheet(${e.id});return false">View →</a>`,{maxWidth:220});
+       .bindPopup(`<div style="min-width:180px"><b style="font-size:13px;color:#111">${e.title}</b><br>
+         <span style="font-size:11px;color:#666">${e.date} · ${e.free?'Free':e.price||''}</span><br>
+         <button onclick="switchView('list');setTimeout(()=>openSheet(${e.id}),200)" style="margin-top:7px;padding:5px 12px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;width:100%">View Details →</button></div>`,{maxWidth:220});
     });
   }
-  setTimeout(()=>leafMap&&leafMap.invalidateSize(),150);
+  setTimeout(()=>leafMap&&leafMap.invalidateSize(),200);
 }
-function closeMapPopup(){leafMap&&leafMap.closePopup()}
 
 // ── SAVE / GOING ──────────────────────────────────────────────────────
 function toggleSave(evt,id){
@@ -774,47 +849,60 @@ function toggleGoing(evt,id){
   else{goingIds.push(id);toast('You\'re going! ✓')}
   localStorage.setItem('ev_going',JSON.stringify(goingIds));
   renderList();
-  if(sheetEventId===id) updateSheetGoing(id);
+  if(sheetId===id) refreshSheetGoing();
+}
+function sheetGoing(){if(sheetId)toggleGoing({stopPropagation:()=>{}},sheetId)}
+function refreshSheetGoing(){
+  const going=goingIds.includes(sheetId);
+  const btn=document.getElementById('sh-going');
+  btn.textContent=going?'✓ You\'re Going!':'✓ I\'m Going';
+  btn.className='btn-going-sheet'+(going?' going':'');
 }
 
 // ── SHEET ─────────────────────────────────────────────────────────────
 function openSheet(id){
   const e=EVENTS.find(x=>x.id===id); if(!e) return;
-  sheetEventId=id;
-  const hdr=document.getElementById('sh-hdr');
-  hdr.className=`sh-header bg-${e.slug}`;hdr.textContent=EM[e.slug]||EM.default;
+  sheetId=id;
+  document.getElementById('sh-hdr').className=`sh-header bg-${e.slug}`;
+  document.getElementById('sh-hdr').textContent=EM[e.slug]||EM.default;
   document.getElementById('sh-cat').textContent=e.cat.toUpperCase();
   document.getElementById('sh-title').textContent=e.title;
   document.getElementById('sh-date').textContent=`${e.date} at ${e.time}`;
   document.getElementById('sh-loc').textContent=e.loc;
   document.getElementById('sh-org').textContent=`Organized by ${e.org}`;
-  const ageRow=document.getElementById('sh-age-row');
-  if(e.age&&e.age!=='All ages'){ageRow.style.display='flex';document.getElementById('sh-age').textContent=e.age+' only'}else{ageRow.style.display='none'}
-  const recRow=document.getElementById('sh-rec-row');
-  if(e.recurring){recRow.style.display='flex';document.getElementById('sh-rec').textContent=e.recurring}else{recRow.style.display='none'}
+  // Distance
+  const dr=document.getElementById('sh-dist-row');
+  if(locationActive&&userLat&&e.lat){
+    dr.style.display='flex';
+    document.getElementById('sh-dist').textContent=fmtDist(haversine(userLat,userLng,e.lat,e.lng))+' from your location';
+  } else dr.style.display='none';
+  // Age
+  const ar=document.getElementById('sh-age-row');
+  if(e.age&&e.age!=='All ages'){ar.style.display='flex';document.getElementById('sh-age').textContent=e.age+' only'}
+  else ar.style.display='none';
+  // Recurring
+  const rr=document.getElementById('sh-rec-row');
+  if(e.recurring){rr.style.display='flex';document.getElementById('sh-rec').textContent=e.recurring}
+  else rr.style.display='none';
+  // Price
   const p=document.getElementById('sh-price');
-  p.textContent=e.free?'FREE — No tickets needed':e.price;
+  p.textContent=e.free?'FREE — No tickets needed':e.price||'Paid event';
   p.className='sh-price '+(e.free?'price-free':'price-paid');
-  const tl=document.getElementById('sh-ticket-link');
-  if(e.ticketLink){tl.style.display='block';tl.href=e.ticketLink}else{tl.style.display='none'}
+  // Ticket link
+  const tl=document.getElementById('sh-ticket');
+  if(e.ticketLink&&e.ticketLink!=='#'){tl.style.display='block';tl.href=e.ticketLink}else tl.style.display='none';
   document.getElementById('sh-desc').textContent=e.desc||'';
-  updateSheetGoing(id);
-  const wa=encodeURIComponent(`${e.title}\n${e.date} at ${e.time}\n${e.loc}\nvia evently`);
+  refreshSheetGoing();
+  // WhatsApp
+  const wa=encodeURIComponent(`${e.title}\n📅 ${e.date} at ${e.time}\n📍 ${e.loc}\n\nvia evently`);
   document.getElementById('sh-wa').onclick=()=>window.open(`https://wa.me/?text=${wa}`,'_blank');
   document.getElementById('sh-share').onclick=()=>{
     if(navigator.share) navigator.share({title:e.title,text:`${e.date} — ${e.loc}`});
-    else{navigator.clipboard?.writeText(`${e.title}\n${e.loc}`);toast('Copied!','info')}
+    else{navigator.clipboard?.writeText(`${e.title}\n${e.date}\n${e.loc}`);toast('Copied!','info')}
   };
   document.getElementById('sheet').classList.add('open');
 }
-function updateSheetGoing(id){
-  const going=goingIds.includes(id);
-  const btn=document.getElementById('sh-going-btn');
-  btn.textContent=going?'✓ You\'re Going!':'✓ I\'m Going';
-  btn.className='btn-going-sheet'+(going?' going':'');
-}
-function sheetToggleGoing(){if(sheetEventId) toggleGoing({stopPropagation:()=>{}},sheetEventId)}
-function closeSheet(){document.getElementById('sheet').classList.remove('open');sheetEventId=null}
+function closeSheet(){document.getElementById('sheet').classList.remove('open');sheetId=null}
 
 // ── NOTIF ─────────────────────────────────────────────────────────────
 function openNotifSub(){dismissNotif();document.getElementById('notif-modal').classList.add('open')}
@@ -822,19 +910,18 @@ function closeNotifSub(){document.getElementById('notif-modal').classList.remove
 function dismissNotif(){document.getElementById('notif-banner').style.display='none';localStorage.setItem('ev_notif','1')}
 async function requestPush(){
   if(!('Notification' in window)){toast('Push not supported on this browser','error');return}
-  const p=await Notification.requestPermission();
-  if(p==='granted'){
+  const r=await Notification.requestPermission();
+  if(r==='granted'){
     toast('Push notifications enabled! 🔔');
+    document.getElementById('push-btn').style.cssText='background:#F0FDF4;color:#16A34A;border-color:#16A34A';
     document.getElementById('push-btn').textContent='✓ Push notifications enabled';
-    document.getElementById('push-btn').style.background='#F0FDF4';
-    document.getElementById('push-btn').style.color='#16A34A';
     new Notification('Evently',{body:"You'll get alerts when new events are posted near you.",icon:'/icons/apple-touch-icon.png'});
-  }else toast('To enable push, allow notifications in browser settings','info');
+  } else toast('Allow notifications in browser settings to enable push','info');
 }
 function subscribeEmail(){
   const email=document.getElementById('nsub-email').value.trim();
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast('Please enter a valid email','error');return}
-  const cats=Array.from(document.querySelectorAll('.nsub-cat.on')).map(el=>el.textContent.trim()).join(', ');
+  const cats=Array.from(document.querySelectorAll('.nsub-cat.on')).map(e=>e.textContent.trim()).join(', ');
   localStorage.setItem('ev_sub',JSON.stringify({email,cats,date:new Date().toISOString()}));
   localStorage.setItem('ev_notif','1');
   toast(`Subscribed! Alerts for: ${cats||'all events'}`);
@@ -845,36 +932,49 @@ function subscribeEmail(){
 function openPost(){document.getElementById('post-modal').classList.add('open')}
 function closePost(){document.getElementById('post-modal').classList.remove('open')}
 function selectPlan(el){document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected')}
-function setFree(free){
+function setFreePost(free){
   isFreePost=free;
-  document.getElementById('opt-free').className='price-opt'+(free?' sel-free':'');
-  document.getElementById('opt-paid').className='price-opt'+(!free?' sel-paid':'');
+  document.getElementById('opt-free').className='price-opt'+(free?' free':'');
+  document.getElementById('opt-paid').className='price-opt'+(!free?' paid':'');
   document.getElementById('price-wrap').style.display=free?'none':'block';
 }
 function submitPost(){
-  const title=document.getElementById('f-title').value.trim();
-  const email=document.getElementById('f-email').value.trim();
-  const org=document.getElementById('f-org').value.trim();
-  const loc=document.getElementById('f-loc-post').value.trim();
-  if(!title||!email||!org||!loc){toast('Please fill in all required fields','error');return}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast('Enter a valid email address','error');return}
-  const promo=document.getElementById('f-promo').value.trim().toUpperCase();
+  const v=id=>document.getElementById(id).value.trim();
+  if(!v('f-title')||!v('f-email')||!v('f-org')||!v('f-loc-post')){toast('Please fill in all required fields','error');return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('f-email'))){toast('Enter a valid email','error');return}
+  const promo=v('f-promo').toUpperCase();
   if(promo&&!PROMO[promo]){toast('Invalid promo code','error');return}
   if(promo&&PROMO[promo]) toast(`Promo applied — ${PROMO[promo]}% off! 🎉`);
-  else toast(`Event submitted! Confirmation sent to ${email}`);
+  else toast(`Event submitted! Confirmation sent to ${v('f-email')}`);
   closePost();
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────────
 function toast(msg,type=''){
   const el=document.getElementById('toast');
-  el.textContent=msg;el.className='toast show'+(type?' '+type:'');
-  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),3500);
+  el.textContent=msg; el.className='toast show'+(type?' '+type:'');
+  clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),3500);
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
-renderCats();renderList();
-setTimeout(()=>{if(!localStorage.getItem('ev_notif')) document.getElementById('notif-banner').style.display='flex'},6000);
+renderCats();
+renderList();
+// Auto-request location silently after 1 second
+setTimeout(()=>{
+  if(!localStorage.getItem('ev_loc_denied')&&navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      pos=>{
+        userLat=pos.coords.latitude; userLng=pos.coords.longitude; locationActive=true;
+        document.getElementById('loc-text').textContent='Location active — showing nearest events first';
+        document.getElementById('loc-btn').textContent='✓ Active';
+        document.getElementById('loc-btn').style.cssText='border-color:#16A34A;color:#16A34A';
+        renderList();
+      },
+      ()=>{ localStorage.setItem('ev_loc_denied','1'); }
+    );
+  }
+},1000);
+setTimeout(()=>{if(!localStorage.getItem('ev_notif')) document.getElementById('notif-banner').style.display='flex'},7000);
 </script>
 </body>
 </html>
