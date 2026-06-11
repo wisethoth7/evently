@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Evently Flyer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f0f0f0;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;font-family:'Inter',-apple-system,sans-serif}
+
+/* FLYER CARD — 1080x1080 ratio */
+.flyer{
+  width:540px;background:#fff;border-radius:20px;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.18);position:relative;
+}
+
+/* Rainbow stripe */
+.stripe{height:6px;background:linear-gradient(90deg,#FF6B6B,#FFB347,#4ADE80,#60A5FA,#A78BFA,#F472B6)}
+
+/* Header */
+.header{padding:28px 32px 0;display:flex;align-items:center;justify-content:space-between}
+.logo-block{}
+.logo{font-size:36px;font-weight:900;color:#16a34a;font-style:italic;letter-spacing:-1.5px;line-height:1}
+.tagline{font-size:12px;font-weight:600;color:#9CA3AF;letter-spacing:.5px;margin-top:3px}
+.app-label{background:#F5F3FF;border:1.5px solid #DDD6FE;border-radius:20px;padding:6px 14px;font-size:11px;font-weight:700;color:#7C3AED;letter-spacing:.5px}
+
+/* Hero section */
+.hero{padding:24px 32px 0}
+.hero-headline{font-size:32px;font-weight:900;color:#111827;line-height:1.15;letter-spacing:-1px;margin-bottom:10px}
+.hero-headline .green{color:#16a34a}
+.hero-headline .purple{color:#7C3AED}
+.hero-sub{font-size:14px;color:#6B7280;line-height:1.6;margin-bottom:20px}
+
+/* Category chips */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px}
+.chip{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
+
+/* Features */
+.features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.feat{background:#F9FAFB;border:1px solid #F3F4F6;border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px}
+.feat-icon{font-size:20px;flex-shrink:0;line-height:1}
+.feat-title{font-size:12px;font-weight:700;color:#111827;margin-bottom:2px}
+.feat-body{font-size:11px;color:#6B7280;line-height:1.4}
+
+/* Divider */
+.divider{height:1px;background:#F3F4F6;margin:0 32px}
+
+/* Bottom: QR + CTA */
+.bottom{padding:20px 32px 28px;display:flex;align-items:center;gap:24px}
+.qr-block{flex-shrink:0;text-align:center}
+.qr-wrap{width:120px;height:120px;border:2px solid #E5E7EB;border-radius:12px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;padding:6px}
+.qr-wrap img{width:100%;height:100%;display:block}
+.qr-label{font-size:10px;font-weight:600;color:#9CA3AF;margin-top:6px;letter-spacing:.5px}
+.cta-block{flex:1}
+.cta-headline{font-size:18px;font-weight:800;color:#111827;margin-bottom:6px;line-height:1.2}
+.url{display:inline-flex;align-items:center;gap:6px;background:#F5F3FF;border:1.5px solid #DDD6FE;border-radius:10px;padding:7px 12px;margin-bottom:12px}
+.url-text{font-size:13px;font-weight:700;color:#7C3AED}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{padding:5px 10px;border-radius:8px;font-size:10px;font-weight:700}
+.badge.green{background:#F0FDF4;color:#16A34A}
+.badge.purple{background:#F5F3FF;color:#7C3AED}
+.badge.blue{background:#EFF6FF;color:#1D4ED8}
+
+/* Bottom strip */
+.footer-strip{background:#111827;padding:12px 32px;display:flex;align-items:center;justify-content:space-between}
+.footer-strip .left{font-size:11px;color:#9CA3AF}
+.footer-strip .left strong{color:#fff}
+.footer-strip .right{display:flex;gap:6px}
+.platform-badge{background:#374151;border-radius:6px;padding:4px 8px;font-size:10px;font-weight:600;color:#D1D5DB}
+</style>
+</head>
+<body>
+
+<div class="flyer">
+  <div class="stripe"></div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-block">
+      <div class="logo">evently</div>
+      <div class="tagline">LOCAL EVENTS NEAR YOU</div>
+    </div>
+    <div class="app-label">FREE APP</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-headline">
+      Discover <span class="green">FREE</span> events<br>
+      happening <span class="purple">near you</span> —<br>
+      right now.
+    </div>
+    <div class="hero-sub">
+      World Cup watch parties · Farmers markets · Live music · Business networking · Community events · Festivals — all in one free app.
+    </div>
+
+    <!-- Category chips matching original app style -->
+    <div class="chips">
+      <div class="chip" style="background:#EDE9FE;color:#7C3AED">🎪 Festivals</div>
+      <div class="chip" style="background:#FCE7F3;color:#DB2777">🎵 Music</div>
+      <div class="chip" style="background:#CFFAFE;color:#0891B2">⚽ Sports</div>
+      <div class="chip" style="background:#FEE2E2;color:#EA580C">🤝 Community</div>
+      <div class="chip" style="background:#EFF6FF;color:#1D4ED8">💼 Business</div>
+      <div class="chip" style="background:#FEF3C7;color:#D97706">🛒 Markets</div>
+      <div class="chip" style="background:#FFE4E6;color:#DC2626">🍕 Food</div>
+      <div class="chip" style="background:#FEF9C3;color:#CA8A04">🛋️ Yard Sales</div>
+    </div>
+
+    <!-- Features -->
+    <div class="features">
+      <div class="feat">
+        <div class="feat-icon">📍</div>
+        <div>
+          <div class="feat-title">Near You First</div>
+          <div class="feat-body">GPS sorting shows closest events at the top</div>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🗺</div>
+        <div>
+          <div class="feat-title">Map View</div>
+          <div class="feat-body">See all events on an interactive map</div>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🔖</div>
+        <div>
+          <div class="feat-title">Save & RSVP</div>
+          <div class="feat-body">Bookmark events and mark yourself as Going</div>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🌍</div>
+        <div>
+          <div class="feat-title">8 Languages</div>
+          <div class="feat-body">EN · عربي · ES · FR · PT · DE · 中文 · RU</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- BOTTOM: QR + CTA -->
+  <div class="bottom">
+    <div class="qr-block">
+      <div class="qr-wrap">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://evently2.netlify.app&color=000000&bgcolor=ffffff&margin=0" alt="QR Code">
+      </div>
+      <div class="qr-label">SCAN TO OPEN</div>
+    </div>
+    <div class="cta-block">
+      <div class="cta-headline">Open the app — it's free, always.</div>
+      <div class="url">
+        <span style="font-size:14px">🌐</span>
+        <span class="url-text">evently2.netlify.app</span>
+      </div>
+      <div class="badges">
+        <span class="badge green">✓ No account needed</span>
+        <span class="badge purple">✓ Free to post events</span>
+        <span class="badge blue">✓ USA & Canada</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER STRIP -->
+  <div class="footer-strip">
+    <div class="left">A <strong>Nile Dreams Digital</strong> product · 2026</div>
+    <div class="right">
+      <div class="platform-badge">Works on iPhone</div>
+      <div class="platform-badge">Works on Android</div>
+      <div class="platform-badge">Works on Desktop</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
