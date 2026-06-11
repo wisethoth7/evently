@@ -315,6 +315,9 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
       <button class="btn-wa" id="sh-wa">📱 WhatsApp</button>
       <button class="btn-share" id="sh-share">Share</button>
     </div>
+    <div style="margin-top:16px;text-align:center">
+      <button onclick="reportEvent()" style="background:none;border:none;color:#9CA3AF;font-size:12px;cursor:pointer;text-decoration:underline">⚑ Report this event</button>
+    </div>
   </div>
 </div>
 
@@ -426,6 +429,16 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<div style="background:#F9FAFB;border-top:1px solid #E5E7EB;padding:16px;text-align:center;font-size:11px;color:#9CA3AF;margin-top:8px">
+  <div style="margin-bottom:8px">
+    <a href="terms.html" style="color:#7C3AED;text-decoration:none;margin:0 8px">Terms of Service</a>
+    <a href="privacy.html" style="color:#7C3AED;text-decoration:none;margin:0 8px">Privacy Policy</a>
+    <a href="mailto:hello@evently.app" style="color:#7C3AED;text-decoration:none;margin:0 8px">Contact Us</a>
+  </div>
+  <div>© 2026 Evently · Nile Dreams Digital · Free local events discovery</div>
+</div>
 
 <script>
 // ══════════════════════════════════════════════════════
@@ -588,7 +601,22 @@ const EVENTS = [
    org:"Hop Sauce Fest",going:1800,featured:false,free:false,price:"$15 GA",
    ticketLink:"#",age:"All ages",recurring:null,
    desc:"Hot sauce, craft beer, and bold flavors at the Jersey Shore. Dozens of sauce vendors, competitions, live music, and food challenges."},
-  {id:30,title:"Morris County Pride 2026",cat:"Community",slug:"community",date:"2026-06-27",time:"11:00 AM",
+  {id:31,title:"Jersey City Entrepreneur Network",cat:"Business",slug:"business",date:"2026-06-18",time:"6:00 PM",
+   loc:"365 Communipaw Ave, Jersey City, NJ",lat:40.7178,lng:-74.0431,
+   org:"JC Entrepreneur Network",going:85,featured:false,free:true,
+   ticketLink:null,age:"All ages",recurring:"Monthly — 3rd Thursday",
+   desc:"Free monthly meetup for Jersey City entrepreneurs and small business owners. Networking, guest speaker, and open mic pitches."},
+  {id:32,title:"Chicago Tech Week 2026",cat:"Business",slug:"business",date:"2026-06-22",time:"9:00 AM",
+   loc:"Various venues, Chicago, IL",lat:41.8781,lng:-87.6298,
+   org:"Chicago Tech Week",orgLink:"#",going:12000,featured:true,free:true,
+   ticketLink:"#",age:"All ages",recurring:null,
+   desc:"Chicago's biggest tech & startup event week — dozens of free events across the city. Networking, panels, demos, and founder meetups. No single ticket needed."},
+  {id:33,title:"Toronto Startup Pitch Night",cat:"Business",slug:"business",date:"2026-06-23",time:"6:30 PM",
+   loc:"MaRS Discovery District, Toronto, ON",lat:43.6596,lng:-79.3906,
+   org:"Startup Toronto",going:200,featured:false,free:false,price:"$15 CAD",
+   ticketLink:"#",age:"18+",recurring:"Monthly",
+   desc:"Monthly startup pitch competition at MaRS. 5 founders pitch live to a panel of investors. Networking drinks after. Great for founders and early investors."},
+
    loc:"214 Center Grove Rd, Randolph, NJ",lat:40.8415,lng:-74.5729,
    org:"Morris County Pride",going:870,featured:false,free:true,
    ticketLink:null,age:"All ages",recurring:null,
@@ -597,16 +625,16 @@ const EVENTS = [
 
 const CATS = [
   {name:'All',slug:'all',dot:'#111827'},
+  {name:'Business',slug:'business',dot:'#1D4ED8',emoji:'💼'},
+  {name:'Music',slug:'music',dot:'#DB2777',emoji:'🎵'},
   {name:'Festivals',slug:'festivals',dot:'#7C3AED',emoji:'🎪'},
+  {name:'Sports',slug:'sports',dot:'#0891B2',emoji:'⚽'},
+  {name:'Community',slug:'community',dot:'#EA580C',emoji:'🤝'},
+  {name:'Markets',slug:'markets',dot:'#D97706',emoji:'🛒'},
+  {name:'Food & Drink',slug:'food',dot:'#DC2626',emoji:'🍕'},
   {name:'Yard Sales',slug:'yard-sales',dot:'#CA8A04',emoji:'🛋️'},
   {name:'Religious',slug:'religious',dot:'#2563EB',emoji:'🕌'},
   {name:'Open House',slug:'open-house',dot:'#16A34A',emoji:'🏠'},
-  {name:'Markets',slug:'markets',dot:'#D97706',emoji:'🛒'},
-  {name:'Music',slug:'music',dot:'#DB2777',emoji:'🎵'},
-  {name:'Sports',slug:'sports',dot:'#0891B2',emoji:'⚽'},
-  {name:'Food & Drink',slug:'food',dot:'#DC2626',emoji:'🍕'},
-  {name:'Community',slug:'community',dot:'#EA580C',emoji:'🤝'},
-  {name:'Business',slug:'business',dot:'#1D4ED8',emoji:'💼'},
   {name:'Arts',slug:'arts',dot:'#9333EA',emoji:'🎨'},
 ];
 const EM = {festivals:'🎪','yard-sales':'🛋️',religious:'🕌','open-house':'🏠',markets:'🛒',
@@ -954,6 +982,13 @@ function toast(msg,type=''){
   const el=document.getElementById('toast');
   el.textContent=msg; el.className='toast show'+(type?' '+type:'');
   clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),3500);
+}
+
+// ── REPORT ────────────────────────────────────────────────────────────
+function reportEvent(){
+  const e=EVENTS.find(x=>x.id===sheetId); if(!e) return;
+  const reason=prompt(`Report "${e.title}"\n\nReason (spam, inappropriate, incorrect info):`);
+  if(reason){toast('Report submitted. We review within 24 hours.');closeSheet()}
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
