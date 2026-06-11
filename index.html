@@ -10,382 +10,301 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 14px; }
-  body {
-    background: #FFFFFF;
-    color: #111827;
-    font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-    min-height: 100vh;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #fff;
+  color: #111827;
+  font-family: -apple-system,'SF Pro Text','Helvetica Neue',Arial,sans-serif;
+  min-height: 100vh;
+}
+body::before {
+  content:''; position:fixed; top:0; left:0; right:0; height:4px; z-index:999;
+  background:linear-gradient(90deg,#FF6B6B,#FFB347,#4ADE80,#60A5FA,#A78BFA,#F472B6);
+}
 
-  /* ── TOP GRADIENT BORDER ── */
-  body::before {
-    content: '';
-    position: fixed; top: 0; left: 0; right: 0; height: 4px; z-index: 200;
-    background: linear-gradient(90deg, #FF6B6B, #FFB347, #4ADE80, #60A5FA, #A78BFA, #F472B6);
-  }
+/* ── HEADER ── */
+header {
+  position:sticky; top:4px; z-index:100;
+  background:#F9FAFB; border-bottom:1px solid #E5E7EB;
+  padding:10px 16px; display:flex; align-items:center; gap:10px;
+}
+.logo { font-size:22px; font-weight:800; color:#16a34a; flex-shrink:0; font-style:italic; letter-spacing:-.5px; }
+.location-bar {
+  flex:1; display:flex; align-items:center; gap:6px;
+  background:#fff; border:1px solid #D1D5DB; border-radius:24px;
+  padding:7px 14px; font-size:13px; color:#6B7280; cursor:pointer;
+}
+.icon-btn {
+  width:36px; height:36px; border-radius:50%; display:flex; align-items:center;
+  justify-content:center; cursor:pointer; flex-shrink:0; font-size:15px;
+  transition:background .15s; border:none;
+}
+.icon-btn.gray { background:#F3F4F6; border:1px solid #E5E7EB; }
+.icon-btn.gray:hover { background:#E5E7EB; }
+.icon-btn.purple { background:#7C3AED; color:#fff; font-weight:700; }
+.post-btn {
+  padding:8px 16px; background:#7C3AED; color:#fff; border:none; border-radius:20px;
+  font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; flex-shrink:0;
+}
+.post-btn:hover { background:#6D28D9; }
 
-  /* ── HEADER ── */
-  header {
-    position: sticky; top: 4px; z-index: 100;
-    background: #F9FAFB;
-    border-bottom: 1px solid #E5E7EB;
-    padding: 10px 16px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .logo {
-    font-size: 22px; font-weight: 800;
-    color: #16a34a; flex-shrink: 0;
-    letter-spacing: -0.5px;
-    font-style: italic;
-  }
-  .location-bar {
-    flex: 1; display: flex; align-items: center; gap: 6px;
-    background: #FFFFFF; border: 1px solid #D1D5DB;
-    border-radius: 24px; padding: 7px 14px;
-    font-size: 13px; color: #6B7280; cursor: pointer;
-    transition: border-color .2s;
-  }
-  .location-bar:hover { border-color: #9CA3AF; }
-  .search-btn {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: #F3F4F6; border: 1px solid #E5E7EB;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 15px; flex-shrink: 0;
-    transition: background .15s;
-  }
-  .search-btn:hover { background: #E5E7EB; }
-  .help-btn {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: #7C3AED; color: white; border: none;
-    font-size: 15px; font-weight: 700; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .post-btn {
-    padding: 8px 16px; background: #7C3AED; color: white;
-    border: none; border-radius: 20px; font-size: 13px; font-weight: 700;
-    cursor: pointer; white-space: nowrap; flex-shrink: 0;
-    transition: background .15s;
-  }
-  .post-btn:hover { background: #6D28D9; }
+/* ── STRIPS ── */
+.strip {
+  background:#F9FAFB; border-bottom:1px solid #E5E7EB;
+  padding:8px 16px; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none;
+}
+.strip::-webkit-scrollbar { display:none; }
+.strip.white { background:#fff; border-bottom:1px solid #F3F4F6; }
 
-  /* ── LANGUAGE STRIP ── */
-  .lang-strip {
-    background: #F9FAFB; border-bottom: 1px solid #E5E7EB;
-    padding: 8px 16px; display: flex; gap: 6px;
-    overflow-x: auto; scrollbar-width: none;
-  }
-  .lang-strip::-webkit-scrollbar { display: none; }
-  .lang-pill {
-    display: flex; align-items: center; gap: 5px;
-    padding: 5px 10px; border-radius: 16px; font-size: 12px; font-weight: 600;
-    cursor: pointer; white-space: nowrap; flex-shrink: 0;
-    background: #FFFFFF; border: 1px solid #E5E7EB; color: #374151;
-    transition: all .15s;
-  }
-  .lang-pill.active { background: #111827; color: #FFFFFF; border-color: #111827; }
+.lang-pill {
+  display:flex; align-items:center; gap:5px; padding:5px 10px; border-radius:16px;
+  font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; flex-shrink:0;
+  background:#fff; border:1px solid #E5E7EB; color:#374151; transition:all .15s;
+}
+.lang-pill.active { background:#111827; color:#fff; border-color:#111827; }
 
-  /* ── CATEGORY FILTERS ── */
-  .cat-strip {
-    background: #FFFFFF; border-bottom: 1px solid #F3F4F6;
-    padding: 10px 16px; display: flex; gap: 8px;
-    overflow-x: auto; scrollbar-width: none;
-  }
-  .cat-strip::-webkit-scrollbar { display: none; }
-  .cat-pill {
-    display: flex; align-items: center; gap: 5px;
-    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
-    cursor: pointer; white-space: nowrap; flex-shrink: 0;
-    background: #FFFFFF; border: 1px solid #D1D5DB; color: #374151;
-    transition: all .15s;
-  }
-  .cat-pill.active { background: #111827; color: #FFFFFF; border-color: #111827; }
-  .cat-dot { width: 7px; height: 7px; border-radius: 50%; }
+.cat-pill {
+  display:flex; align-items:center; gap:5px; padding:6px 14px; border-radius:20px;
+  font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; flex-shrink:0;
+  background:#fff; border:1px solid #D1D5DB; color:#374151; transition:all .15s;
+}
+.cat-pill.active { background:#111827; color:#fff; border-color:#111827; }
+.cat-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
 
-  /* ── DISTANCE STRIP ── */
-  .dist-strip {
-    background: #FFFFFF; border-bottom: 1px solid #F3F4F6;
-    padding: 8px 16px; display: flex; align-items: center; gap: 8px;
-    overflow-x: auto; scrollbar-width: none;
-  }
-  .dist-strip::-webkit-scrollbar { display: none; }
-  .dist-label { font-size: 11px; font-weight: 700; color: #6B7280; letter-spacing: .5px; white-space: nowrap; flex-shrink: 0; }
-  .dist-pill {
-    padding: 5px 12px; border-radius: 16px; font-size: 12px; font-weight: 600;
-    cursor: pointer; white-space: nowrap; flex-shrink: 0;
-    background: #FFFFFF; border: 1px solid #D1D5DB; color: #374151; transition: all .15s;
-  }
-  .dist-pill.active { background: #111827; color: #FFFFFF; border-color: #111827; }
+.dist-label { font-size:11px; font-weight:700; color:#6B7280; letter-spacing:.5px; white-space:nowrap; flex-shrink:0; }
+.dist-pill {
+  padding:5px 12px; border-radius:16px; font-size:12px; font-weight:600;
+  cursor:pointer; white-space:nowrap; flex-shrink:0;
+  background:#fff; border:1px solid #D1D5DB; color:#374151; transition:all .15s;
+}
+.dist-pill.active { background:#111827; color:#fff; border-color:#111827; }
 
-  /* ── VIEW TOGGLE ── */
-  .view-toggle {
-    display: flex; gap: 4px; padding: 8px 16px;
-    justify-content: flex-end; background: #FFFFFF;
-    border-bottom: 1px solid #F3F4F6;
-  }
-  .toggle-btn {
-    width: 34px; height: 34px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    border: 1px solid #E5E7EB; background: #FFFFFF;
-    cursor: pointer; font-size: 16px; transition: all .15s;
-  }
-  .toggle-btn.active { background: #111827; color: white; border-color: #111827; }
+/* ── VIEW TOGGLE ── */
+.view-toggle {
+  display:flex; gap:4px; padding:8px 16px; justify-content:flex-end;
+  background:#fff; border-bottom:1px solid #F3F4F6;
+}
+.toggle-btn {
+  width:34px; height:34px; border-radius:8px; display:flex; align-items:center;
+  justify-content:center; border:1px solid #E5E7EB; background:#fff;
+  cursor:pointer; font-size:16px; transition:all .15s;
+}
+.toggle-btn.active { background:#111827; color:#fff; border-color:#111827; }
 
-  /* ── MAIN AREA ── */
-  .main { position: relative; }
-  .view { display: none; }
-  .view.active { display: block; }
-  #map-view { height: calc(100vh - 230px); }
-  #leaflet-map { width: 100%; height: 100%; }
+/* ── VIEWS ── */
+.main { position:relative; }
+.view { display:none; }
+.view.active { display:block; }
+#view-map { height:calc(100vh - 240px); min-height:300px; }
+#leaflet-map { width:100%; height:100%; }
 
-  /* ── EVENT LIST ── */
-  .event-list { padding: 12px 16px 80px; }
+/* ── EVENT LIST ── */
+.event-list { padding:12px 16px 90px; }
 
-  /* ── EVENT CARD ── */
-  .event-card {
-    border: 2px solid #F59E0B;
-    border-radius: 14px; margin-bottom: 12px;
-    overflow: hidden; cursor: pointer;
-    transition: box-shadow .2s, transform .15s;
-    background: #FFFFFF;
-  }
-  .event-card:hover {
-    box-shadow: 0 4px 16px rgba(245,158,11,.2);
-    transform: translateY(-1px);
-  }
-  .event-card-header {
-    height: 120px; position: relative;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 52px;
-  }
-  .cat-badge {
-    position: absolute; top: 10px; left: 10px;
-    padding: 4px 10px; border-radius: 12px;
-    font-size: 10px; font-weight: 800; letter-spacing: .5px;
-    color: white; text-transform: uppercase;
-  }
-  .featured-badge {
-    position: absolute; top: 10px; right: 10px;
-    background: #F59E0B; color: white;
-    padding: 4px 10px; border-radius: 12px;
-    font-size: 10px; font-weight: 800;
-  }
-  .bookmark-btn {
-    position: absolute; bottom: 8px; right: 10px;
-    background: rgba(255,255,255,.9); border: none;
-    font-size: 16px; cursor: pointer; border-radius: 50%;
-    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
-    transition: transform .2s;
-  }
-  .bookmark-btn:hover { transform: scale(1.2); }
-  .event-card-body { padding: 12px 14px 14px; }
-  .ec-title { font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 4px; }
-  .ec-meta { font-size: 12px; color: #6B7280; line-height: 1.5; margin-bottom: 8px; }
-  .ec-footer { display: flex; justify-content: space-between; align-items: center; }
-  .ec-org { font-size: 12px; color: #7C3AED; font-weight: 500; }
-  .ec-going { font-size: 12px; color: #7C3AED; font-weight: 600; }
+/* ── EVENT CARD ── */
+.event-card {
+  border:2px solid #F59E0B; border-radius:14px; margin-bottom:12px;
+  overflow:hidden; cursor:pointer; transition:box-shadow .2s, transform .15s; background:#fff;
+}
+.event-card:hover { box-shadow:0 4px 16px rgba(245,158,11,.2); transform:translateY(-1px); }
+.event-card-header {
+  height:120px; position:relative; display:flex; align-items:center;
+  justify-content:center; font-size:52px; user-select:none;
+}
+.cat-badge {
+  position:absolute; top:10px; left:10px; padding:4px 10px; border-radius:12px;
+  font-size:10px; font-weight:800; letter-spacing:.5px; color:#fff; text-transform:uppercase;
+}
+.featured-badge {
+  position:absolute; top:10px; right:10px; background:#F59E0B; color:#fff;
+  padding:4px 10px; border-radius:12px; font-size:10px; font-weight:800;
+}
+.bm-btn {
+  position:absolute; bottom:8px; right:10px; background:rgba(255,255,255,.92);
+  border:none; font-size:16px; cursor:pointer; border-radius:50%;
+  width:28px; height:28px; display:flex; align-items:center; justify-content:center;
+  transition:transform .2s; z-index:2;
+}
+.bm-btn:hover { transform:scale(1.2); }
+.event-card-body { padding:12px 14px 14px; }
+.ec-title { font-size:15px; font-weight:700; color:#111827; margin-bottom:4px; }
+.ec-meta { font-size:12px; color:#6B7280; line-height:1.55; margin-bottom:8px; }
+.ec-footer { display:flex; justify-content:space-between; align-items:center; }
+.ec-org { font-size:12px; color:#7C3AED; }
+.ec-going { font-size:12px; color:#7C3AED; font-weight:600; }
 
-  /* Category colors */
-  .cat-festivals    { background-color: #EDE9FE; }
-  .cat-yard-sales   { background-color: #FEF9C3; }
-  .cat-religious    { background-color: #DBEAFE; }
-  .cat-open-house   { background-color: #DCFCE7; }
-  .cat-markets      { background-color: #FEF3C7; }
-  .cat-music        { background-color: #FCE7F3; }
-  .cat-sports       { background-color: #CFFAFE; }
-  .cat-food         { background-color: #FFE4E6; }
-  .cat-community    { background-color: #FEE2E2; }
-  .cat-arts         { background-color: #F3E8FF; }
-  .cat-sales        { background-color: #ECFDF5; }
-  .cat-default      { background-color: #F3F4F6; }
+/* Category header colors */
+.bg-festivals   { background:#EDE9FE; }
+.bg-yard-sales  { background:#FEF9C3; }
+.bg-religious   { background:#DBEAFE; }
+.bg-open-house  { background:#DCFCE7; }
+.bg-markets     { background:#FEF3C7; }
+.bg-music       { background:#FCE7F3; }
+.bg-sports      { background:#CFFAFE; }
+.bg-food        { background:#FFE4E6; }
+.bg-community   { background:#FEE2E2; }
+.bg-arts        { background:#F3E8FF; }
+.bg-sales       { background:#ECFDF5; }
+.bg-default     { background:#F3F4F6; }
 
-  .badge-festivals  { background: #7C3AED; }
-  .badge-yard-sales { background: #CA8A04; }
-  .badge-religious  { background: #2563EB; }
-  .badge-open-house { background: #16A34A; }
-  .badge-markets    { background: #D97706; }
-  .badge-music      { background: #DB2777; }
-  .badge-sports     { background: #0891B2; }
-  .badge-food       { background: #DC2626; }
-  .badge-community  { background: #EA580C; }
-  .badge-arts       { background: #9333EA; }
-  .badge-sales      { background: #059669; }
-  .badge-default    { background: #6B7280; }
+.badge-festivals  { background:#7C3AED; }
+.badge-yard-sales { background:#CA8A04; }
+.badge-religious  { background:#2563EB; }
+.badge-open-house { background:#16A34A; }
+.badge-markets    { background:#D97706; }
+.badge-music      { background:#DB2777; }
+.badge-sports     { background:#0891B2; }
+.badge-food       { background:#DC2626; }
+.badge-community  { background:#EA580C; }
+.badge-arts       { background:#9333EA; }
+.badge-sales      { background:#059669; }
+.badge-default    { background:#6B7280; }
 
-  /* ── EMPTY STATE ── */
-  .empty { text-align: center; padding: 56px 20px; color: #9CA3AF; }
-  .empty .emoji { font-size: 40px; margin-bottom: 12px; }
-  .empty h3 { font-size: 16px; font-weight: 600; color: #6B7280; margin-bottom: 6px; }
-  .empty p { font-size: 13px; }
+/* ── SAVED ── */
+.view-header { padding:16px 16px 4px; }
+.view-header h2 { font-size:18px; font-weight:800; }
+.view-header p { font-size:12px; color:#9CA3AF; margin-top:2px; }
 
-  /* ── NOTIF BANNER ── */
-  .notif-banner {
-    margin: 12px 16px 0;
-    background: #EDE9FE; border: 1px solid #DDD6FE;
-    border-radius: 12px; padding: 14px 16px;
-    display: flex; gap: 12px; align-items: flex-start;
-  }
-  .nb-title { font-size: 13px; font-weight: 700; color: #5B21B6; margin-bottom: 3px; }
-  .nb-body { font-size: 12px; color: #6D28D9; line-height: 1.5; }
-  .nb-btns { display: flex; gap: 8px; margin-top: 10px; }
-  .nb-allow { padding: 6px 14px; background: #7C3AED; color: white; font-size: 12px; font-weight: 700; border-radius: 20px; border: none; cursor: pointer; }
-  .nb-skip { padding: 6px 14px; background: transparent; color: #6B7280; font-size: 12px; border-radius: 20px; border: 1px solid #D1D5DB; cursor: pointer; }
+/* ── NOTIF BANNER ── */
+.notif-banner {
+  margin:12px 16px; background:#EDE9FE; border:1px solid #DDD6FE;
+  border-radius:12px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start;
+}
+.nb-title { font-size:13px; font-weight:700; color:#5B21B6; margin-bottom:3px; }
+.nb-body { font-size:12px; color:#6D28D9; line-height:1.5; }
+.nb-btns { display:flex; gap:8px; margin-top:10px; }
+.nb-allow { padding:6px 14px; background:#7C3AED; color:#fff; font-size:12px; font-weight:700; border-radius:20px; border:none; cursor:pointer; }
+.nb-skip { padding:6px 14px; background:transparent; color:#6B7280; font-size:12px; border-radius:20px; border:1px solid #D1D5DB; cursor:pointer; }
 
-  /* ── FAB ── */
-  .fab {
-    position: fixed; bottom: 24px; right: 20px; z-index: 50;
-    width: 52px; height: 52px; border-radius: 50%;
-    background: #7C3AED; color: white; border: none;
-    font-size: 26px; font-weight: 300; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 16px rgba(124,58,237,.4);
-    transition: all .2s;
-  }
-  .fab:hover { background: #6D28D9; transform: scale(1.08); }
+/* ── FAB ── */
+.fab {
+  position:fixed; bottom:24px; right:20px; z-index:50;
+  width:52px; height:52px; border-radius:50%;
+  background:#7C3AED; color:#fff; border:none; font-size:26px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 16px rgba(124,58,237,.4); transition:all .2s;
+}
+.fab:hover { background:#6D28D9; transform:scale(1.08); }
 
-  /* ── MODAL OVERLAY ── */
-  .modal-bg {
-    position: fixed; inset: 0; background: rgba(0,0,0,.5);
-    z-index: 200; display: none; align-items: flex-end;
-  }
-  .modal-bg.open { display: flex; }
-  .modal-bg.center { align-items: center; justify-content: center; }
-  .modal {
-    width: 100%; background: white; border-radius: 20px 20px 0 0;
-    padding: 0 20px 40px; max-height: 92vh; overflow-y: auto;
-    position: relative;
-  }
-  .modal.center-modal { border-radius: 16px; max-width: 520px; max-height: 92vh; }
-  .modal-drag { width: 40px; height: 4px; background: #E5E7EB; border-radius: 2px; margin: 14px auto 20px; }
-  .modal-close {
-    position: absolute; top: 14px; right: 16px;
-    background: #F3F4F6; border: none; width: 30px; height: 30px;
-    border-radius: 50%; font-size: 14px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; color: #6B7280;
-  }
-  .modal h2 { font-size: 20px; font-weight: 800; margin-bottom: 16px; }
+/* ── MODAL ── */
+.modal-bg {
+  position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200;
+  display:none; align-items:flex-end;
+}
+.modal-bg.open { display:flex; }
+.modal {
+  width:100%; background:#fff; border-radius:20px 20px 0 0;
+  padding:0 20px 48px; max-height:92vh; overflow-y:auto; position:relative;
+}
+.modal-drag { width:40px; height:4px; background:#E5E7EB; border-radius:2px; margin:14px auto 20px; }
+.modal-close {
+  position:absolute; top:14px; right:16px; background:#F3F4F6; border:none;
+  width:30px; height:30px; border-radius:50%; font-size:14px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; color:#6B7280;
+}
 
-  /* ── EVENT DETAIL SHEET ── */
-  #sheet .detail-header { height: 140px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 56px; margin-bottom: 16px; position: relative; }
-  #sheet .detail-cat { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #7C3AED; margin-bottom: 8px; }
-  #sheet .detail-title { font-size: 22px; font-weight: 800; margin-bottom: 14px; }
-  #sheet .detail-row { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #6B7280; margin-bottom: 10px; }
-  #sheet .detail-icon { font-size: 16px; flex-shrink: 0; }
-  #sheet .detail-price { text-align: center; padding: 14px; border-radius: 10px; font-size: 18px; font-weight: 800; margin: 14px 0; }
-  #sheet .price-free { background: #F0FDF4; color: #16A34A; }
-  #sheet .price-paid { background: #FFFBEB; color: #D97706; }
-  .share-row { display: flex; gap: 10px; margin-top: 16px; }
-  .btn-wa { flex: 1; padding: 12px; background: #25D366; color: white; font-size: 13px; font-weight: 700; border-radius: 10px; border: none; cursor: pointer; }
-  .btn-share-other { padding: 12px 16px; background: #F3F4F6; color: #374151; font-size: 13px; font-weight: 600; border-radius: 10px; border: none; cursor: pointer; }
+/* ── SHEET ── */
+#sheet .sh-header { height:140px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:56px; margin-bottom:16px; }
+#sheet .sh-cat { font-size:11px; font-weight:700; letter-spacing:1px; color:#7C3AED; margin-bottom:8px; }
+#sheet .sh-title { font-size:22px; font-weight:800; margin-bottom:14px; }
+#sheet .sh-row { display:flex; align-items:flex-start; gap:10px; font-size:13px; color:#6B7280; margin-bottom:10px; }
+#sheet .sh-icon { font-size:16px; flex-shrink:0; }
+#sheet .sh-price { text-align:center; padding:14px; border-radius:10px; font-size:18px; font-weight:800; margin:14px 0; }
+.price-free { background:#F0FDF4; color:#16A34A; }
+.price-paid { background:#FFFBEB; color:#D97706; }
+.share-row { display:flex; gap:10px; margin-top:16px; }
+.btn-wa { flex:1; padding:12px; background:#25D366; color:#fff; font-size:13px; font-weight:700; border-radius:10px; border:none; cursor:pointer; }
+.btn-share-other { padding:12px 16px; background:#F3F4F6; color:#374151; font-size:13px; font-weight:600; border-radius:10px; border:none; cursor:pointer; }
 
-  /* ── POST MODAL ── */
-  .plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-  .plan-card {
-    border: 2px solid #E5E7EB; border-radius: 12px; padding: 14px;
-    cursor: pointer; transition: border-color .15s;
-  }
-  .plan-card:hover { border-color: #7C3AED; }
-  .plan-card.selected { border-color: #7C3AED; background: #F5F3FF; }
-  .plan-card.featured-plan { border-color: #F59E0B; background: #FFFBEB; }
-  .plan-card.featured-plan.selected { border-color: #D97706; }
-  .plan-card.pro-plan { border-color: #E5E7EB; background: #FFFBEB; }
-  .plan-name { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
-  .plan-price { font-size: 16px; font-weight: 800; color: #7C3AED; float: right; margin-top: -22px; }
-  .plan-price.gold { color: #D97706; }
-  .plan-features { font-size: 11px; color: #6B7280; line-height: 1.6; margin-top: 6px; }
-  .plan-tag { display: inline-block; background: #7C3AED; color: white; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 10px; margin-left: 6px; }
-  .plan-tag.gold { background: #D97706; }
-  .form-section h3 { font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 14px; }
-  .fl { font-size: 11px; font-weight: 700; color: #6B7280; display: block; margin-bottom: 5px; letter-spacing: .3px; }
-  .fl .req { color: #EF4444; }
-  .fi {
-    width: 100%; padding: 10px 14px;
-    background: #F9FAFB; border: 1px solid #E5E7EB;
-    border-radius: 9px; color: #111827; font-size: 14px;
-    outline: none; margin-bottom: 12px; font-family: inherit;
-    transition: border-color .15s;
-  }
-  .fi:focus { border-color: #7C3AED; background: #FFFFFF; }
-  .fi::placeholder { color: #9CA3AF; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .price-row { display: flex; gap: 8px; margin-bottom: 12px; }
-  .price-opt { flex: 1; padding: 10px; border-radius: 9px; text-align: center; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #E5E7EB; background: #F9FAFB; color: #6B7280; transition: all .15s; }
-  .price-opt.sel-free { background: #F0FDF4; border-color: #16A34A; color: #16A34A; }
-  .price-opt.sel-paid { background: #FFFBEB; border-color: #D97706; color: #D97706; }
-  .email-tip { background: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 9px; padding: 10px 12px; font-size: 12px; color: #0369A1; margin-bottom: 12px; line-height: 1.5; }
-  .submit-btn { width: 100%; padding: 13px; background: #7C3AED; color: white; font-size: 14px; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: background .15s; }
-  .submit-btn:hover { background: #6D28D9; }
+/* ── NOTIF SUBSCRIBE MODAL ── */
+.nsub-form { padding:0 0 8px; }
+.nsub-form h2 { font-size:20px; font-weight:800; margin-bottom:6px; }
+.nsub-form p { font-size:13px; color:#6B7280; margin-bottom:20px; line-height:1.6; }
+.nsub-cats { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+.nsub-cat { padding:7px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; border:1.5px solid #E5E7EB; background:#fff; color:#374151; transition:all .15s; }
+.nsub-cat.on { background:#EDE9FE; border-color:#7C3AED; color:#7C3AED; }
+.nsub-form input { width:100%; padding:11px 14px; background:#F9FAFB; border:1px solid #E5E7EB; border-radius:10px; font-size:14px; outline:none; margin-bottom:12px; font-family:inherit; }
+.nsub-form input:focus { border-color:#7C3AED; }
+.nsub-btn { width:100%; padding:13px; background:#7C3AED; color:#fff; font-size:14px; font-weight:800; border-radius:10px; border:none; cursor:pointer; }
 
-  /* ── ACCOUNT MODAL ── */
-  .auth-tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid #E5E7EB; }
-  .auth-tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 700; color: #9CA3AF; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .15s; }
-  .auth-tab.active { color: #7C3AED; border-bottom-color: #7C3AED; }
+/* ── POST FORM ── */
+.plan-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.plan-card {
+  border:2px solid #E5E7EB; border-radius:12px; padding:14px 14px 10px;
+  cursor:pointer; transition:border-color .15s;
+}
+.plan-card:hover { border-color:#7C3AED; }
+.plan-card.selected { border-color:#7C3AED; background:#F5F3FF; }
+.plan-card.gold-card { border-color:#F59E0B; }
+.plan-card.gold-card.selected { background:#FFFBEB; }
+.plan-card.pro-card { background:#FFFBEB; }
+.plan-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+.plan-name { font-size:14px; font-weight:800; }
+.plan-price { font-size:16px; font-weight:800; color:#7C3AED; }
+.plan-price.gold { color:#D97706; }
+.plan-tag { display:inline-block; background:#7C3AED; color:#fff; font-size:9px; font-weight:800; padding:2px 7px; border-radius:10px; margin-left:4px; vertical-align:middle; }
+.plan-tag.gold { background:#D97706; }
+.plan-features { font-size:11.5px; color:#6B7280; line-height:1.7; }
+.fl { font-size:11px; font-weight:700; color:#6B7280; display:block; margin-bottom:5px; letter-spacing:.3px; }
+.fl .req { color:#EF4444; }
+.fi { width:100%; padding:10px 14px; background:#F9FAFB; border:1px solid #E5E7EB; border-radius:9px; color:#111827; font-size:14px; outline:none; margin-bottom:12px; font-family:inherit; transition:border-color .15s; }
+.fi:focus { border-color:#7C3AED; background:#fff; }
+.fi::placeholder { color:#9CA3AF; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.price-row { display:flex; gap:8px; margin-bottom:12px; }
+.price-opt { flex:1; padding:10px; border-radius:9px; text-align:center; font-size:13px; font-weight:600; cursor:pointer; border:1px solid #E5E7EB; background:#F9FAFB; color:#6B7280; transition:all .15s; }
+.price-opt.sel-free { background:#F0FDF4; border-color:#16A34A; color:#16A34A; }
+.price-opt.sel-paid { background:#FFFBEB; border-color:#D97706; color:#D97706; }
+.email-tip { background:#F0F9FF; border:1px solid #BAE6FD; border-radius:9px; padding:10px 12px; font-size:12px; color:#0369A1; margin-bottom:12px; line-height:1.5; }
+.submit-btn { width:100%; padding:13px; background:#7C3AED; color:#fff; font-size:14px; font-weight:800; border-radius:10px; border:none; cursor:pointer; }
+.submit-btn:hover { background:#6D28D9; }
 
-  /* ── SAVED VIEW ── */
-  .saved-header { padding: 16px 16px 4px; }
-  .saved-header h2 { font-size: 18px; font-weight: 800; }
-  .saved-header p { font-size: 12px; color: #9CA3AF; margin-top: 2px; }
+/* ── EMPTY ── */
+.empty { text-align:center; padding:56px 20px; color:#9CA3AF; }
+.empty .ico { font-size:40px; margin-bottom:12px; }
+.empty h3 { font-size:16px; font-weight:600; color:#6B7280; margin-bottom:6px; }
 
-  /* ── MAP POPUP ── */
-  .leaflet-popup-content-wrapper { border-radius: 10px !important; }
-  .mp-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 3px; }
-  .mp-meta { font-size: 11px; color: #6B7280; margin-bottom: 8px; }
-  .mp-btn { display: inline-block; padding: 5px 12px; background: #7C3AED; color: white; font-size: 11px; font-weight: 700; border-radius: 6px; text-decoration: none; cursor: pointer; }
+/* ── TOAST ── */
+.toast {
+  position:fixed; top:20px; left:50%;
+  transform:translateX(-50%) translateY(-80px);
+  background:#16A34A; color:#fff; padding:11px 22px; border-radius:24px;
+  font-size:13px; font-weight:700; z-index:999; transition:transform .3s; white-space:nowrap;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+.toast.error { background:#EF4444; }
+.toast.info { background:#7C3AED; }
 
-  /* ── TOAST ── */
-  .toast {
-    position: fixed; top: 20px; left: 50%;
-    transform: translateX(-50%) translateY(-80px);
-    background: #16A34A; color: white;
-    padding: 11px 22px; border-radius: 24px;
-    font-size: 13px; font-weight: 700;
-    z-index: 999; transition: transform .3s; white-space: nowrap;
-    box-shadow: 0 4px 16px rgba(0,0,0,.2);
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.error { background: #EF4444; }
-  .toast.info { background: #7C3AED; }
-
-  /* ── BOTTOM SAFE AREA ── */
-  .safe-bottom { height: max(20px, env(safe-area-inset-bottom)); }
-
-  @media (max-width: 480px) {
-    .plan-grid { grid-template-columns: 1fr; }
-  }
+@media(max-width:480px){
+  .plan-grid { grid-template-columns:1fr; }
+}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="logo">evently</div>
-  <div class="location-bar" onclick="requestLocation()">
-    📍 <span id="location-text">Location unavailable</span>
-  </div>
-  <div class="search-btn" onclick="toggleSearch()">🔍</div>
-  <button class="help-btn" onclick="openHelp()">?</button>
+  <div class="location-bar" onclick="requestLocation()">📍 <span id="loc-text">Location unavailable</span></div>
+  <button class="icon-btn gray" onclick="openSearch()">🔍</button>
+  <button class="icon-btn purple" onclick="openNotifSub()">?</button>
   <button class="post-btn" onclick="openPost()">+ Post</button>
 </header>
 
-<!-- LANGUAGE STRIP -->
-<div class="lang-strip" id="lang-strip">
-  <div class="lang-pill active" onclick="setLang('en',this)">🇺🇸 EN</div>
-  <div class="lang-pill" onclick="setLang('ar',this)">🇸🇦 عربي</div>
-  <div class="lang-pill" onclick="setLang('es',this)">🇪🇸 ES</div>
-  <div class="lang-pill" onclick="setLang('fr',this)">🇫🇷 FR</div>
-  <div class="lang-pill" onclick="setLang('pt',this)">🇧🇷 PT</div>
-  <div class="lang-pill" onclick="setLang('de',this)">🇩🇪 DE</div>
-  <div class="lang-pill" onclick="setLang('zh',this)">🇨🇳 中文</div>
-  <div class="lang-pill" onclick="setLang('ru',this)">🇷🇺 RU</div>
+<div class="strip" id="lang-strip">
+  <div class="lang-pill active" onclick="setLang(this)">🇺🇸 EN</div>
+  <div class="lang-pill" onclick="setLang(this)">🇸🇦 عربي</div>
+  <div class="lang-pill" onclick="setLang(this)">🇪🇸 ES</div>
+  <div class="lang-pill" onclick="setLang(this)">🇫🇷 FR</div>
+  <div class="lang-pill" onclick="setLang(this)">🇧🇷 PT</div>
+  <div class="lang-pill" onclick="setLang(this)">🇩🇪 DE</div>
+  <div class="lang-pill" onclick="setLang(this)">🇨🇳 中文</div>
+  <div class="lang-pill" onclick="setLang(this)">🇷🇺 RU</div>
 </div>
 
-<!-- CATEGORY STRIP -->
-<div class="cat-strip" id="cat-strip"></div>
+<div class="strip white" id="cat-strip"></div>
 
-<!-- DISTANCE STRIP -->
-<div class="dist-strip">
+<div class="strip white">
   <span class="dist-label">📍 DISTANCE:</span>
   <div class="dist-pill active" onclick="setDist('any',this)">Any</div>
   <div class="dist-pill" onclick="setDist('5',this)">5 mi</div>
@@ -395,26 +314,22 @@
   <div class="dist-pill" onclick="setDist('50',this)">50+ mi</div>
 </div>
 
-<!-- VIEW TOGGLE -->
 <div class="view-toggle">
-  <div class="toggle-btn active" id="toggle-list" onclick="switchView('list')">☰</div>
-  <div class="toggle-btn" id="toggle-map" onclick="switchView('map')">🗺</div>
-  <div class="toggle-btn" id="toggle-saved" onclick="switchView('saved')" title="Saved events">🔖</div>
+  <div class="toggle-btn active" id="tgl-list" onclick="switchView('list')" title="List view">☰</div>
+  <div class="toggle-btn" id="tgl-map" onclick="switchView('map')" title="Map view">🗺</div>
+  <div class="toggle-btn" id="tgl-saved" onclick="switchView('saved')" title="Saved events">🔖</div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
-
-  <!-- LIST VIEW -->
+  <!-- LIST -->
   <div class="view active" id="view-list">
-    <!-- Notification banner -->
     <div class="notif-banner" id="notif-banner" style="display:none">
-      <span style="font-size:20px">🔔</span>
+      <div style="font-size:20px;flex-shrink:0">🔔</div>
       <div>
-        <div class="nb-title">Get notified about events near you</div>
-        <div class="nb-body">We'll alert you when new events are posted in your area.</div>
+        <div class="nb-title">Never miss an event near you</div>
+        <div class="nb-body">Get notified by email or push alert when new events are posted in your area.</div>
         <div class="nb-btns">
-          <button class="nb-allow" onclick="requestPush()">Allow</button>
+          <button class="nb-allow" onclick="openNotifSub()">Set Up Alerts</button>
           <button class="nb-skip" onclick="dismissNotif()">Not now</button>
         </div>
       </div>
@@ -422,222 +337,430 @@
     <div class="event-list" id="event-list"></div>
   </div>
 
-  <!-- MAP VIEW -->
+  <!-- MAP -->
   <div class="view" id="view-map">
     <div id="leaflet-map"></div>
   </div>
 
-  <!-- SAVED VIEW -->
+  <!-- SAVED -->
   <div class="view" id="view-saved">
-    <div class="saved-header">
-      <h2>Saved Events</h2>
-      <p>Events you've bookmarked</p>
-    </div>
+    <div class="view-header"><h2>Saved Events</h2><p>Events you've bookmarked</p></div>
     <div class="event-list" id="saved-list"></div>
   </div>
-
 </div>
 
-<!-- FAB -->
 <button class="fab" onclick="openPost()">+</button>
 
-<!-- EVENT DETAIL SHEET -->
-<div class="modal-bg" id="sheet" onclick="sheetClick(event)">
+<!-- EVENT SHEET -->
+<div class="modal-bg" id="sheet" onclick="if(event.target.id==='sheet')closeSheet()">
   <div class="modal">
     <button class="modal-close" onclick="closeSheet()">✕</button>
     <div class="modal-drag"></div>
-    <div id="s-header" class="detail-header cat-default">🎉</div>
-    <div class="detail-cat" id="s-cat"></div>
-    <div class="detail-title" id="s-title"></div>
-    <div class="detail-row"><span class="detail-icon">📅</span><span id="s-date"></span></div>
-    <div class="detail-row"><span class="detail-icon">📍</span><span id="s-loc"></span></div>
-    <div class="detail-row"><span class="detail-icon">👤</span><span id="s-org"></span></div>
-    <div id="s-price" class="detail-price price-free">FREE EVENT</div>
-    <p id="s-desc" style="font-size:13px;color:#6B7280;line-height:1.7;margin-bottom:4px"></p>
+    <div id="sh-hdr" class="sh-header bg-default">🎉</div>
+    <div class="sh-cat" id="sh-cat"></div>
+    <div class="sh-title" id="sh-title"></div>
+    <div class="sh-row"><span class="sh-icon">📅</span><span id="sh-date"></span></div>
+    <div class="sh-row"><span class="sh-icon">📍</span><span id="sh-loc"></span></div>
+    <div class="sh-row"><span class="sh-icon">👤</span><span id="sh-org"></span></div>
+    <div class="sh-row"><span class="sh-icon">🎟️</span><span id="sh-ticket"></span></div>
+    <div id="sh-price" class="sh-price price-free">FREE EVENT</div>
+    <p id="sh-desc" style="font-size:13px;color:#6B7280;line-height:1.7;margin-bottom:6px"></p>
     <div class="share-row">
-      <button class="btn-wa" id="s-wa">📱 Share on WhatsApp</button>
-      <button class="btn-share-other" id="s-share">Share</button>
+      <button class="btn-wa" id="sh-wa">📱 Share on WhatsApp</button>
+      <button class="btn-share-other" id="sh-share">Share</button>
     </div>
-    <div class="safe-bottom"></div>
+  </div>
+</div>
+
+<!-- NOTIFICATION SUBSCRIBE MODAL -->
+<div class="modal-bg" id="notif-modal" onclick="if(event.target.id==='notif-modal')closeNotifSub()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeNotifSub()">✕</button>
+    <div class="modal-drag"></div>
+    <div class="nsub-form">
+      <h2>🔔 Get Event Alerts</h2>
+      <p>Choose how you want to be notified when new events are posted near you. We never spam — only real local events.</p>
+
+      <label class="fl">What types of events? (select all that apply)</label>
+      <div class="nsub-cats" id="nsub-cats">
+        <div class="nsub-cat on" onclick="this.classList.toggle('on')">🎪 Festivals</div>
+        <div class="nsub-cat" onclick="this.classList.toggle('on')">🛋️ Yard Sales</div>
+        <div class="nsub-cat" onclick="this.classList.toggle('on')">🕌 Religious</div>
+        <div class="nsub-cat on" onclick="this.classList.toggle('on')">🛒 Markets</div>
+        <div class="nsub-cat" onclick="this.classList.toggle('on')">🎵 Music</div>
+        <div class="nsub-cat on" onclick="this.classList.toggle('on')">⚽ Sports</div>
+        <div class="nsub-cat" onclick="this.classList.toggle('on')">🍕 Food & Drink</div>
+        <div class="nsub-cat on" onclick="this.classList.toggle('on')">🤝 Community</div>
+        <div class="nsub-cat" onclick="this.classList.toggle('on')">🎨 Arts</div>
+      </div>
+
+      <label class="fl">Your Email <span class="req">*</span></label>
+      <input type="email" id="nsub-email" placeholder="you@email.com">
+
+      <label class="fl">Your Zip Code (for local filtering)</label>
+      <input type="text" id="nsub-zip" placeholder="e.g. 07302">
+
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <button id="nsub-push-btn" onclick="requestPush()" style="padding:9px 16px;background:#F3F4F6;border:1px solid #E5E7EB;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;color:#374151">
+          📲 Also enable push notifications
+        </button>
+      </div>
+
+      <button class="nsub-btn" onclick="subscribeEmail()">Subscribe to Local Events</button>
+      <p style="font-size:11px;color:#9CA3AF;text-align:center;margin-top:10px">Unsubscribe anytime · No spam · Real events only</p>
+    </div>
   </div>
 </div>
 
 <!-- POST MODAL -->
-<div class="modal-bg" id="post-modal" onclick="postBgClick(event)">
+<div class="modal-bg" id="post-modal" onclick="if(event.target.id==='post-modal')closePost()">
   <div class="modal">
     <button class="modal-close" onclick="closePost()">✕</button>
     <div class="modal-drag"></div>
-    <h2>Post Your Event</h2>
+    <h2 style="font-size:20px;font-weight:800;margin-bottom:16px">Post Your Event</h2>
 
-    <p style="font-size:11px;font-weight:700;color:#6B7280;letter-spacing:.5px;margin-bottom:12px">CHOOSE HOW YOU WANT TO POST</p>
-    <div class="plan-grid" id="plan-grid">
-      <div class="plan-card selected" onclick="selectPlan(this,'free')">
-        <div class="plan-name">Free <span class="plan-price" style="color:#374151">$0</span></div>
-        <div class="plan-features">✓ Post 1 event<br>✓ Show in list & map<br>✓ Going counter<br>✓ Share button<br><em>Great for yard sales, one-off events</em></div>
+    <p style="font-size:11px;font-weight:700;color:#6B7280;letter-spacing:.5px;margin-bottom:10px">CHOOSE HOW YOU WANT TO POST</p>
+    <div class="plan-grid">
+      <div class="plan-card selected" onclick="selectPlan(this)">
+        <div class="plan-header">
+          <div class="plan-name">Free</div>
+          <div class="plan-price" style="color:#374151">$0</div>
+        </div>
+        <div class="plan-features">✓ Post 1 event<br>✓ Show in list & map<br>✓ Going counter<br>✓ Share button<br><em>Yard sales, one-off events</em></div>
       </div>
-      <div class="plan-card featured-plan" onclick="selectPlan(this,'boost')">
-        <div class="plan-name">Boost <span class="plan-tag gold">POPULAR</span><span class="plan-price gold">$2.99</span></div>
-        <div class="plan-features">⭐ Featured for 3 days<br>✓ Top of feed in your area<br>✓ Highlighted gold border<br>✓ Everything in Free<br><em>Perfect for community & small events</em></div>
+      <div class="plan-card gold-card" onclick="selectPlan(this)">
+        <div class="plan-header">
+          <div class="plan-name">Boost <span class="plan-tag gold">POPULAR</span></div>
+          <div class="plan-price gold">$2.99</div>
+        </div>
+        <div class="plan-features">⭐ Featured for 3 days<br>✓ Top of feed in your area<br>✓ Gold highlighted border<br>✓ Everything in Free<br><em>Small events & community</em></div>
       </div>
-      <div class="plan-card featured-plan" onclick="selectPlan(this,'boost-plus')">
-        <div class="plan-name">Boost Plus <span class="plan-price gold">$4.99</span></div>
-        <div class="plan-features">⭐ Featured for 7 days<br>✓ Top of feed<br>✓ Priority in search<br>✓ Everything in Free<br><em>Best for markets, open houses, sales</em></div>
+      <div class="plan-card gold-card" onclick="selectPlan(this)">
+        <div class="plan-header">
+          <div class="plan-name">Boost Plus</div>
+          <div class="plan-price gold">$4.99</div>
+        </div>
+        <div class="plan-features">⭐ Featured for 7 days<br>✓ Top of feed<br>✓ Priority in search results<br>✓ Everything in Free<br><em>Markets, open houses</em></div>
       </div>
-      <div class="plan-card pro-plan" onclick="selectPlan(this,'pro')">
-        <div class="plan-name">Pro <span class="plan-tag">PRO</span><span class="plan-price gold">$9.99/mo</span></div>
-        <div class="plan-features">⭐ Unlimited events/month<br>✓ 7-day boost every post<br>✓ Organiser profile page<br>✓ Analytics dashboard<br><em>Churches, markets, sports clubs</em></div>
-      </div>
-      <div class="plan-card" onclick="selectPlan(this,'business')" style="grid-column:1/-1">
-        <div class="plan-name">Business <span class="plan-tag">BIZ</span><span class="plan-price gold">$29/mo</span></div>
-        <div class="plan-features">🏆 Unlimited events · 7-day boost every post · Organiser profile · Multi-user team access · Custom logo & banner · Analytics · Priority top placement · Dedicated support<br><em>Venues, event companies, large organisations</em></div>
+      <div class="plan-card pro-card" onclick="selectPlan(this)">
+        <div class="plan-header">
+          <div class="plan-name">Pro <span class="plan-tag">PRO</span></div>
+          <div class="plan-price gold">$9.99/mo</div>
+        </div>
+        <div class="plan-features">⭐ Unlimited events/month<br>✓ 7-day boost on every post<br>✓ Organiser profile page<br>✓ Going count analytics<br><em>Churches, markets, clubs</em></div>
       </div>
     </div>
-
-    <div class="form-section">
-      <h3>EVENT DETAILS</h3>
-      <label class="fl">Event Title <span class="req">*</span></label>
-      <input class="fi" type="text" id="f-title" placeholder="e.g. Summer Yard Sale, Friday Prayer, Flash Sale...">
-
-      <label class="fl">Category <span class="req">*</span></label>
-      <select class="fi" id="f-cat">
-        <option value="">Select category</option>
-        <option>Festivals</option><option>Yard Sales</option><option>Religious</option>
-        <option>Open House</option><option>Markets</option><option>Sales/Specials</option>
-        <option>Music</option><option>Sports</option><option>Food & Drink</option>
-        <option>Community</option><option>Arts</option><option>Other</option>
-      </select>
-
-      <div class="grid2">
-        <div>
-          <label class="fl">Date <span class="req">*</span></label>
-          <input class="fi" type="date" id="f-date">
-        </div>
-        <div>
-          <label class="fl">Time <span class="req">*</span></label>
-          <input class="fi" type="time" id="f-time">
-        </div>
+    <div class="plan-card" style="margin-bottom:20px;border-color:#1D4ED8;background:#EFF6FF" onclick="selectPlan(this)">
+      <div class="plan-header">
+        <div class="plan-name">Business <span class="plan-tag" style="background:#1D4ED8">BIZ</span></div>
+        <div class="plan-price" style="color:#1D4ED8">$29/mo</div>
       </div>
-
-      <label class="fl">Location / Address <span class="req">*</span></label>
-      <input class="fi" type="text" id="f-loc" placeholder="Full address or venue name">
-
-      <label class="fl">Organiser / Name <span class="req">*</span></label>
-      <input class="fi" type="text" id="f-org" placeholder="Your name or organisation">
-
-      <label class="fl">Your Email <span class="req">*</span></label>
-      <input class="fi" type="email" id="f-email" placeholder="you@email.com">
-      <div class="email-tip">📧 We'll send a confirmation when your event is approved and live. Your email is never shown publicly.</div>
-
-      <label class="fl">Admission</label>
-      <div class="price-row">
-        <div class="price-opt sel-free" id="opt-free" onclick="setFree(true)">Free Entry</div>
-        <div class="price-opt" id="opt-paid" onclick="setFree(false)">Paid Event</div>
-      </div>
-      <div id="price-wrap" style="display:none">
-        <label class="fl">Ticket Price</label>
-        <input class="fi" type="text" id="f-price" placeholder="e.g. $15 or Free with registration">
-      </div>
-
-      <label class="fl">Promo Code</label>
-      <input class="fi" type="text" id="f-promo" placeholder="Have a promo code? Enter it here">
-
-      <label class="fl">Description</label>
-      <textarea class="fi" id="f-desc" rows="3" style="resize:vertical" placeholder="Tell people what to expect..."></textarea>
-
-      <button class="submit-btn" onclick="submitPost()">Post Event</button>
+      <div class="plan-features">🏆 Unlimited events · 7-day boost every post · Branded organiser profile · Multi-user team access · Custom logo & banner · Analytics dashboard · Priority placement · Dedicated support<br><em>Venues, event companies, large organisations</em></div>
     </div>
-    <div class="safe-bottom"></div>
+
+    <h3 style="font-size:13px;font-weight:700;color:#374151;margin-bottom:14px">EVENT DETAILS</h3>
+
+    <label class="fl">Event Title <span class="req">*</span></label>
+    <input class="fi" type="text" id="f-title" placeholder="e.g. Summer Yard Sale, Friday Prayer, Flash Sale...">
+
+    <label class="fl">Category <span class="req">*</span></label>
+    <select class="fi" id="f-cat">
+      <option value="">Select category</option>
+      <option>Festivals</option><option>Yard Sales</option><option>Religious</option>
+      <option>Open House</option><option>Markets</option><option>Sales/Specials</option>
+      <option>Music</option><option>Sports</option><option>Food & Drink</option>
+      <option>Community</option><option>Arts</option><option>Other</option>
+    </select>
+
+    <div class="grid2">
+      <div><label class="fl">Date <span class="req">*</span></label><input class="fi" type="date" id="f-date"></div>
+      <div><label class="fl">Time <span class="req">*</span></label><input class="fi" type="time" id="f-time"></div>
+    </div>
+
+    <label class="fl">Location / Address <span class="req">*</span></label>
+    <input class="fi" type="text" id="f-loc-post" placeholder="Full address or venue name">
+
+    <label class="fl">Organiser / Name <span class="req">*</span></label>
+    <input class="fi" type="text" id="f-org" placeholder="Your name or organisation">
+
+    <label class="fl">Your Email <span class="req">*</span></label>
+    <input class="fi" type="email" id="f-email" placeholder="you@email.com">
+    <div class="email-tip">📧 We'll email you when your event is approved and live. Your email stays private and is never shown publicly.</div>
+
+    <label class="fl">Admission</label>
+    <div class="price-row">
+      <div class="price-opt sel-free" id="opt-free" onclick="setFree(true)">Free Entry</div>
+      <div class="price-opt" id="opt-paid" onclick="setFree(false)">Paid Event</div>
+    </div>
+    <div id="price-wrap" style="display:none">
+      <label class="fl">Ticket Price / Link</label>
+      <input class="fi" type="text" id="f-price" placeholder="e.g. $15 · Free with registration">
+    </div>
+
+    <label class="fl">Promo Code</label>
+    <input class="fi" type="text" id="f-promo" placeholder="Have a promo code? Enter it here">
+
+    <label class="fl">Description</label>
+    <textarea class="fi" id="f-desc" rows="3" style="resize:vertical" placeholder="Tell people what to expect..."></textarea>
+
+    <button class="submit-btn" onclick="submitPost()">Post Event</button>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ── DATA ─────────────────────────────────────────────────────────────
-const CATS = [
-  {name:'All', dot:'#111827', slug:'all'},
-  {name:'Festivals', dot:'#7C3AED', emoji:'🎪', slug:'festivals'},
-  {name:'Yard Sales', dot:'#CA8A04', emoji:'🛋️', slug:'yard-sales'},
-  {name:'Religious', dot:'#2563EB', emoji:'🕌', slug:'religious'},
-  {name:'Open House', dot:'#16A34A', emoji:'🏠', slug:'open-house'},
-  {name:'Markets', dot:'#D97706', emoji:'🛒', slug:'markets'},
-  {name:'Sales/Specials', dot:'#059669', emoji:'💰', slug:'sales'},
-  {name:'Music', dot:'#DB2777', emoji:'🎵', slug:'music'},
-  {name:'Sports', dot:'#0891B2', emoji:'⚽', slug:'sports'},
-  {name:'Food & Drink', dot:'#DC2626', emoji:'🍕', slug:'food'},
-  {name:'Community', dot:'#EA580C', emoji:'🤝', slug:'community'},
-  {name:'Arts', dot:'#9333EA', emoji:'🎨', slug:'arts'},
-  {name:'Farms', dot:'#65A30D', emoji:'🌽', slug:'farms'},
-];
-
-const EMOJI = {festivals:'🎪','yard-sales':'🛋️',religious:'🕌','open-house':'🏠',markets:'🛒',sales:'💰',music:'🎵',sports:'⚽',food:'🍕',community:'🤝',arts:'🎨',farms:'🌽',default:'🎉'};
-
+// ── REAL EVENTS (NJ/NY June–August 2026) ─────────────────────────────
 const EVENTS = [
-  {id:1,title:"Union Square Greenmarket",cat:"Markets",slug:"markets",date:"Sat 6 Jun",time:"8:00 AM",loc:"Union Square, 14th St & Broadway, Manhattan NY",dist:"1.6 mi",org:"GrowNYC",orgLink:"#",going:312,featured:true,free:true,lat:40.7359,lng:-73.9911,desc:"The city's largest year-round farmers market. 140 regional farmers and food producers."},
-  {id:2,title:"Museum Mile Festival",cat:"Festivals",slug:"festivals",date:"Tue 9 Jun",time:"6:00 PM",loc:"Fifth Avenue, 82nd–105th St, Manhattan NY",dist:"1.9 mi",org:"Museum Mile Festival",orgLink:"#",going:412,featured:true,free:true,lat:40.7794,lng:-73.9632,desc:"Annual outdoor festival with free museum access along Fifth Avenue."},
-  {id:3,title:"FIFA World Cup Watch Party",cat:"Sports",slug:"sports",date:"Sun 28 Jun",time:"12:00 PM",loc:"North Oculus Plaza, World Trade Center, New York NY",dist:"3.5 mi",org:"Port Authority of NY & NJ",orgLink:"#",going:2400,featured:true,free:true,lat:40.7127,lng:-74.0134,desc:"Giant outdoor screen. Free entry. Food vendors on site."},
-  {id:4,title:"NJ Tech Startup Meetup",cat:"Community",slug:"community",date:"Thu 12 Jun",time:"7:00 PM",loc:"WeWork Hoboken, 200 Hudson St NJ",dist:"2.1 mi",org:"NJ Tech",orgLink:"#",going:89,featured:false,free:false,price:"$10",lat:40.744,lng:-74.0324,desc:"Monthly networking event for NJ startup founders and builders."},
-  {id:5,title:"Jersey City Yard Sale",cat:"Yard Sales",slug:"yard-sales",date:"Sat 13 Jun",time:"8:00 AM",loc:"Hamilton Park, Jersey City NJ",dist:"0.8 mi",org:"Hamilton Park Neighbors",orgLink:"#",going:156,featured:false,free:true,lat:40.7178,lng:-74.0431,desc:"Neighborhood-wide yard sale. Over 30 households. Cash only."},
-  {id:6,title:"Ramadan Iftar & Eid Celebration",cat:"Religious",slug:"religious",date:"Sat 14 Jun",time:"7:30 PM",loc:"Islamic Center, Paterson NJ",dist:"12 mi",org:"ICNJ",orgLink:"#",going:203,featured:true,free:true,lat:40.9176,lng:-74.1719,desc:"Community iftar open to all. Dinner provided. All families welcome."},
+  {
+    id:1, title:"Brazil vs. Morocco — FIFA World Cup",
+    cat:"Sports", slug:"sports",
+    date:"Sat Jun 13, 2026", time:"6:00 PM",
+    loc:"MetLife Stadium, East Rutherford, NJ 07073",
+    lat:40.8135, lng:-74.0745,
+    org:"FIFA / MetLife Stadium", orgLink:"https://www.metlifestadium.com",
+    going:78576, featured:true, free:false, price:"From $100",
+    ticket:"Buy tickets at fifa.com or Ticketmaster",
+    desc:"Group Stage Match at the FIFA World Cup 2026. Brazil takes on Morocco at the iconic MetLife Stadium in East Rutherford. First World Cup Final hosted in the New York/New Jersey region since 1994."
+  },
+  {
+    id:2, title:"France vs. Senegal — FIFA World Cup",
+    cat:"Sports", slug:"sports",
+    date:"Tue Jun 16, 2026", time:"3:00 PM",
+    loc:"MetLife Stadium, East Rutherford, NJ 07073",
+    lat:40.8135, lng:-74.0745,
+    org:"FIFA / MetLife Stadium", orgLink:"https://www.metlifestadium.com",
+    going:75000, featured:true, free:false, price:"From $80",
+    ticket:"Buy tickets at fifa.com or Ticketmaster",
+    desc:"Group Stage Match — France vs. Senegal at MetLife Stadium. One of eight World Cup matches hosted in the New York–New Jersey area this summer."
+  },
+  {
+    id:3, title:"NYC Puerto Rican Day Parade",
+    cat:"Festivals", slug:"festivals",
+    date:"Sun Jun 14, 2026", time:"11:00 AM",
+    loc:"Fifth Avenue, 44th to 79th St, Manhattan, NY",
+    lat:40.7614, lng:-73.9776,
+    org:"National Puerto Rican Day Parade", orgLink:"#",
+    going:80000, featured:true, free:true,
+    ticket:"Free to watch along parade route",
+    desc:"One of the largest parades in the US. Celebrating Puerto Rican culture, heritage, and community contributions. March runs along Fifth Avenue from 44th to 79th Street."
+  },
+  {
+    id:4, title:"Riverview Farmers Market — Sustainability Day",
+    cat:"Markets", slug:"markets",
+    date:"Sun Jun 14, 2026", time:"10:00 AM",
+    loc:"Riverview Park, Jersey City, NJ 07307",
+    lat:40.7378, lng:-74.0507,
+    org:"Riverview Farmers Market", orgLink:"#",
+    going:340, featured:true, free:true,
+    ticket:"Free to attend",
+    desc:"Meet organizations supporting sustainability in Jersey City. Drop off used electronics & tote bags, get your bike tuned up, pick up freebies, and shop local vendors. Runs 10 AM – 2 PM."
+  },
+  {
+    id:5, title:"Montclair Pride 2026",
+    cat:"Community", slug:"community",
+    date:"Sat Jun 13, 2026", time:"12:00 PM",
+    loc:"Montclair Center, Montclair, NJ 07042",
+    lat:40.8257, lng:-74.2088,
+    org:"Montclair Pride", orgLink:"#",
+    going:2100, featured:true, free:true,
+    ticket:"Free. All are welcome.",
+    desc:"Annual Pride celebration in Montclair with performances, food, crafts, community groups, and family-friendly activities."
+  },
+  {
+    id:6, title:"SoccerFest26 — Free World Cup Fan Festival",
+    cat:"Sports", slug:"sports",
+    date:"Jun 25–27, 2026", time:"All Day",
+    loc:"Wiggins Waterfront Park, Camden, NJ 08103",
+    lat:39.9440, lng:-75.1246,
+    org:"Camden County / NJ EDA", orgLink:"#",
+    going:12000, featured:true, free:true,
+    ticket:"Completely free. No registration required.",
+    desc:"Three-day free fan festival with 12 World Cup match screenings on giant screens, free youth soccer clinics, food vendors, and live entertainment. No ticket needed."
+  },
+  {
+    id:7, title:"Warren County Hot Air Balloon Festival",
+    cat:"Festivals", slug:"festivals",
+    date:"Jul 25 – Aug 1, 2026", time:"All Day",
+    loc:"1350 Strykers Rd, Phillipsburg, NJ 08865",
+    lat:40.6887, lng:-75.1974,
+    org:"Warren County Farmers' Fair", orgLink:"#",
+    going:15000, featured:true, free:false, price:"$12 admission",
+    ticket:"Buy tickets at gate or online — $1 discount online",
+    desc:"The 88th annual Warren County Farmers' Fair & Hot Air Balloon Festival. Classic county fair with hot air balloons, horse shows, arts expo, 4-H exhibits, rides, and carnival food."
+  },
+  {
+    id:8, title:"Morris County Pride",
+    cat:"Community", slug:"community",
+    date:"Sat Jun 27, 2026", time:"11:00 AM",
+    loc:"214 Center Grove Rd, Randolph, NJ 07869",
+    lat:40.8415, lng:-74.5729,
+    org:"Morris County Pride", orgLink:"#",
+    going:870, featured:false, free:true,
+    ticket:"Free event. Family friendly.",
+    desc:"Family-friendly Pride celebration with onstage performances, food, crafts, merchandise vendors, and community groups. Special offerings for children, teens, and adults."
+  },
+  {
+    id:9, title:"Juneteenth NJ — Newark Celebration",
+    cat:"Community", slug:"community",
+    date:"Fri Jun 19, 2026", time:"12:00 PM",
+    loc:"Military Park, Newark, NJ 07102",
+    lat:40.7363, lng:-74.1724,
+    org:"Juneteenth NJ", orgLink:"#",
+    going:4500, featured:true, free:true,
+    ticket:"Free and open to all",
+    desc:"Official New Jersey Juneteenth celebration at Military Park in Newark. Music, food vendors, community organizations, and cultural programming honoring Emancipation Day."
+  },
+  {
+    id:10, title:"Union Square Greenmarket",
+    cat:"Markets", slug:"markets",
+    date:"Every Saturday", time:"8:00 AM – 6:00 PM",
+    loc:"Union Square, 14th St & Broadway, Manhattan, NY",
+    lat:40.7359, lng:-73.9911,
+    org:"GrowNYC", orgLink:"https://www.grownyc.org",
+    going:5000, featured:true, free:true,
+    ticket:"Free to browse and shop",
+    desc:"NYC's largest and most iconic year-round farmers market. Over 140 regional farmers and food producers selling fresh produce, baked goods, fish, meat, cheese, and more every Saturday."
+  },
+  {
+    id:11, title:"Hop Sauce Festival — Beach Haven",
+    cat:"Food", slug:"food",
+    date:"Sat Jun 13, 2026", time:"12:00 PM",
+    loc:"Beach Haven, NJ 08008",
+    lat:39.5615, lng:-74.2471,
+    org:"Hop Sauce Fest", orgLink:"#",
+    going:1800, featured:false, free:false, price:"$15 GA",
+    ticket:"Tickets at hopsaucefest.com",
+    desc:"Annual celebration of hot sauce, craft beer, and bold flavors. Dozens of vendors, sauce competitions, live music, and spicy food challenges at the Jersey Shore."
+  },
+  {
+    id:12, title:"Jersey City Family Day — Father's Day Celebration",
+    cat:"Community", slug:"community",
+    date:"Sun Jun 14, 2026", time:"12:00 PM",
+    loc:"165 Newark Ave, Jersey City, NJ 07302",
+    lat:40.7178, lng:-74.0431,
+    org:"Hoboken Families / JC Events", orgLink:"#",
+    going:620, featured:false, free:true,
+    ticket:"Free. All families welcome.",
+    desc:"Father's Day community celebration with live music, activities for toddlers and older kids, photo corners, swag bags, local businesses, performances, interactive activities, storytelling, and puppets."
+  },
+  {
+    id:13, title:"Fort Lee Artisan Market",
+    cat:"Markets", slug:"markets",
+    date:"Sat Jun 13, 2026", time:"10:00 AM",
+    loc:"Fort Lee, NJ 07024",
+    lat:40.8501, lng:-73.9701,
+    org:"Fort Lee Arts", orgLink:"#",
+    going:290, featured:false, free:true,
+    ticket:"Free to browse",
+    desc:"Local artisan market featuring handmade goods, crafts, art, and small business vendors in Fort Lee."
+  },
+  {
+    id:14, title:"Ecuador vs. Germany — FIFA World Cup",
+    cat:"Sports", slug:"sports",
+    date:"Thu Jun 25, 2026", time:"4:00 PM",
+    loc:"MetLife Stadium, East Rutherford, NJ 07073",
+    lat:40.8135, lng:-74.0745,
+    org:"FIFA / MetLife Stadium", orgLink:"https://www.metlifestadium.com",
+    going:76000, featured:true, free:false, price:"From $90",
+    ticket:"Buy tickets at fifa.com",
+    desc:"Group Stage Match — Ecuador vs. Germany at MetLife Stadium. Part of the 2026 FIFA World Cup hosted in the New York/New Jersey region."
+  },
+  {
+    id:15, title:"Panama vs. England — FIFA World Cup",
+    cat:"Sports", slug:"sports",
+    date:"Sat Jun 27, 2026", time:"5:00 PM",
+    loc:"MetLife Stadium, East Rutherford, NJ 07073",
+    lat:40.8135, lng:-74.0745,
+    org:"FIFA / MetLife Stadium", orgLink:"https://www.metlifestadium.com",
+    going:76000, featured:true, free:false, price:"From $85",
+    ticket:"Buy tickets at fifa.com",
+    desc:"Group Stage Match — Panama vs. England at MetLife Stadium. Part of the 2026 FIFA World Cup."
+  },
+  {
+    id:16, title:"FIFA World Cup Final 2026",
+    cat:"Sports", slug:"sports",
+    date:"Sun Jul 19, 2026", time:"3:00 PM",
+    loc:"MetLife Stadium, East Rutherford, NJ 07073",
+    lat:40.8135, lng:-74.0745,
+    org:"FIFA", orgLink:"https://www.fifa.com",
+    going:78576, featured:true, free:false, price:"From $500",
+    ticket:"Tickets at fifa.com — extremely limited availability",
+    desc:"THE FIFA World Cup Final 2026 — the championship match, hosted at MetLife Stadium in East Rutherford, NJ. First World Cup Final in the New York metropolitan area. Historic moment for New Jersey."
+  },
 ];
 
+const CATS = [
+  {name:'All',slug:'all',dot:'#111827'},
+  {name:'Festivals',slug:'festivals',dot:'#7C3AED',emoji:'🎪'},
+  {name:'Yard Sales',slug:'yard-sales',dot:'#CA8A04',emoji:'🛋️'},
+  {name:'Religious',slug:'religious',dot:'#2563EB',emoji:'🕌'},
+  {name:'Open House',slug:'open-house',dot:'#16A34A',emoji:'🏠'},
+  {name:'Markets',slug:'markets',dot:'#D97706',emoji:'🛒'},
+  {name:'Sales/Specials',slug:'sales',dot:'#059669',emoji:'💰'},
+  {name:'Music',slug:'music',dot:'#DB2777',emoji:'🎵'},
+  {name:'Sports',slug:'sports',dot:'#0891B2',emoji:'⚽'},
+  {name:'Food & Drink',slug:'food',dot:'#DC2626',emoji:'🍕'},
+  {name:'Community',slug:'community',dot:'#EA580C',emoji:'🤝'},
+  {name:'Arts',slug:'arts',dot:'#9333EA',emoji:'🎨'},
+];
+const EMOJI_MAP = {festivals:'🎪','yard-sales':'🛋️',religious:'🕌','open-house':'🏠',markets:'🛒',sales:'💰',music:'🎵',sports:'⚽',food:'🍕',community:'🤝',arts:'🎨',default:'🎉'};
 const PROMO = {EARLYBIRD:20,WELCOME10:10,COMMUNITY:5,NILE2026:25};
 
 let activeCat = 'all';
-let activeDist = 'any';
 let savedIds = JSON.parse(localStorage.getItem('ev_saved') || '[]');
 let isFreeEvent = true;
 let mapReady = false;
 let leafMap = null;
-let selectedPlan = 'free';
 
-// ── CATEGORY RENDER ───────────────────────────────────────────────────
+// ── RENDER CATS ───────────────────────────────────────────────────────
 function renderCats() {
   document.getElementById('cat-strip').innerHTML = CATS.map(c =>
     `<div class="cat-pill ${c.slug===activeCat?'active':''}" onclick="setCat('${c.slug}',this)">
-      ${c.slug==='all' ? '' : `<span class="cat-dot" style="background:${c.dot}"></span>`}
-      ${c.slug==='all' ? 'All' : c.emoji+' '+c.name}
+      ${c.slug!=='all'?`<span class="cat-dot" style="background:${c.dot}"></span>`:''}
+      ${c.slug==='all'?'All':c.emoji+' '+c.name}
     </div>`
   ).join('');
 }
 
-// ── EVENT LIST ────────────────────────────────────────────────────────
+// ── RENDER LIST ───────────────────────────────────────────────────────
 function getFiltered() {
   return EVENTS.filter(e => activeCat==='all' || e.slug===activeCat);
 }
 
-function renderList() {
-  const evs = getFiltered();
-  const el = document.getElementById('event-list');
-  el.innerHTML = evs.length ? evs.map(eventCard).join('') :
-    `<div class="empty"><div class="emoji">🔍</div><h3>No events found</h3><p>Try a different category or distance</p></div>`;
-}
-
 function eventCard(e) {
-  const saved = savedIds.includes(e.id);
+  const bm = savedIds.includes(e.id);
+  const em = EMOJI_MAP[e.slug] || EMOJI_MAP.default;
   return `<div class="event-card" onclick="openSheet(${e.id})">
-    <div class="event-card-header cat-${e.slug}">
-      ${e.featured ? '<span class="featured-badge">★ FEATURED</span>' : ''}
+    <div class="event-card-header bg-${e.slug}">
       <span class="cat-badge badge-${e.slug}">${e.cat.toUpperCase()}</span>
-      ${EMOJI[e.slug]||EMOJI.default}
-      <button class="bookmark-btn" onclick="toggleSave(event,${e.id})">${saved?'🔖':'🏷️'}</button>
+      ${e.featured?'<span class="featured-badge">★ FEATURED</span>':''}
+      ${em}
+      <button class="bm-btn" onclick="toggleSave(event,${e.id})">${bm?'🔖':'🏷️'}</button>
     </div>
     <div class="event-card-body">
       <div class="ec-title">${e.title}</div>
-      <div class="ec-meta">${e.date} · ${e.time} &nbsp;·&nbsp; ${e.loc} &nbsp;·&nbsp; ${e.dist} away</div>
+      <div class="ec-meta">${e.date} · ${e.time}<br>${e.loc}</div>
       <div class="ec-footer">
-        <span class="ec-org">by <a href="${e.orgLink}" style="color:#7C3AED;text-decoration:none">${e.org}</a></span>
+        <span class="ec-org">by <a href="${e.orgLink}" onclick="event.stopPropagation()" style="color:#7C3AED;text-decoration:none">${e.org}</a></span>
         <span class="ec-going">${e.going.toLocaleString()} going</span>
       </div>
     </div>
   </div>`;
 }
 
+function renderList() {
+  const evs = getFiltered();
+  document.getElementById('event-list').innerHTML = evs.length
+    ? evs.map(eventCard).join('')
+    : `<div class="empty"><div class="ico">🔍</div><h3>No events found</h3><p>Try a different category</p></div>`;
+}
+
 function renderSaved() {
   const items = EVENTS.filter(e => savedIds.includes(e.id));
-  document.getElementById('saved-list').innerHTML = items.length ? items.map(eventCard).join('') :
-    `<div class="empty"><div class="emoji">🔖</div><h3>No saved events yet</h3><p>Tap 🏷️ on any event to save it</p></div>`;
+  document.getElementById('saved-list').innerHTML = items.length
+    ? items.map(eventCard).join('')
+    : `<div class="empty"><div class="ico">🔖</div><h3>No saved events yet</h3><p>Tap 🏷️ on any event to save it</p></div>`;
 }
 
 // ── FILTERS ───────────────────────────────────────────────────────────
@@ -648,153 +771,216 @@ function setCat(slug, el) {
   renderList();
 }
 function setDist(d, el) {
-  activeDist = d;
   document.querySelectorAll('.dist-pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
 }
-function setLang(l, el) {
+function setLang(el) {
   document.querySelectorAll('.lang-pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
+}
+
+// ── MAP — FIXED ───────────────────────────────────────────────────────
+function initMap() {
+  // Wait until the map container is visible
+  const container = document.getElementById('leaflet-map');
+  if (!container) return;
+
+  if (!mapReady) {
+    mapReady = true;
+    leafMap = L.map('leaflet-map', { zoomControl: true, scrollWheelZoom: true })
+               .setView([40.74, -74.00], 10);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors', maxZoom: 18
+    }).addTo(leafMap);
+
+    const mkIcon = L.divIcon({
+      html: `<div style="background:#7C3AED;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35)"></div>`,
+      iconSize: [24,24], iconAnchor: [12,24], popupAnchor: [0,-28], className: ''
+    });
+
+    EVENTS.forEach(e => {
+      L.marker([e.lat, e.lng], {icon: mkIcon})
+       .addTo(leafMap)
+       .bindPopup(
+         `<b style="font-size:13px">${e.title}</b><br>
+          <span style="font-size:11px;color:#666">${e.date} · ${e.free?'Free':e.price}</span><br>
+          <a href="#" style="display:inline-block;margin-top:6px;padding:4px 10px;background:#7C3AED;color:#fff;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none"
+             onclick="closeMap();openSheet(${e.id});return false">View details →</a>`,
+         { maxWidth: 220 }
+       );
+    });
+  }
+
+  // Always invalidate after making visible
+  setTimeout(() => { leafMap.invalidateSize(); }, 150);
+}
+
+function closeMap() {
+  document.getElementById('view-map').classList.remove('active');
 }
 
 // ── VIEW SWITCH ───────────────────────────────────────────────────────
 function switchView(v) {
   ['list','map','saved'].forEach(id => {
     document.getElementById('view-'+id).classList.toggle('active', id===v);
-    document.getElementById('toggle-'+id).classList.toggle('active', id===v);
+    const tgl = document.getElementById('tgl-'+id);
+    if (tgl) tgl.classList.toggle('active', id===v);
   });
-  if (v==='map') initMap();
-  if (v==='saved') renderSaved();
-}
-
-// ── MAP ───────────────────────────────────────────────────────────────
-function initMap() {
-  if (mapReady) return;
-  mapReady = true;
-  leafMap = L.map('leaflet-map').setView([40.74,  -74.00], 11);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OpenStreetMap',maxZoom:18}).addTo(leafMap);
-
-  const mk = L.divIcon({
-    html:`<div style="background:#7C3AED;width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,
-    iconSize:[22,22],iconAnchor:[11,22],className:''
-  });
-
-  EVENTS.forEach(e => {
-    L.marker([e.lat,e.lng],{icon:mk}).addTo(leafMap)
-     .bindPopup(`<div class="mp-title">${e.title}</div><div class="mp-meta">${e.date} · ${e.free?'Free':e.price}</div><span class="mp-btn" onclick="openSheet(${e.id})">View</span>`,{maxWidth:200});
-  });
-  setTimeout(()=>leafMap.invalidateSize(),100);
+  if (v === 'map') initMap();
+  if (v === 'saved') renderSaved();
 }
 
 // ── BOOKMARKS ─────────────────────────────────────────────────────────
 function toggleSave(evt, id) {
   evt.stopPropagation();
   const i = savedIds.indexOf(id);
-  if (i > -1) { savedIds.splice(i,1); toast('Removed'); }
-  else { savedIds.push(id); toast('Saved! 🔖'); }
+  if (i > -1) { savedIds.splice(i,1); toast('Removed from saved'); }
+  else { savedIds.push(id); toast('Event saved! 🔖'); }
   localStorage.setItem('ev_saved', JSON.stringify(savedIds));
   renderList();
 }
 
 // ── SHEET ─────────────────────────────────────────────────────────────
 function openSheet(id) {
-  const e = EVENTS.find(x=>x.id===id);
+  const e = EVENTS.find(x => x.id===id);
   if (!e) return;
-  const hdr = document.getElementById('s-header');
-  hdr.className = `detail-header cat-${e.slug}`;
-  hdr.textContent = EMOJI[e.slug]||EMOJI.default;
-  document.getElementById('s-cat').textContent = e.cat.toUpperCase();
-  document.getElementById('s-title').textContent = e.title;
-  document.getElementById('s-date').textContent = `${e.date} at ${e.time}`;
-  document.getElementById('s-loc').textContent = e.loc;
-  document.getElementById('s-org').textContent = `Organized by ${e.org}`;
-  const pEl = document.getElementById('s-price');
-  pEl.textContent = e.free ? 'FREE EVENT' : e.price;
-  pEl.className = 'detail-price ' + (e.free?'price-free':'price-paid');
-  document.getElementById('s-desc').textContent = e.desc||'';
-  const waMsg = encodeURIComponent(`${e.title}\n${e.date} at ${e.time}\n${e.loc}`);
-  document.getElementById('s-wa').onclick = ()=>window.open(`https://wa.me/?text=${waMsg}`,'_blank');
-  document.getElementById('s-share').onclick = ()=>{
-    if(navigator.share) navigator.share({title:e.title,text:`${e.date} — ${e.loc}`});
-    else { navigator.clipboard?.writeText(`${e.title}\n${e.loc}`); toast('Copied!','info'); }
+  const hdr = document.getElementById('sh-hdr');
+  hdr.className = `sh-header bg-${e.slug}`;
+  hdr.textContent = EMOJI_MAP[e.slug] || EMOJI_MAP.default;
+  document.getElementById('sh-cat').textContent = e.cat.toUpperCase();
+  document.getElementById('sh-title').textContent = e.title;
+  document.getElementById('sh-date').textContent = `${e.date} at ${e.time}`;
+  document.getElementById('sh-loc').textContent = e.loc;
+  document.getElementById('sh-org').textContent = `Organized by ${e.org}`;
+  document.getElementById('sh-ticket').textContent = e.ticket || '';
+  const p = document.getElementById('sh-price');
+  p.textContent = e.free ? 'FREE — No tickets needed' : e.price;
+  p.className = 'sh-price ' + (e.free ? 'price-free' : 'price-paid');
+  document.getElementById('sh-desc').textContent = e.desc || '';
+  const wa = encodeURIComponent(`${e.title}\n${e.date} at ${e.time}\n${e.loc}\nvia Evently`);
+  document.getElementById('sh-wa').onclick = () => window.open(`https://wa.me/?text=${wa}`, '_blank');
+  document.getElementById('sh-share').onclick = () => {
+    if (navigator.share) navigator.share({title:e.title, text:`${e.date} — ${e.loc}`});
+    else { navigator.clipboard?.writeText(`${e.title}\n${e.date}\n${e.loc}`); toast('Copied!','info'); }
   };
   document.getElementById('sheet').classList.add('open');
 }
 function closeSheet() { document.getElementById('sheet').classList.remove('open'); }
-function sheetClick(ev) { if(ev.target.id==='sheet') closeSheet(); }
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────
+function openNotifSub() {
+  closeNotif();
+  document.getElementById('notif-modal').classList.add('open');
+}
+function closeNotifSub() { document.getElementById('notif-modal').classList.remove('open'); }
+
+async function requestPush() {
+  if (!('Notification' in window)) { toast('Push not supported on this browser','error'); return; }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    toast('Push notifications enabled! 🔔');
+    document.getElementById('nsub-push-btn').textContent = '✓ Push notifications on';
+    document.getElementById('nsub-push-btn').style.background = '#F0FDF4';
+    document.getElementById('nsub-push-btn').style.borderColor = '#16A34A';
+    document.getElementById('nsub-push-btn').style.color = '#16A34A';
+    // Demo notification
+    new Notification('Evently', {
+      body: 'You\'ll now receive alerts when new events are posted near you.',
+      icon: '/icons/apple-touch-icon.png'
+    });
+  } else {
+    toast('To enable push, go to browser Settings → Notifications','info');
+  }
+}
+
+function subscribeEmail() {
+  const email = document.getElementById('nsub-email').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    toast('Please enter a valid email address','error'); return;
+  }
+  const zip = document.getElementById('nsub-zip').value.trim();
+  const cats = Array.from(document.querySelectorAll('.nsub-cat.on')).map(el => el.textContent.trim()).join(', ');
+  // Store preference
+  localStorage.setItem('ev_sub', JSON.stringify({email, zip, cats, date: new Date().toISOString()}));
+  toast(`Subscribed! Alerts for: ${cats || 'all events'}`);
+  closeNotifSub();
+  localStorage.setItem('ev_notif','1');
+}
+
+function openSearch() {
+  const q = prompt('Search events:');
+  if (q) toast(`Searching "${q}"...`, 'info');
+}
+
+// ── NOTIFICATIONS UI ──────────────────────────────────────────────────
+function dismissNotif() {
+  document.getElementById('notif-banner').style.display = 'none';
+  localStorage.setItem('ev_notif','1');
+}
+function closeNotif() {
+  document.getElementById('notif-banner').style.display = 'none';
+}
 
 // ── POST ──────────────────────────────────────────────────────────────
 function openPost() { document.getElementById('post-modal').classList.add('open'); }
 function closePost() { document.getElementById('post-modal').classList.remove('open'); }
-function postBgClick(ev) { if(ev.target.id==='post-modal') closePost(); }
-function selectPlan(el,plan) {
-  selectedPlan = plan;
-  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+
+function selectPlan(el) {
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
 }
+
 function setFree(free) {
-  isFreeEvent=free;
-  document.getElementById('opt-free').className='price-opt'+(free?' sel-free':'');
-  document.getElementById('opt-paid').className='price-opt'+(!free?' sel-paid':'');
-  document.getElementById('price-wrap').style.display=free?'none':'block';
+  isFreeEvent = free;
+  document.getElementById('opt-free').className = 'price-opt' + (free?' sel-free':'');
+  document.getElementById('opt-paid').className = 'price-opt' + (!free?' sel-paid':'');
+  document.getElementById('price-wrap').style.display = free ? 'none' : 'block';
 }
+
 function submitPost() {
-  const title=document.getElementById('f-title').value.trim();
-  const email=document.getElementById('f-email').value.trim();
-  const org=document.getElementById('f-org').value.trim();
-  const loc=document.getElementById('f-loc').value.trim();
-  if(!title||!email||!org||!loc){toast('Please fill in all required fields','error');return}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast('Enter a valid email','error');return}
-  const promo=document.getElementById('f-promo').value.trim().toUpperCase();
-  if(promo&&!PROMO[promo]){toast('Invalid promo code','error');return}
-  if(promo&&PROMO[promo]) toast(`Promo applied: ${PROMO[promo]}% off`,'info');
+  const title = document.getElementById('f-title').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const org = document.getElementById('f-org').value.trim();
+  const loc = document.getElementById('f-loc-post').value.trim();
+  if (!title||!email||!org||!loc) { toast('Please fill in all required fields','error'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('Enter a valid email address','error'); return; }
+  const promo = document.getElementById('f-promo').value.trim().toUpperCase();
+  if (promo && !PROMO[promo]) { toast('Invalid promo code','error'); return; }
+  if (promo && PROMO[promo]) toast(`Promo applied — ${PROMO[promo]}% off! 🎉`);
   else toast(`Event submitted! Confirmation sent to ${email}`);
   closePost();
 }
 
-// ── MISC ──────────────────────────────────────────────────────────────
+// ── LOCATION ──────────────────────────────────────────────────────────
 function requestLocation() {
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(p=>{
-      document.getElementById('location-text').textContent='Location active';
-    },()=>toast('Location unavailable','error'));
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      p => { document.getElementById('loc-text').textContent = 'Location active 📍'; },
+      () => toast('Location unavailable','error')
+    );
   }
 }
-function toggleSearch(){}
-function openHelp(){ toast('Help: support@evently.app','info'); }
 
-function showNotifBanner() {
-  if(!localStorage.getItem('ev_notif'))
-    document.getElementById('notif-banner').style.display='flex';
-}
-function dismissNotif() {
-  document.getElementById('notif-banner').style.display='none';
-  localStorage.setItem('ev_notif','1');
-}
-async function requestPush() {
-  if('Notification' in window){
-    const p=await Notification.requestPermission();
-    if(p==='granted') toast('Notifications enabled! 🔔');
-    else toast('Notifications blocked','error');
-  }
-  dismissNotif();
-}
-
-function toast(msg,type='') {
-  const el=document.getElementById('toast');
-  el.textContent=msg;
-  el.className='toast show'+(type?' '+type:'');
+// ── TOAST ─────────────────────────────────────────────────────────────
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' '+type : '');
   clearTimeout(el._t);
-  el._t=setTimeout(()=>el.classList.remove('show'),3000);
+  el._t = setTimeout(() => el.classList.remove('show'), 3500);
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
 renderCats();
 renderList();
-setTimeout(()=>{
-  if(!localStorage.getItem('ev_notif'))
-    document.getElementById('notif-banner').style.display='flex';
-},5000);
+
+// Show notification banner after 6 seconds if not dismissed
+setTimeout(() => {
+  if (!localStorage.getItem('ev_notif')) {
+    document.getElementById('notif-banner').style.display = 'flex';
+  }
+}, 6000);
 </script>
 </body>
 </html>
