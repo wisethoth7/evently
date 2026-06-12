@@ -303,7 +303,7 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
     <div class="sh-title" id="sh-title"></div>
     <div class="sh-row"><span class="sh-icon">📅</span><span id="sh-date"></span></div>
     <div class="sh-row"><span class="sh-icon">📍</span><span id="sh-loc"></span></div>
-    <div class="sh-row"><span class="sh-icon">👤</span><span id="sh-org"></span></div>
+    <div class="sh-row"><span class="sh-icon">👤</span><span id="sh-org"></span><button id="sh-follow" onclick="toggleFollow()" style="margin-left:auto;padding:4px 12px;border:1.5px solid #7C3AED;border-radius:14px;font-size:11px;font-weight:700;background:#fff;color:#7C3AED;cursor:pointer;white-space:nowrap">+ Follow</button></div>
     <div class="sh-row" id="sh-dist-row" style="display:none"><span class="sh-icon">📏</span><span id="sh-dist"></span></div>
     <div class="sh-row" id="sh-age-row" style="display:none"><span class="sh-icon">🔞</span><span id="sh-age"></span></div>
     <div class="sh-row" id="sh-rec-row" style="display:none"><span class="sh-icon">🔄</span><span id="sh-rec"></span></div>
@@ -869,7 +869,39 @@ function toggleGoing(evt,id){
   renderList();
   if(sheetId===id) refreshSheetGoing();
 }
-function sheetGoing(){if(sheetId)toggleGoing({stopPropagation:()=>{}},sheetId)}
+function sheetGoing(){
+  if(!sheetId) return;
+  const wasGoing=goingIds.includes(sheetId);
+  toggleGoing({stopPropagation:()=>{}},sheetId);
+  if(!wasGoing && goingIds.includes(sheetId)){
+    const e=EVENTS.find(x=>x.id===sheetId);
+    if('Notification' in window && Notification.permission==='granted'){
+      toast("You're going! We'll remind you before it starts 🔔");
+      const reminders=JSON.parse(localStorage.getItem('ev_reminders')||'{}');
+      reminders[sheetId]={title:e.title,date:e.date,time:e.time};
+      localStorage.setItem('ev_reminders',JSON.stringify(reminders));
+    } else {
+      toast("You're going! Enable notifications to get reminders.");
+    }
+  }
+}
+function toggleFollow(){
+  const e=EVENTS.find(x=>x.id===sheetId); if(!e) return;
+  let follows=JSON.parse(localStorage.getItem('ev_follows')||'[]');
+  const btn=document.getElementById('sh-follow');
+  const i=follows.indexOf(e.org);
+  if(i>-1){follows.splice(i,1);btn.textContent='+ Follow';btn.style.background='#fff';btn.style.color='#7C3AED';toast(`Unfollowed ${e.org}`)}
+  else{follows.push(e.org);btn.textContent='✓ Following';btn.style.background='#7C3AED';btn.style.color='#fff';toast(`Following ${e.org} — you'll see their new events first`)}
+  localStorage.setItem('ev_follows',JSON.stringify(follows));
+}
+function refreshFollowBtn(org){
+  const follows=JSON.parse(localStorage.getItem('ev_follows')||'[]');
+  const btn=document.getElementById('sh-follow');
+  const following=follows.includes(org);
+  btn.textContent=following?'✓ Following':'+ Follow';
+  btn.style.background=following?'#7C3AED':'#fff';
+  btn.style.color=following?'#fff':'#7C3AED';
+}
 function refreshSheetGoing(){
   const going=goingIds.includes(sheetId);
   const btn=document.getElementById('sh-going');
@@ -888,6 +920,7 @@ function openSheet(id){
   document.getElementById('sh-date').textContent=`${e.date} at ${e.time}`;
   document.getElementById('sh-loc').textContent=e.loc;
   document.getElementById('sh-org').textContent=`Organized by ${e.org}`;
+  refreshFollowBtn(e.org);
   // Distance
   const dr=document.getElementById('sh-dist-row');
   if(locationActive&&userLat&&e.lat){
