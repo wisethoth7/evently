@@ -1,13 +1,17 @@
 {
-  "name": "Evently — Local Events Near You",
+  "name": "Evently \u2014 Local Events Near You",
   "short_name": "Evently",
-  "description": "Discover free local events near you. Yard sales, festivals, markets, community gatherings — all in one place.",
+  "description": "Discover free local events near you. Yard sales, festivals, markets, community gatherings \u2014 all in one place.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#07071A",
   "theme_color": "#FFAA00",
   "orientation": "portrait-primary",
-  "categories": ["lifestyle", "social", "entertainment"],
+  "categories": [
+    "lifestyle",
+    "social",
+    "entertainment"
+  ],
   "lang": "en",
   "icons": [
     {
@@ -69,15 +73,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshots/evently-explore.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Explore local events near you"
     }
   ]
 }
