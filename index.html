@@ -12,10 +12,9 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:#fff;color:#111827;font-family:-apple-system,'SF Pro Text','Helvetica Neue',Arial,sans-serif;min-height:100vh}
-body::before{content:'';position:fixed;top:0;left:0;right:0;height:4px;z-index:999;background:linear-gradient(90deg,#FF6B6B,#FFB347,#4ADE80,#60A5FA,#A78BFA,#F472B6)}
 
 /* HEADER */
-header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px solid #E5E7EB;padding:10px 16px;display:flex;align-items:center;gap:10px}
+header{position:sticky;top:0;z-index:100;background:#F9FAFB;border-bottom:1px solid #E5E7EB;padding:10px 16px;display:flex;align-items:center;gap:10px}
 .logo{font-size:22px;font-weight:800;color:#16a34a;flex-shrink:0;font-style:italic;letter-spacing:-.5px;cursor:pointer}
 .search-wrap{flex:1;display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #D1D5DB;border-radius:24px;padding:7px 14px;transition:border-color .2s;min-width:0}
 .search-wrap:focus-within{border-color:#7C3AED}
@@ -360,19 +359,19 @@ header{position:sticky;top:4px;z-index:100;background:#F9FAFB;border-bottom:1px 
     <div class="plan-grid">
       <div class="plan-card selected" onclick="selectPlan(this)">
         <div class="ph"><div class="pn">Free</div><div class="pp gray">$0</div></div>
-        <div class="pf">✓ Post 1 event<br>✓ List & map<br>✓ Going counter<br><em>Yard sales, one-offs</em></div>
+        <div class="pf">✓ Post 1 event<br>✓ List & map<br>✓ Going counter<br>✓ Edit anytime<br>✓ Email confirmation<br><em>Yard sales, one-offs</em></div>
       </div>
       <div class="plan-card gold" onclick="selectPlan(this)">
         <div class="ph"><div class="pn">Boost <span class="ptag gold">POPULAR</span></div><div class="pp gold">$2.99</div></div>
-        <div class="pf">⭐ Featured 3 days<br>✓ Top of feed<br>✓ Gold border<br><em>Community events</em></div>
+        <div class="pf">⭐ Featured 3 days<br>✓ Top of feed<br>✓ Gold border<br>✓ Push notification to followers<br><em>Community events</em></div>
       </div>
       <div class="plan-card gold" onclick="selectPlan(this)">
         <div class="ph"><div class="pn">Boost Plus</div><div class="pp gold">$4.99</div></div>
-        <div class="pf">⭐ Featured 7 days<br>✓ Top of feed<br>✓ Priority search<br><em>Markets, open houses</em></div>
+        <div class="pf">⭐ Featured 7 days<br>✓ Top of feed<br>✓ Priority search<br>✓ Push notification to followers<br><em>Markets, open houses</em></div>
       </div>
       <div class="plan-card amber" onclick="selectPlan(this)">
         <div class="ph"><div class="pn">Pro <span class="ptag purple">PRO</span></div><div class="pp gold">$9.99/mo</div></div>
-        <div class="pf">⭐ Unlimited events<br>✓ 7-day boost always<br>✓ Organiser profile<br><em>Clubs, churches</em></div>
+        <div class="pf">⭐ Unlimited events<br>✓ 7-day boost always<br>✓ Organiser profile<br>✓ Recurring event scheduling<br>✓ Going-count analytics<br><em>Clubs, churches</em></div>
       </div>
     </div>
     <div class="plan-card blue" style="margin-bottom:18px" onclick="selectPlan(this)">
@@ -686,6 +685,7 @@ function resetFilters(){
   document.querySelectorAll('.cat-pill').forEach((p,i)=>p.classList.toggle('active',i===0));
   document.querySelectorAll('.filter-pill').forEach((p,i)=>p.classList.toggle('active',i===0));
   document.getElementById('free-btn').classList.remove('active');
+  switchView('list');
   renderList();
 }
 
@@ -980,7 +980,7 @@ function subscribeEmail(){
 }
 
 // ── POST ──────────────────────────────────────────────────────────────
-function openPost(){document.getElementById('post-modal').classList.add('open')}
+function openPost(){switchView('list');document.getElementById('post-modal').classList.add('open')}
 function closePost(){document.getElementById('post-modal').classList.remove('open')}
 function selectPlan(el){document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected')}
 function setFreePost(free){
