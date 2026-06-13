@@ -1014,32 +1014,67 @@ async function submitPost(){
   const email = v('f-email');
   const orgName = v('f-org');
 
+  const submitBtn = document.querySelector('.submit-btn');
+  submitBtn.disabled = true;
+  const originalBtnText = submitBtn.textContent;
+  submitBtn.textContent = 'Posting...';
+
   try{
-    // 1. Upsert organiser profile (tracks signups)
-    const { data: existing } = await sb.from('organiser_profiles').select('id,events_posted').eq('email', email).maybeSingle();
+    // 1. Check rate limit + upsert organiser profile (tracks signups)
+    const { data: existing } = await sb.from('organiser_profiles').select('id,events_posted,last_post_at,tier').eq('email', email).maybeSingle();
+
+    // Rate limit: free tier users can post once every 24 hours
+    if(existing && existing.last_post_at && (existing.tier==='free' || !existing.tier) && tier==='free'){
+      const lastPost = new Date(existing.last_post_at);
+      const hoursSince = (Date.now()-lastPost.getTime())/3600000;
+      if(hoursSince < 24){
+        const hoursLeft = Math.ceil(24-hoursSince);
+        toast(`Free accounts can post once per day. Try again in ${hoursLeft}h, or upgrade to Pro for unlimited posts.`,'error');
+        submitBtn.disabled=false; submitBtn.textContent=originalBtnText;
+        return;
+      }
+    }
+
+    const now = new Date().toISOString();
     if(existing){
       await sb.from('organiser_profiles').update({
         organiser_name: orgName,
         tier: tier,
         events_posted: (existing.events_posted||0)+1,
-        updated_at: new Date().toISOString()
+        last_post_at: now,
+        updated_at: now
       }).eq('id', existing.id);
     } else {
       await sb.from('organiser_profiles').insert([{
         organiser_name: orgName,
         email: email,
         tier: tier,
-        events_posted: 1
+        events_posted: 1,
+        last_post_at: now
       }]);
     }
 
-    // 2. Insert the event
+    // 2. Geocode the address (Nominatim/OpenStreetMap, free, no key)
+    let lat=null, lng=null;
+    try{
+      const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(v('f-loc-post'))}`, {
+        headers: { 'Accept-Language': 'en' }
+      });
+      const geoData = await geoRes.json();
+      if(geoData && geoData.length){
+        lat = parseFloat(geoData[0].lat);
+        lng = parseFloat(geoData[0].lon);
+      }
+    }catch(geoErr){ console.error('Geocoding failed', geoErr); }
+
+    // 3. Insert the event
     const isFree = isFreePost;
     const eventRow = {
       title: v('f-title'),
       category: document.getElementById('f-cat').value || 'Community',
       description: v('f-desc-post') || null,
       location: v('f-loc-post'),
+      lat: lat, lng: lng,
       date: document.getElementById('f-date').value,
       time: document.getElementById('f-time').value || null,
       organiser: orgName,
@@ -1051,7 +1086,7 @@ async function submitPost(){
       recurring_schedule: document.getElementById('f-recurring').value || null
     };
     const { error: evError } = await sb.from('events').insert([eventRow]);
-    if(evError){ console.error(evError); toast('Could not save event — please try again','error'); return; }
+    if(evError){ console.error(evError); toast('Could not save event — please try again','error'); submitBtn.disabled=false; submitBtn.textContent=originalBtnText; return; }
 
     if(promo&&PROMO[promo]) toast(`Promo applied — ${PROMO[promo]}% off! Event submitted and confirmation sent to ${email} 🎉`);
     else toast(`Event submitted! Confirmation sent to ${email}`);
@@ -1060,6 +1095,8 @@ async function submitPost(){
   }catch(e){
     console.error(e);
     toast('Something went wrong — please try again','error');
+  }finally{
+    submitBtn.disabled=false; submitBtn.textContent=originalBtnText;
   }
 }
 
