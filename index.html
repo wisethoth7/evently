@@ -9,6 +9,7 @@
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:#fff;color:#111827;font-family:-apple-system,'SF Pro Text','Helvetica Neue',Arial,sans-serif;min-height:100vh}
@@ -443,7 +444,7 @@ header{position:sticky;top:0;z-index:100;background:#F9FAFB;border-bottom:1px so
 // ══════════════════════════════════════════════════════
 // EVENTS DATA
 // ══════════════════════════════════════════════════════
-const EVENTS = [
+let EVENTS = [
   // NJ / NYC
   {id:1,title:"Brazil vs. Morocco — FIFA World Cup",cat:"Sports",slug:"sports",date:"2026-06-13",time:"6:00 PM",
    loc:"MetLife Stadium, East Rutherford, NJ",lat:40.8135,lng:-74.0745,
@@ -629,6 +630,11 @@ const CATS = [
 const EM = {festivals:'🎪','yard-sales':'🛋️',religious:'🕌','open-house':'🏠',markets:'🛒',
             music:'🎵',sports:'⚽',food:'🍕',community:'🤝',business:'💼',arts:'🎨',default:'🎉'};
 const PROMO = {EARLYBIRD:20,WELCOME10:10,COMMUNITY:5,NILE2026:25};
+
+// ── SUPABASE ──────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://hvyfeebazmiqateniupm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2eWZlZWJhem1pcWF0ZW5pdXBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTI2MTcsImV4cCI6MjA5NTY4ODYxN30.89qqEshOwp1bU2AQbzSpZ36_TuqP2jVULo_9Ug-S9_c';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let activeCat='all', freeOnly=false, activeDist='any';
 let userLat=null, userLng=null, locationActive=false;
@@ -989,15 +995,72 @@ function setFreePost(free){
   document.getElementById('opt-paid').className='price-opt'+(!free?' paid':'');
   document.getElementById('price-wrap').style.display=free?'none':'block';
 }
-function submitPost(){
+async function submitPost(){
   const v=id=>document.getElementById(id).value.trim();
   if(!v('f-title')||!v('f-email')||!v('f-org')||!v('f-loc-post')){toast('Please fill in all required fields','error');return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('f-email'))){toast('Enter a valid email','error');return}
   const promo=v('f-promo').toUpperCase();
   if(promo&&!PROMO[promo]){toast('Invalid promo code','error');return}
-  if(promo&&PROMO[promo]) toast(`Promo applied — ${PROMO[promo]}% off! 🎉`);
-  else toast(`Event submitted! Confirmation sent to ${v('f-email')}`);
-  closePost();
+
+  const selectedCard = document.querySelector('.plan-card.selected');
+  const planName = selectedCard ? selectedCard.querySelector('.pn').textContent.trim().split(' ')[0] : 'Free';
+  const tierMap = {Free:'free', Boost:'free', 'Boost':'free', Pro:'pro', Business:'business'};
+  const tier = tierMap[planName] || 'free';
+  const isFeatured = planName==='Boost' || planName==='Pro' || planName==='Business';
+  let featuredDays = 0;
+  if(planName==='Boost') featuredDays=3;
+  else if(planName==='Boost Plus'||planName==='Pro'||planName==='Business') featuredDays=7;
+
+  const email = v('f-email');
+  const orgName = v('f-org');
+
+  try{
+    // 1. Upsert organiser profile (tracks signups)
+    const { data: existing } = await sb.from('organiser_profiles').select('id,events_posted').eq('email', email).maybeSingle();
+    if(existing){
+      await sb.from('organiser_profiles').update({
+        organiser_name: orgName,
+        tier: tier,
+        events_posted: (existing.events_posted||0)+1,
+        updated_at: new Date().toISOString()
+      }).eq('id', existing.id);
+    } else {
+      await sb.from('organiser_profiles').insert([{
+        organiser_name: orgName,
+        email: email,
+        tier: tier,
+        events_posted: 1
+      }]);
+    }
+
+    // 2. Insert the event
+    const isFree = isFreePost;
+    const eventRow = {
+      title: v('f-title'),
+      category: document.getElementById('f-cat').value || 'Community',
+      description: v('f-desc-post') || null,
+      location: v('f-loc-post'),
+      date: document.getElementById('f-date').value,
+      time: document.getElementById('f-time').value || null,
+      organiser: orgName,
+      price: isFree ? 'Free' : (v('f-price-post') || 'Paid'),
+      is_free: isFree,
+      organiser_tier: tier,
+      is_featured: isFeatured,
+      featured_until: featuredDays ? new Date(Date.now()+featuredDays*86400000).toISOString() : null,
+      recurring_schedule: document.getElementById('f-recurring').value || null
+    };
+    const { error: evError } = await sb.from('events').insert([eventRow]);
+    if(evError){ console.error(evError); toast('Could not save event — please try again','error'); return; }
+
+    if(promo&&PROMO[promo]) toast(`Promo applied — ${PROMO[promo]}% off! Event submitted and confirmation sent to ${email} 🎉`);
+    else toast(`Event submitted! Confirmation sent to ${email}`);
+    closePost();
+    loadDbEvents();
+  }catch(e){
+    console.error(e);
+    toast('Something went wrong — please try again','error');
+  }
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────────
@@ -1015,6 +1078,40 @@ function reportEvent(){
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
+// ── LOAD REAL EVENTS FROM SUPABASE ──────────────────────────────────────
+async function loadDbEvents(){
+  try{
+    const { data, error } = await sb.from('events').select('*').gte('date', new Date().toISOString().slice(0,10)).order('created_at',{ascending:false});
+    if(error || !data) return;
+    const slugMap = {};
+    CATS.forEach(c=>{ slugMap[c.name]=c.slug; });
+    const dbEvents = data.map(row=>({
+      id: 'db_'+row.id,
+      title: row.title,
+      cat: row.category,
+      slug: slugMap[row.category] || 'community',
+      date: row.date,
+      time: row.time || '',
+      loc: row.location,
+      lat: row.lat, lng: row.lng,
+      org: row.organiser || 'Anonymous',
+      orgLink: row.organiser_profile_url || '#',
+      going: row.going_count || 1,
+      featured: row.is_featured || false,
+      free: row.is_free !== false,
+      price: row.price || 'Free',
+      ticketLink: '#',
+      age: 'All ages',
+      recurring: row.recurring_schedule || null,
+      desc: row.description || ''
+    }));
+    EVENTS = [...dbEvents, ...EVENTS];
+    renderCats();
+    renderList();
+  }catch(e){ console.error('loadDbEvents error', e); }
+}
+loadDbEvents();
+
 renderCats();
 renderList();
 // Auto-request location silently after 1 second
