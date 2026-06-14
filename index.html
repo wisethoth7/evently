@@ -833,7 +833,7 @@ function getFiltered(){
     }
     if(locationActive&&activeDist!=='any'&&e.lat&&e.lng){
       const d=haversine(userLat,userLng,e.lat,e.lng);
-      if(Number(activeDist)<50&&d>Number(activeDist)) return false;
+      if(d>Number(activeDist)) return false;
     }
     return true;
   });
@@ -944,7 +944,40 @@ function renderCats(){
     </div>`).join('');
 }
 function setCat(s,el){activeCat=s;document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderList()}
-function setDist(d,el){activeDist=d;document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderList()}
+function setDist(d,el){
+  activeDist=d;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  if(d!=='any'&&!locationActive){
+    // Auto-request location when user picks a distance filter
+    if(navigator.geolocation){
+      toast('Getting your location...');
+      navigator.geolocation.getCurrentPosition(
+        pos=>{
+          userLat=pos.coords.latitude;
+          userLng=pos.coords.longitude;
+          locationActive=true;
+          document.getElementById('loc-btn').textContent='📍 Location On';
+          document.getElementById('loc-btn').style.background='rgba(74,222,128,0.15)';
+          document.getElementById('loc-btn').style.borderColor='var(--green)';
+          renderList();
+        },
+        ()=>{
+          toast('Location access denied — showing all events','error');
+          activeDist='any';
+          document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+          document.querySelector('.filter-pill').classList.add('active');
+          renderList();
+        }
+      );
+    } else {
+      toast('Location not supported on this device','error');
+      activeDist='any';
+    }
+  } else {
+    renderList();
+  }
+}
 function setLang(el){document.querySelectorAll('.lang-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active')}
 function toggleFree(){freeOnly=!freeOnly;document.getElementById('free-btn').classList.toggle('active',freeOnly);renderList()}
 
