@@ -9,6 +9,7 @@
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -611,24 +612,148 @@ let EVENTS = [
    org:"Startup Toronto",going:200,featured:false,free:false,price:"$15 CAD",
    ticketLink:"#",age:"18+",recurring:"Monthly",
    desc:"Monthly startup pitch competition at MaRS. 5 founders pitch live to a panel of investors. Networking drinks after. Great for founders and early investors."},
+  // ── REAL USA/CANADA EVENTS (June–September 2026) ──
+  {id:34,title:"Chicago Jazz Festival",cat:"Music",slug:"music",date:"2026-08-28",time:"11:00 AM",
+   loc:"Millennium Park, Chicago, IL",lat:41.8827,lng:-87.6233,
+   org:"City of Chicago",going:2800,featured:false,free:true,price:"Free",
+   ticketLink:"#",age:"All ages",recurring:"Annual",
+   desc:"One of the world's premier jazz festivals with 500+ artists across multiple stages in the heart of Chicago."},
+  {id:35,title:"Boston Calling Music Festival",cat:"Music",slug:"music",date:"2026-07-24",time:"12:00 PM",
+   loc:"Harvard Athletic Complex, Boston, MA",lat:42.3736,lng:-71.1219,
+   org:"Boston Calling Events",going:1900,featured:false,free:false,price:"$180",
+   ticketLink:"#",age:"All ages",recurring:"Annual",
+   desc:"Boston's premier outdoor music festival featuring top headliners across rock, indie, and hip-hop genres."},
+  {id:36,title:"Miami Beach Farmers Market",cat:"Farmers Market",slug:"markets",date:"2026-06-21",time:"9:00 AM",
+   loc:"Lincoln Road Mall, Miami Beach, FL",lat:25.7907,lng:-80.1391,
+   org:"Lincoln Road BID",going:420,featured:false,free:true,price:"Free",
+   ticketLink:"",age:"All ages",recurring:"Weekly",
+   desc:"Open-air farmers market with fresh produce, artisan foods, plants, and local vendors every Sunday on iconic Lincoln Road."},
+  {id:37,title:"Seattle International Film Festival",cat:"Arts",slug:"arts",date:"2026-07-10",time:"10:00 AM",
+   loc:"SIFF Cinema Uptown, Seattle, WA",lat:47.6253,lng:-122.3569,
+   org:"SIFF",going:650,featured:false,free:false,price:"$15",
+   ticketLink:"#",age:"All ages",recurring:"Annual",
+   desc:"World-class cinema showcasing over 400 films from more than 70 countries. One of the largest film festivals in North America."},
+  {id:38,title:"Houston Pride Festival",cat:"Community",slug:"community",date:"2026-06-27",time:"11:00 AM",
+   loc:"Downtown Houston, TX",lat:29.7604,lng:-95.3698,
+   org:"Houston Pride",going:3200,featured:false,free:true,price:"Free",
+   ticketLink:"",age:"All ages",recurring:"Annual",
+   desc:"One of the largest Pride celebrations in the South with parade, live entertainment, and community events downtown."},
+  {id:39,title:"Ottawa Bluesfest",cat:"Music",slug:"music",date:"2026-07-03",time:"2:00 PM",
+   loc:"LeBreton Flats Park, Ottawa, ON, Canada",lat:45.4215,lng:-75.7221,
+   org:"Ottawa Bluesfest",going:1500,featured:false,free:false,price:"$90 CAD",
+   ticketLink:"#",age:"All ages",recurring:"Annual",
+   desc:"Canada's largest music festival with blues, rock, country, and pop artists over 11 days on the Ottawa River."},
+  {id:40,title:"LA Original Farmers Market",cat:"Farmers Market",slug:"markets",date:"2026-06-21",time:"8:00 AM",
+   loc:"6333 W 3rd St, Los Angeles, CA",lat:34.0714,lng:-118.3588,
+   org:"Original Farmers Market LA",going:310,featured:false,free:true,price:"Free",
+   ticketLink:"",age:"All ages",recurring:"Weekly",
+   desc:"Historic LA landmark with local farmers, artisan food producers, and specialty vendors since 1934."},
+  {id:41,title:"Denver County Fair",cat:"Festivals",slug:"festivals",date:"2026-07-31",time:"10:00 AM",
+   loc:"National Western Complex, Denver, CO",lat:39.7851,lng:-104.9660,
+   org:"Denver County Fair",going:890,featured:false,free:false,price:"$12",
+   ticketLink:"#",age:"All ages",recurring:"Annual",
+   desc:"Denver's beloved county fair with live music, local food, art, competitions, and family activities."},
+  {id:42,title:"Halifax Busker Festival",cat:"Arts",slug:"arts",date:"2026-08-06",time:"12:00 PM",
+   loc:"Halifax Waterfront, Halifax, NS, Canada",lat:44.6488,lng:-63.5752,
+   org:"Halifax Waterfront BIA",going:720,featured:false,free:true,price:"Free",
+   ticketLink:"",age:"All ages",recurring:"Annual",
+   desc:"International street performers, acrobats, musicians and comedians take over the Halifax waterfront for 5 days."},
+  {id:43,title:"Portland Night Market",cat:"Food & Drink",slug:"food",date:"2026-07-17",time:"5:00 PM",
+   loc:"Portland Expo Center, Portland, OR",lat:45.5983,lng:-122.6940,
+   org:"Portland Night Market",going:540,featured:false,free:false,price:"$5",
+   ticketLink:"#",age:"All ages",recurring:"Monthly",
+   desc:"200+ vendors serving food from across Asia, plus live music and entertainment at North America's best night market."},
+  {id:44,title:"Kids Summer Science Fair",cat:"Kids & Family",slug:"kids",date:"2026-07-11",time:"10:00 AM",
+   loc:"Ontario Science Centre, Toronto, ON, Canada",lat:43.7160,lng:-79.3396,
+   org:"Ontario Science Centre",going:380,featured:false,free:false,price:"$18 CAD",
+   ticketLink:"#",age:"Kids",recurring:null,
+   desc:"Interactive science exhibits and experiments for kids 4-12. Hands-on STEM activities all summer long."},
+  {id:45,title:"Phoenix Weekend Bazaar — Sales & Deals",cat:"Sales & Specials",slug:"sales",date:"2026-06-28",time:"8:00 AM",
+   loc:"Desert Ridge Marketplace, Phoenix, AZ",lat:33.6742,lng:-111.9781,
+   org:"Desert Ridge Events",going:260,featured:false,free:true,price:"Free",
+   ticketLink:"",age:"All ages",recurring:"Weekly",
+   desc:"Weekend open-air bazaar with antiques, vintage clothing, handmade crafts, and great deals from 100+ vendors."},
+  {id:46,title:"Austin City Limits Music Festival",cat:"Music",slug:"music",date:"2026-09-04",time:"11:00 AM",
+   loc:"Zilker Park, Austin, TX",lat:30.2672,lng:-97.7701,
+   org:"C3 Presents",going:4200,featured:true,free:false,price:"$350",
+   ticketLink:"#",age:"All ages",recurring:"Annual",
+   desc:"130+ bands across 8 stages over two weekends in Zilker Park. One of America's greatest music festivals."},
+  {id:47,title:"Richmond Night Market",cat:"Food & Drink",slug:"food",date:"2026-06-26",time:"7:00 PM",
+   loc:"8260 River Rd, Richmond, BC, Canada",lat:49.1665,lng:-123.1365,
+   org:"VCNM",going:1800,featured:false,free:false,price:"$5 CAD",
+   ticketLink:"#",age:"All ages",recurring:"Weekly",
+   desc:"North America's largest night market every Fri-Sun May-October. 100+ food stalls and live entertainment."},
+  {id:48,title:"Philadelphia Italian Market Festival",cat:"Food & Drink",slug:"food",date:"2026-07-18",time:"10:00 AM",
+   loc:"9th Street, South Philadelphia, PA",lat:39.9316,lng:-75.1531,
+   org:"9th Street Italian Market",going:490,featured:false,free:true,price:"Free",
+   ticketLink:"",age:"All ages",recurring:"Annual",
+   desc:"America's oldest outdoor market festival with food vendors, cooking demos, live music, and cultural performances."},
+  {id:49,title:"4th of July Family Festival",cat:"Kids & Family",slug:"kids",date:"2026-07-04",time:"10:00 AM",
+   loc:"Grant Park, Chicago, IL",lat:41.8739,lng:-87.6176,
+   org:"Chicago Park District",going:1100,featured:false,free:true,price:"Free",
+   ticketLink:"",age:"All ages",recurring:"Annual",
+   desc:"Independence Day family activities — games, crafts, face painting, food trucks, and spectacular evening fireworks."},
+  {id:50,title:"Calgary Stampede",cat:"Festivals",slug:"festivals",date:"2026-07-03",time:"9:00 AM",
+   loc:"Stampede Park, Calgary, AB, Canada",lat:51.0374,lng:-114.0571,
+   org:"Calgary Exhibition and Stampede",going:5800,featured:true,free:false,price:"$25 CAD",
+   ticketLink:"#",age:"All ages",recurring:"Annual",
+   desc:"The Greatest Outdoor Show on Earth. 10 days of rodeo, chuckwagon races, concerts, and western culture."},
+  {id:51,title:"Atlanta Fine Arts Festival",cat:"Arts",slug:"arts",date:"2026-08-15",time:"10:00 AM",
+   loc:"Piedmont Park, Atlanta, GA",lat:33.7870,lng:-84.3731,
+   org:"Dogwood Festival Inc",going:740,featured:false,free:true,price:"Free",
+   ticketLink:"",age:"All ages",recurring:"Annual",
+   desc:"250+ juried artists, live entertainment, food vendors, and children's activities in beautiful Piedmont Park."},
+  {id:52,title:"Montreal Just For Laughs",cat:"Arts",slug:"arts",date:"2026-07-16",time:"7:00 PM",
+   loc:"Quartier des Spectacles, Montreal, QC, Canada",lat:45.5128,lng:-73.5630,
+   org:"Just For Laughs",going:2200,featured:true,free:false,price:"$45 CAD",
+   ticketLink:"#",age:"18+",recurring:"Annual",
+   desc:"The world's largest comedy festival with stand-up, improv, and sketch comedy from top international performers."},
+  {id:53,title:"Minneapolis Aquatennial",cat:"Festivals",slug:"festivals",date:"2026-07-22",time:"10:00 AM",
+   loc:"Minneapolis Riverfront, Minneapolis, MN",lat:44.9778,lng:-93.2650,
+   org:"Minneapolis Downtown Council",going:820,featured:false,free:true,price:"Free",
+   ticketLink:"",age:"All ages",recurring:"Annual",
+   desc:"Minneapolis' summer festival with milk carton boat races, sand castle competition, and fireworks over the river."},
+  {id:54,title:"Winnipeg Fringe Theatre Festival",cat:"Arts",slug:"arts",date:"2026-07-16",time:"12:00 PM",
+   loc:"Old Market Square, Winnipeg, MB, Canada",lat:49.8972,lng:-97.1364,
+   org:"Winnipeg Fringe",going:560,featured:false,free:false,price:"$12 CAD",
+   ticketLink:"#",age:"All ages",recurring:"Annual",
+   desc:"The second-largest fringe festival in North America with 160+ productions from 500+ artists over 11 days."},
+  {id:55,title:"DC Farmer's Market at Eastern Market",cat:"Farmers Market",slug:"markets",date:"2026-06-20",time:"8:00 AM",
+   loc:"Eastern Market, 225 7th St SE, Washington, DC",lat:38.8824,lng:-76.9975,
+   org:"Eastern Market",going:280,featured:false,free:true,price:"Free",
+   ticketLink:"",age:"All ages",recurring:"Weekly",
+   desc:"Historic DC farmers market with fresh local produce, artisan crafts, and street food every Saturday and Sunday."},
+  {id:56,title:"San Diego Comic-Con",cat:"Business",slug:"business",date:"2026-07-23",time:"9:00 AM",
+   loc:"San Diego Convention Center, CA",lat:32.7063,lng:-117.1617,
+   org:"Comic-Con International",going:8500,featured:true,free:false,price:"$55",
+   ticketLink:"#",age:"All ages",recurring:"Annual",
+   desc:"The world's largest pop culture convention. Comics, movies, TV, gaming, and celebrity panels over 4 days."},
+  {id:57,title:"Garage Sale Weekend — Toronto East",cat:"Yard Sales",slug:"yard-sales",date:"2026-06-21",time:"8:00 AM",
+   loc:"Beaches Neighbourhood, Toronto, ON, Canada",lat:43.6752,lng:-79.2985,
+   org:"Beaches BIA",going:190,featured:false,free:true,price:"Free",
+   ticketLink:"",age:"All ages",recurring:"Annual",
+   desc:"Annual community-wide garage sale across 200+ homes in Toronto's Beaches neighbourhood. Great deals, great weather."},
 ];
 
 const CATS = [
   {name:'All',slug:'all',dot:'#111827'},
-  {name:'Business',slug:'business',dot:'#1D4ED8',emoji:'💼'},
   {name:'Music',slug:'music',dot:'#DB2777',emoji:'🎵'},
   {name:'Festivals',slug:'festivals',dot:'#7C3AED',emoji:'🎪'},
-  {name:'Sports',slug:'sports',dot:'#0891B2',emoji:'⚽'},
-  {name:'Community',slug:'community',dot:'#EA580C',emoji:'🤝'},
-  {name:'Markets',slug:'markets',dot:'#D97706',emoji:'🛒'},
   {name:'Food & Drink',slug:'food',dot:'#DC2626',emoji:'🍕'},
+  {name:'Sports',slug:'sports',dot:'#0891B2',emoji:'⚽'},
+  {name:'Arts',slug:'arts',dot:'#9333EA',emoji:'🎨'},
+  {name:'Business',slug:'business',dot:'#1D4ED8',emoji:'💼'},
+  {name:'Community',slug:'community',dot:'#EA580C',emoji:'🤝'},
+  {name:'Farmers Market',slug:'markets',dot:'#D97706',emoji:'🥦'},
+  {name:'Sales & Specials',slug:'sales',dot:'#059669',emoji:'🏷️'},
+  {name:'Kids & Family',slug:'kids',dot:'#F59E0B',emoji:'👨‍👩‍👧'},
   {name:'Yard Sales',slug:'yard-sales',dot:'#CA8A04',emoji:'🛋️'},
   {name:'Religious',slug:'religious',dot:'#2563EB',emoji:'🕌'},
   {name:'Open House',slug:'open-house',dot:'#16A34A',emoji:'🏠'},
-  {name:'Arts',slug:'arts',dot:'#9333EA',emoji:'🎨'},
 ];
-const EM = {festivals:'🎪','yard-sales':'🛋️',religious:'🕌','open-house':'🏠',markets:'🛒',
-            music:'🎵',sports:'⚽',food:'🍕',community:'🤝',business:'💼',arts:'🎨',default:'🎉'};
+const EM = {festivals:'🎪','yard-sales':'🛋️',religious:'🕌','open-house':'🏠',markets:'🥦',
+            music:'🎵',sports:'⚽',food:'🍕',community:'🤝',business:'💼',arts:'🎨',
+            sales:'🏷️',kids:'👨‍👩‍👧',default:'🎉'};
 const PROMO = {EARLYBIRD:20,WELCOME10:10,COMMUNITY:5,NILE2026:25};
 
 // ── SUPABASE ──────────────────────────────────────────────────────────
@@ -774,7 +899,7 @@ function renderList(){
 }
 
 function card(e){
-  const bm=savedIds.includes(e.id), going=goingIds.includes(e.id);
+  const bm=savedIds.map(String).includes(String(e.id)), going=goingIds.map(String).includes(String(e.id));
   const em=EM[e.slug]||EM.default, cd=countdown(e.date);
   const dist=locationActive&&userLat&&e.lat?fmtDist(haversine(userLat,userLng,e.lat,e.lng)):null;
   return `<div class="event-card" onclick="openSheet(${e.id})">
@@ -803,7 +928,8 @@ function card(e){
 }
 
 function renderSaved(){
-  const items=EVENTS.filter(e=>savedIds.includes(e.id));
+  const strIds=savedIds.map(String);
+  const items=EVENTS.filter(e=>strIds.includes(String(e.id)));
   document.getElementById('saved-list').innerHTML=items.length
     ?items.map(card).join('')
     :`<div class="empty"><div class="ico">🔖</div><h3>No saved events yet</h3><p>Tap 🏷️ on any event to bookmark it</p></div>`;
@@ -860,17 +986,22 @@ function initMap(){
 // ── SAVE / GOING ──────────────────────────────────────────────────────
 function toggleSave(evt,id){
   evt.stopPropagation();
-  const i=savedIds.indexOf(id);
+  const sid=String(id);
+  savedIds=savedIds.map(String);
+  const i=savedIds.indexOf(sid);
   if(i>-1){savedIds.splice(i,1);toast('Removed from saved')}
-  else{savedIds.push(id);toast('Event saved! 🔖')}
+  else{savedIds.push(sid);toast('Event saved! 🔖')}
   localStorage.setItem('ev_saved',JSON.stringify(savedIds));
   renderList();
+  if(document.getElementById('view-saved').style.display!=='none') renderSaved();
 }
 function toggleGoing(evt,id){
   evt.stopPropagation();
-  const i=goingIds.indexOf(id);
+  const sid=String(id);
+  goingIds=goingIds.map(String);
+  const i=goingIds.indexOf(sid);
   if(i>-1){goingIds.splice(i,1);toast('Removed from going')}
-  else{goingIds.push(id);toast('You\'re going! ✓')}
+  else{goingIds.push(sid);toast('You\'re going! ✓')}
   localStorage.setItem('ev_going',JSON.stringify(goingIds));
   renderList();
   if(sheetId===id) refreshSheetGoing();
