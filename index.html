@@ -1187,6 +1187,14 @@ async function subscribeEmail(){
 // ── POST ──────────────────────────────────────────────────────────────
 function openPost(){switchView('list');document.getElementById('post-modal').classList.add('open')}
 function closePost(){document.getElementById('post-modal').classList.remove('open')}
+// Gumroad product URLs for each paid tier
+const GUMROAD = {
+  'Boost':      'https://thothwisdom.gumroad.com/l/pipcda',
+  'Boost Plus': 'https://thothwisdom.gumroad.com/l/flkybm',
+  'Pro':        'https://thothwisdom.gumroad.com/l/fnsee',
+  'Business':   'https://thothwisdom.gumroad.com/l/wstmd'
+};
+
 function selectPlan(el){document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected')}
 function setFreePost(free){
   isFreePost=free;
@@ -1287,10 +1295,21 @@ async function submitPost(){
     const { error: evError } = await sb.from('events').insert([eventRow]);
     if(evError){ console.error(evError); toast('Could not save event — please try again','error'); submitBtn.disabled=false; submitBtn.textContent=originalBtnText; return; }
 
-    if(promo&&PROMO[promo]) toast(`Promo applied — ${PROMO[promo]}% off! Event submitted and confirmation sent to ${email} 🎉`);
-    else toast(`Event submitted! Confirmation sent to ${email}`);
-    closePost();
-    loadDbEvents();
+    // Redirect to Gumroad for paid tiers
+    const gumroadUrl = GUMROAD[planName];
+    if(gumroadUrl && planName !== 'Free'){
+      toast(`Event saved! Taking you to complete your ${planName} upgrade...`);
+      setTimeout(()=>{
+        closePost();
+        loadDbEvents();
+        window.open(`${gumroadUrl}?email=${encodeURIComponent(email)}&wanted=true`, '_blank');
+      }, 1500);
+    } else {
+      if(promo&&PROMO[promo]) toast(`Promo applied — ${PROMO[promo]}% off! Event submitted and confirmation sent to ${email} 🎉`);
+      else toast(`Event submitted! Confirmation sent to ${email}`);
+      closePost();
+      loadDbEvents();
+    }
   }catch(e){
     console.error(e);
     toast('Something went wrong — please try again','error');
