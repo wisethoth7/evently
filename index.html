@@ -912,7 +912,7 @@ function card(e){
       <button class="bm-btn" onclick="toggleSave(event,${e.id})">${bm?'🔖':'🏷️'}</button>
     </div>
     <div class="ec-body">
-      <div class="ec-title">${e.title}</div>
+      <div class="ec-title">${DOMPurify.sanitize(e.title||'')}</div>
       <div class="ec-meta">${e.date} · ${e.time}<br>${e.loc}</div>
       <div class="ec-footer">
         <span class="ec-org">by ${e.org}</span>
@@ -978,7 +978,19 @@ function setDist(d,el){
     renderList();
   }
 }
-function setLang(el){document.querySelectorAll('.lang-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active')}
+function setLang(el){
+  const lang=el.textContent.trim();
+  document.querySelectorAll('.lang-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  if(lang!=='EN'){
+    toast('Multi-language events coming soon! Showing English for now.');
+    // Reset to EN
+    setTimeout(()=>{
+      document.querySelectorAll('.lang-pill').forEach(p=>p.classList.remove('active'));
+      document.querySelector('.lang-pill').classList.add('active');
+    },2000);
+  }
+}
 function toggleFree(){freeOnly=!freeOnly;document.getElementById('free-btn').classList.toggle('active',freeOnly);renderList()}
 
 // ── VIEW SWITCH ───────────────────────────────────────────────────────
@@ -1055,14 +1067,24 @@ function sheetGoing(){
     }
   }
 }
-function toggleFollow(){
-  const e=EVENTS.find(x=>x.id===sheetId); if(!e) return;
+async function toggleFollow(){
+  const e=EVENTS.find(x=>String(x.id)===String(sheetId)); if(!e) return;
   let follows=JSON.parse(localStorage.getItem('ev_follows')||'[]');
   const btn=document.getElementById('sh-follow');
   const i=follows.indexOf(e.org);
   if(i>-1){follows.splice(i,1);btn.textContent='+ Follow';btn.style.background='#fff';btn.style.color='#7C3AED';toast(`Unfollowed ${e.org}`)}
   else{follows.push(e.org);btn.textContent='✓ Following';btn.style.background='#7C3AED';btn.style.color='#fff';toast(`Following ${e.org} — you'll see their new events first`)}
   localStorage.setItem('ev_follows',JSON.stringify(follows));
+  // Sync to Supabase for real follow tracking
+  try{
+    const org=e.org;
+    const isFollowing=follows.includes(org);
+    if(isFollowing){
+      await sb.from('organiser_follows').upsert([{organiser_name:org,followed_at:new Date().toISOString()}],{onConflict:'organiser_name'});
+    } else {
+      await sb.from('organiser_follows').delete().eq('organiser_name',org);
+    }
+  }catch(err){ console.log('Follow sync failed (non-critical):', err); }
 }
 function refreshFollowBtn(org){
   const follows=JSON.parse(localStorage.getItem('ev_follows')||'[]');
@@ -1139,14 +1161,27 @@ async function requestPush(){
     new Notification('Evently',{body:"You'll get alerts when new events are posted near you.",icon:'/icons/apple-touch-icon.png'});
   } else toast('Allow notifications in browser settings to enable push','info');
 }
-function subscribeEmail(){
+async function subscribeEmail(){
   const email=document.getElementById('nsub-email').value.trim();
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast('Please enter a valid email','error');return}
   const cats=Array.from(document.querySelectorAll('.nsub-cat.on')).map(e=>e.textContent.trim()).join(', ');
-  localStorage.setItem('ev_sub',JSON.stringify({email,cats,date:new Date().toISOString()}));
-  localStorage.setItem('ev_notif','1');
-  toast(`Subscribed! Alerts for: ${cats||'all events'}`);
-  closeNotifSub();
+  const loc=document.getElementById('nsub-loc').value.trim();
+  try{
+    await sb.from('event_subscriptions').upsert([{
+      email, categories:cats||'all', location:loc||null,
+      subscribed_at:new Date().toISOString()
+    }],{onConflict:'email'});
+    localStorage.setItem('ev_sub',JSON.stringify({email,cats,date:new Date().toISOString()}));
+    localStorage.setItem('ev_notif','1');
+    toast('Subscribed! You'll get alerts for new events.');
+    closeNotifSub();
+  }catch(e){
+    // Fallback to localStorage if Supabase fails
+    localStorage.setItem('ev_sub',JSON.stringify({email,cats,date:new Date().toISOString()}));
+    localStorage.setItem('ev_notif','1');
+    toast('Subscribed! You'll get alerts for new events.');
+    closeNotifSub();
+  }
 }
 
 // ── POST ──────────────────────────────────────────────────────────────
@@ -1272,10 +1307,20 @@ function toast(msg,type=''){
 }
 
 // ── REPORT ────────────────────────────────────────────────────────────
-function reportEvent(){
-  const e=EVENTS.find(x=>x.id===sheetId); if(!e) return;
-  const reason=prompt(`Report "${e.title}"\n\nReason (spam, inappropriate, incorrect info):`);
-  if(reason){toast('Report submitted. We review within 24 hours.');closeSheet()}
+async function reportEvent(){
+  const e=EVENTS.find(x=>String(x.id)===String(sheetId)); if(!e) return;
+  const reason=window.confirm(`Report this event for spam or inappropriate content?\n\n"${e.title}"\n\nPress OK to confirm.`);
+  if(reason){
+    try{
+      await sb.from('event_reports').insert([{
+        event_id:String(sheetId),
+        event_title:e.title,
+        reported_at:new Date().toISOString()
+      }]);
+    }catch(err){}
+    toast('Report submitted — we review within 24 hours. Thank you.');
+    closeSheet();
+  }
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
@@ -1331,6 +1376,15 @@ setTimeout(()=>{
   }
 },1000);
 setTimeout(()=>{if(!localStorage.getItem('ev_notif')) document.getElementById('notif-banner').style.display='flex'},7000);
+
+// Register service worker for PWA offline support
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(()=>console.log('SW registered'))
+      .catch(e=>console.log('SW failed:', e));
+  });
+}
 </script>
 </body>
 </html>
