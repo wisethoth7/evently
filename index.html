@@ -1256,13 +1256,13 @@ async function subscribeEmail(){
     }],{onConflict:'email'});
     localStorage.setItem('ev_sub',JSON.stringify({email,cats,date:new Date().toISOString()}));
     localStorage.setItem('ev_notif','1');
-    toast('Subscribed! You'll get alerts for new events.');
+    toast("Subscribed! You'll get alerts for new events.");
     closeNotifSub();
   }catch(e){
     // Fallback to localStorage if Supabase fails
     localStorage.setItem('ev_sub',JSON.stringify({email,cats,date:new Date().toISOString()}));
     localStorage.setItem('ev_notif','1');
-    toast('Subscribed! You'll get alerts for new events.');
+    toast("Subscribed! You'll get alerts for new events.");
     closeNotifSub();
   }
 }
