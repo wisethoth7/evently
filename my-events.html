@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Events — Evently</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F9FAFB;color:#111827;min-height:100vh}
+.header{background:#fff;border-bottom:1px solid #E5E7EB;padding:16px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+.header a{color:#7C3AED;text-decoration:none;font-size:14px;font-weight:600}
+.logo{font-size:20px;font-weight:900;color:#7C3AED;margin-left:auto}
+.logo span{color:#A855F7}
+.content{max-width:600px;margin:0 auto;padding:24px 16px}
+h1{font-size:22px;font-weight:800;margin-bottom:4px}
+.sub{font-size:13px;color:#6B7280;margin-bottom:20px}
+.email-row{display:flex;gap:8px;margin-bottom:24px}
+.email-row input{flex:1;padding:11px 14px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:14px}
+.email-row button{padding:11px 18px;background:#7C3AED;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.tier-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:20px}
+.tier-free{background:#F3F4F6;color:#6B7280}
+.tier-boost{background:#FEF3C7;color:#D97706}
+.tier-pro{background:#EDE9FE;color:#7C3AED}
+.tier-business{background:#FDF2F8;color:#BE185D}
+.event-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.event-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.event-meta{font-size:12px;color:#6B7280;margin-bottom:10px;line-height:1.6}
+.event-actions{display:flex;gap:8px}
+.btn-edit{padding:7px 14px;border:1.5px solid #E5E7EB;border-radius:8px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#374151}
+.btn-delete{padding:7px 14px;border:1.5px solid #FEE2E2;border-radius:8px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#EF4444}
+.going-count{font-size:12px;color:#16A34A;font-weight:600;margin-left:auto;align-self:center}
+.empty{text-align:center;padding:60px 20px;color:#9CA3AF}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty h2{font-size:17px;font-weight:700;color:#374151;margin-bottom:8px}
+.empty p{font-size:13px;line-height:1.7}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1F2937;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.upgrade-banner{background:linear-gradient(135deg,#7C3AED,#A855F7);color:#fff;border-radius:14px;padding:16px;margin-bottom:20px;text-align:center}
+.upgrade-banner h3{font-size:15px;font-weight:800;margin-bottom:6px}
+.upgrade-banner p{font-size:12px;opacity:.9;margin-bottom:12px;line-height:1.6}
+.upgrade-banner a{display:inline-block;padding:9px 20px;background:#fff;color:#7C3AED;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="header">
+  <a href="index.html">← Back to Evently</a>
+  <div class="logo">E<span>v</span>ently</div>
+</div>
+
+<div class="content">
+  <h1>My Events</h1>
+  <p class="sub">View and manage events you've posted.</p>
+
+  <div class="email-row">
+    <input type="email" id="lookup-email" placeholder="Enter your organiser email">
+    <button onclick="loadMyEvents()">Load Events</button>
+  </div>
+
+  <div id="tier-section" style="display:none">
+    <div id="tier-badge" class="tier-badge tier-free">Free tier</div>
+  </div>
+
+  <div id="upgrade-section" style="display:none">
+    <div class="upgrade-banner">
+      <h3>⚡ Get More Reach</h3>
+      <p>Upgrade to Pro or Business to feature your events at the top of every feed — no ads, no competing listings.</p>
+      <a href="https://thothwisdom.gumroad.com/l/fnsee" target="_blank">Upgrade to Pro — $9.99/mo</a>
+    </div>
+  </div>
+
+  <div id="events-container">
+    <div class="empty">
+      <div class="empty-icon">📅</div>
+      <h2>Your events will appear here</h2>
+      <p>Enter your organiser email above to load events you've posted.</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://hvyfeebazmiqateniupm.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2eWZlZWJhem1pcWF0ZW5pdXBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTI2MTcsImV4cCI6MjA5NTY4ODYxN30.89qqEshOwp1bU2AQbzSpZ36_TuqP2jVULo_9Ug-S9_c';
+
+async function sbFetch(path, opts={}){
+  const r = await fetch(SUPABASE_URL+'/rest/v1/'+path, {
+    ...opts,
+    headers:{ 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json', 'Prefer':'return=representation', ...(opts.headers||{}) }
+  });
+  if(!r.ok) throw new Error(await r.text());
+  return r.status===204 ? null : r.json();
+}
+
+let myEmail = '';
+let myEvents = [];
+
+async function loadMyEvents(){
+  const email = document.getElementById('lookup-email').value.trim();
+  if(!email || !email.includes('@')){ toast('Enter a valid email.'); return; }
+  myEmail = email;
+  try {
+    const events = await sbFetch(`events?organiser_email=eq.${encodeURIComponent(email)}&order=created_at.desc`);
+    const profile = await sbFetch(`organiser_profiles?email=eq.${encodeURIComponent(email)}&select=tier,tier_expires_at`).catch(()=>[]);
+    myEvents = events || [];
+    renderTier(profile && profile[0]);
+    renderEvents();
+  } catch(err){
+    toast('Could not load events. Check your email.');
+  }
+}
+
+function renderTier(profile){
+  const section = document.getElementById('tier-section');
+  const badge = document.getElementById('tier-badge');
+  const upgradeSection = document.getElementById('upgrade-section');
+  section.style.display = 'block';
+  const tier = profile?.tier || 'free';
+  const expires = profile?.tier_expires_at;
+  const tierMap = {
+    free: ['tier-free','Free tier'],
+    boost: ['tier-boost','⚡ Boost (3 days)'],
+    boost_plus: ['tier-boost','⚡ Boost Plus (7 days)'],
+    pro: ['tier-pro','⭐ Pro Organiser'],
+    business: ['tier-business','💼 Business']
+  };
+  const [cls, label] = tierMap[tier] || tierMap.free;
+  badge.className = 'tier-badge '+cls;
+  badge.textContent = label + (expires ? ' · expires '+new Date(expires).toLocaleDateString() : '');
+  upgradeSection.style.display = (tier==='free'||tier==='boost'||tier==='boost_plus') ? 'block' : 'none';
+}
+
+function renderEvents(){
+  const container = document.getElementById('events-container');
+  if(!myEvents.length){
+    container.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><h2>No events found</h2><p>No events posted with ${myEmail}.</p></div>`;
+    return;
+  }
+  container.innerHTML = myEvents.map(e => `
+    <div class="event-card" id="card-${e.id}">
+      <div class="event-title">${escHtml(e.title)}</div>
+      <div class="event-meta">📅 ${e.date}${e.time?' · '+e.time:''}<br>📍 ${escHtml(e.location||'')}<br>🏷️ ${e.category||''}</div>
+      <div class="event-actions">
+        <button class="btn-delete" onclick="deleteEvent('${e.id}')">Delete</button>
+        <span class="going-count">✓ ${e.going_count||0} going</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function deleteEvent(id){
+  if(!confirm('Delete this event? This cannot be undone.')) return;
+  try {
+    await sbFetch(`events?id=eq.${id}`, { method:'DELETE' });
+    myEvents = myEvents.filter(e=>e.id!==id);
+    document.getElementById('card-'+id)?.remove();
+    toast('Event deleted.');
+    if(!myEvents.length) renderEvents();
+  } catch(err){
+    toast('Could not delete — try again.');
+  }
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// Auto-load if email in URL param
+const params = new URLSearchParams(location.search);
+if(params.get('email')){ document.getElementById('lookup-email').value=params.get('email'); loadMyEvents(); }
+</script>
+</body>
+</html>

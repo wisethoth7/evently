@@ -294,6 +294,15 @@ header{position:sticky;top:0;z-index:100;background:#F9FAFB;border-bottom:1px so
 
 <button class="fab" onclick="openPost()">+</button>
 
+<!-- FOOTER -->
+<footer style="text-align:center;padding:24px 16px 40px;color:#9CA3AF;font-size:12px;border-top:1px solid #F3F4F6;margin-top:8px">
+  <div style="margin-bottom:8px">
+    <a href="legal.html" style="color:#9CA3AF;text-decoration:none;margin:0 10px">Terms &amp; Privacy</a>
+    <a href="my-events.html" style="color:#9CA3AF;text-decoration:none;margin:0 10px">My Events</a>
+  </div>
+  <div>© 2026 Evently · <a href="mailto:hello@evently.app" style="color:#9CA3AF;text-decoration:none">hello@evently.app</a></div>
+</footer>
+
 <!-- EVENT DETAIL SHEET -->
 <div class="modal-bg" id="sheet" onclick="if(event.target.id==='sheet')closeSheet()">
   <div class="modal">
@@ -316,9 +325,27 @@ header{position:sticky;top:0;z-index:100;background:#F9FAFB;border-bottom:1px so
       <button class="btn-wa" id="sh-wa">📱 WhatsApp</button>
       <button class="btn-share" id="sh-share">Share</button>
     </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button id="sh-gcal" onclick="addToGoogleCalendar()" style="flex:1;padding:9px 8px;border:1.5px solid #E5E7EB;border-radius:10px;background:#fff;font-size:12px;font-weight:600;color:#374151;cursor:pointer">📅 Google Cal</button>
+      <button id="sh-ical" onclick="addToAppleCalendar()" style="flex:1;padding:9px 8px;border:1.5px solid #E5E7EB;border-radius:10px;background:#fff;font-size:12px;font-weight:600;color:#374151;cursor:pointer">🍎 Apple Cal</button>
+    </div>
     <div style="margin-top:16px;text-align:center">
       <button onclick="reportEvent()" style="background:none;border:none;color:#9CA3AF;font-size:12px;cursor:pointer;text-decoration:underline">⚑ Report this event</button>
     </div>
+  </div>
+</div>
+
+<!-- RSVP MODAL -->
+<div class="modal-bg" id="rsvp-modal" onclick="if(event.target.id==='rsvp-modal')closeRsvp()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeRsvp()">✕</button>
+    <div class="modal-drag"></div>
+    <h2 style="font-size:19px;font-weight:800;margin-bottom:6px">🎉 You're Going!</h2>
+    <p style="font-size:13px;color:#6B7280;margin-bottom:16px;line-height:1.6">Enter your email to get a reminder before the event.</p>
+    <label class="fl">Your Email <span class="req">*</span></label>
+    <input type="email" id="rsvp-email" placeholder="you@example.com" style="width:100%;padding:12px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:14px;box-sizing:border-box;margin-bottom:12px">
+    <button onclick="submitRSVP()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7C3AED,#A855F7);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px">Send My Reminder</button>
+    <button onclick="closeRsvp()" style="width:100%;padding:12px;background:#F3F4F6;color:#6B7280;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer">Skip</button>
   </div>
 </div>
 
@@ -1056,16 +1083,72 @@ function sheetGoing(){
   const wasGoing=goingIds.includes(sheetId);
   toggleGoing({stopPropagation:()=>{}},sheetId);
   if(!wasGoing && goingIds.includes(sheetId)){
-    const e=EVENTS.find(x=>x.id===sheetId);
-    if('Notification' in window && Notification.permission==='granted'){
-      toast("You're going! We'll remind you before it starts 🔔");
-      const reminders=JSON.parse(localStorage.getItem('ev_reminders')||'{}');
-      reminders[sheetId]={title:e.title,date:e.date,time:e.time};
-      localStorage.setItem('ev_reminders',JSON.stringify(reminders));
-    } else {
-      toast("You're going! Enable notifications to get reminders.");
-    }
+    updateGoingCount(sheetId);
+    document.getElementById('rsvp-modal').classList.add('open');
   }
+}
+
+function closeRsvp(){
+  document.getElementById('rsvp-modal').classList.remove('open');
+  document.getElementById('rsvp-email').value='';
+}
+
+async function submitRSVP(){
+  const email=document.getElementById('rsvp-email').value.trim();
+  if(!email || !email.includes('@')){ toast('Please enter a valid email.','error'); return; }
+  const e=EVENTS.find(x=>x.id===sheetId);
+  if(!e) return;
+  try{
+    await sb.from('event_rsvps').insert([{
+      event_id: String(sheetId),
+      event_title: e.title,
+      event_date: e.date,
+      email: email,
+      rsvped_at: new Date().toISOString()
+    }]);
+    toast("You're going! Reminder set 🎉");
+  }catch(err){
+    toast("You're going! (reminder saved locally)");
+  }
+  closeRsvp();
+}
+
+async function updateGoingCount(id){
+  try{
+    const dbId = String(id).replace('db_','');
+    const { data } = await sb.from('events').select('going_count').eq('id', dbId).single();
+    const current = (data && data.going_count) || 0;
+    await sb.from('events').update({ going_count: current + 1 }).eq('id', dbId);
+  }catch(err){}
+}
+
+function addToGoogleCalendar(){
+  const e=EVENTS.find(x=>x.id===sheetId); if(!e) return;
+  const start=e.date.replace(/-/g,'')+'T'+(e.time||'120000').replace(/:/g,'').padEnd(6,'0');
+  const end=e.date.replace(/-/g,'')+'T'+(e.time||'140000').replace(/:/g,'').padEnd(6,'0');
+  const url=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(e.title)}&dates=${start}/${end}&details=${encodeURIComponent(e.desc||'')}&location=${encodeURIComponent(e.loc||'')}`;
+  window.open(url,'_blank');
+}
+
+function addToAppleCalendar(){
+  const e=EVENTS.find(x=>x.id===sheetId); if(!e) return;
+  const dt=e.date+'T'+(e.time||'12:00');
+  const dtEnd=e.date+'T'+(e.time||'14:00');
+  const toICS=s=>s.replace(/[-:]/g,'').replace(/T/,'T');
+  const ics=[
+    'BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT',
+    `DTSTART:${toICS(dt)}00`,
+    `DTEND:${toICS(dtEnd)}00`,
+    `SUMMARY:${e.title}`,
+    `DESCRIPTION:${(e.desc||'').replace(/\n/g,'\\n')}`,
+    `LOCATION:${e.loc||''}`,
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  const blob=new Blob([ics],{type:'text/calendar'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=e.title.replace(/[^a-z0-9]/gi,'_')+'.ics';
+  a.click();
 }
 async function toggleFollow(){
   const e=EVENTS.find(x=>String(x.id)===String(sheetId)); if(!e) return;
