@@ -1152,9 +1152,10 @@ function toggleGoing(evt,id){
 }
 function sheetGoing(){
   if(!sheetId) return;
-  const wasGoing=goingIds.includes(sheetId);
+  const sid=String(sheetId);
+  const wasGoing=goingIds.includes(sid);
   toggleGoing({stopPropagation:()=>{}},sheetId);
-  if(!wasGoing && goingIds.includes(sheetId)){
+  if(!wasGoing && goingIds.includes(sid)){
     updateGoingCount(sheetId);
     document.getElementById('rsvp-modal').classList.add('open');
   }
