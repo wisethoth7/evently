@@ -1005,17 +1005,89 @@ function setDist(d,el){
     renderList();
   }
 }
+const LANG_STRINGS={
+  EN:{dir:'ltr',searchPh:'Search events, cities, artists...',postBtn:'+ Post',any:'Any',freeOnly:'🟢 Free Only',locPrompt:'Tap to enable location for nearby events',locBtn:'Use My Location',backToEvents:'← Back to Events',savedTitle:'Saved Events',savedSub:"Events you've bookmarked",freeEvent:'FREE EVENT',getTickets:'🎟️ Get Tickets →',imGoing:"✓ I'm Going",whatsapp:'📱 WhatsApp',share:'Share',follow:'+ Follow',following:'✓ Following',googleCal:'📅 Google Cal',appleCal:'🍎 Apple Cal',reportEvent:'⚑ Report this event',rsvpTitle:"🎉 You're Going!",rsvpDesc:'Enter your email to get a reminder before the event.',rsvpEmailLbl:'Your Email',rsvpPh:'you@example.com',rsvpSend:'Send My Reminder',rsvpSkip:'Skip',notifTitle:'🔔 Get Event Alerts',notifDesc:"Choose your interests and we'll notify you when matching events are posted. No spam.",notifCatsLbl:'What kind of events?',emailLbl:'Your Email',cityLbl:'City or Zip Code',cityPh:'e.g. Toronto, ON or 10001',pushBtn:'📲 Enable push notifications (instant alerts)',bannerTitle:'Never miss events near you',bannerBody:'Subscribe by email or push for alerts when new events are posted in your area.',setUpAlerts:'Set Up Alerts',notNow:'Not now',distUnit:'mi'},
+  AR:{dir:'rtl',searchPh:'ابحث عن فعاليات، مدن، فنانين...',postBtn:'+ نشر',any:'الكل',freeOnly:'🟢 مجاناً فقط',locPrompt:'اضغط لتفعيل الموقع وعرض الفعاليات القريبة',locBtn:'استخدم موقعي',backToEvents:'العودة للفعاليات →',savedTitle:'الفعاليات المحفوظة',savedSub:'الفعاليات التي أضفتها للمفضلة',freeEvent:'فعالية مجانية',getTickets:'🎟️ احصل على التذاكر →',imGoing:'✓ سأحضر',whatsapp:'📱 واتساب',share:'مشاركة',follow:'+ تابع',following:'✓ تتابع',googleCal:'📅 تقويم Google',appleCal:'🍎 تقويم Apple',reportEvent:'⚑ الإبلاغ عن هذه الفعالية',rsvpTitle:'🎉 أنت ستحضر!',rsvpDesc:'أدخل بريدك الإلكتروني للحصول على تذكير قبل الفعالية.',rsvpEmailLbl:'بريدك الإلكتروني',rsvpPh:'you@example.com',rsvpSend:'أرسل لي تذكيراً',rsvpSkip:'تخطي',notifTitle:'🔔 احصل على تنبيهات الفعاليات',notifDesc:'اختر اهتماماتك وسنرسل لك إشعارات عند نشر فعاليات مطابقة. بدون إزعاج.',notifCatsLbl:'ما نوع الفعاليات التي تهمك؟',emailLbl:'بريدك الإلكتروني',cityLbl:'المدينة أو الرمز البريدي',cityPh:'مثال: الرياض أو 12345',pushBtn:'📲 تفعيل الإشعارات الفورية',bannerTitle:'لا تفوت الفعاليات القريبة منك',bannerBody:'اشترك للحصول على تنبيهات بالفعاليات الجديدة في منطقتك.',setUpAlerts:'إعداد التنبيهات',notNow:'ليس الآن',distUnit:'كم'},
+  ES:{dir:'ltr',searchPh:'Buscar eventos, ciudades, artistas...',postBtn:'+ Publicar',any:'Todo',freeOnly:'🟢 Solo gratis',locPrompt:'Toca para activar ubicación y ver eventos cercanos',locBtn:'Usar mi ubicación',backToEvents:'← Volver a eventos',savedTitle:'Eventos guardados',savedSub:'Eventos que has marcado',freeEvent:'EVENTO GRATUITO',getTickets:'🎟️ Obtener entradas →',imGoing:'✓ Voy a ir',whatsapp:'📱 WhatsApp',share:'Compartir',follow:'+ Seguir',following:'✓ Siguiendo',googleCal:'📅 Google Cal',appleCal:'🍎 Apple Cal',reportEvent:'⚑ Reportar evento',rsvpTitle:'🎉 ¡Vas a ir!',rsvpDesc:'Ingresa tu email para recibir un recordatorio antes del evento.',rsvpEmailLbl:'Tu Email',rsvpPh:'tu@email.com',rsvpSend:'Enviar recordatorio',rsvpSkip:'Omitir',notifTitle:'🔔 Recibe alertas de eventos',notifDesc:'Elige tus intereses y te notificaremos cuando se publiquen eventos relacionados.',notifCatsLbl:'¿Qué tipo de eventos?',emailLbl:'Tu Email',cityLbl:'Ciudad o código postal',cityPh:'ej. Madrid o 28001',pushBtn:'📲 Activar notificaciones push',bannerTitle:'No te pierdas eventos cercanos',bannerBody:'Suscríbete para recibir alertas cuando se publiquen nuevos eventos en tu área.',setUpAlerts:'Configurar alertas',notNow:'Ahora no',distUnit:'km'},
+  FR:{dir:'ltr',searchPh:'Rechercher événements, villes, artistes...',postBtn:'+ Publier',any:'Tout',freeOnly:'🟢 Gratuit seulement',locPrompt:'Appuyez pour activer la localisation',locBtn:'Utiliser ma position',backToEvents:'← Retour aux événements',savedTitle:'Événements sauvegardés',savedSub:'Événements mis en favoris',freeEvent:'ÉVÉNEMENT GRATUIT',getTickets:'🎟️ Obtenir des billets →',imGoing:"✓ J'y vais",whatsapp:'📱 WhatsApp',share:'Partager',follow:'+ Suivre',following:'✓ Abonné',googleCal:'📅 Google Cal',appleCal:'🍎 Apple Cal',reportEvent:'⚑ Signaler cet événement',rsvpTitle:'🎉 Vous y allez !',rsvpDesc:"Entrez votre email pour recevoir un rappel avant l'événement.",rsvpEmailLbl:'Votre Email',rsvpPh:'vous@email.com',rsvpSend:'Envoyer le rappel',rsvpSkip:'Passer',notifTitle:"🔔 Recevoir des alertes d'événements",notifDesc:"Choisissez vos centres d'intérêt et nous vous notifierons des nouveaux événements.",notifCatsLbl:"Quel type d'événements ?",emailLbl:'Votre Email',cityLbl:'Ville ou code postal',cityPh:'ex. Paris ou 75001',pushBtn:'📲 Activer les notifications push',bannerTitle:'Ne ratez plus les événements proches',bannerBody:"Abonnez-vous par email pour recevoir des alertes lors de nouveaux événements dans votre zone.",setUpAlerts:'Configurer les alertes',notNow:'Pas maintenant',distUnit:'km'},
+  PT:{dir:'ltr',searchPh:'Buscar eventos, cidades, artistas...',postBtn:'+ Publicar',any:'Qualquer',freeOnly:'🟢 Só gratuitos',locPrompt:'Toque para ativar localização para eventos próximos',locBtn:'Usar minha localização',backToEvents:'← Voltar aos eventos',savedTitle:'Eventos salvos',savedSub:'Eventos que você salvou',freeEvent:'EVENTO GRATUITO',getTickets:'🎟️ Obter ingressos →',imGoing:'✓ Vou ir',whatsapp:'📱 WhatsApp',share:'Compartilhar',follow:'+ Seguir',following:'✓ Seguindo',googleCal:'📅 Google Cal',appleCal:'🍎 Apple Cal',reportEvent:'⚑ Reportar evento',rsvpTitle:'🎉 Você vai!',rsvpDesc:'Digite seu email para receber um lembrete antes do evento.',rsvpEmailLbl:'Seu Email',rsvpPh:'voce@email.com',rsvpSend:'Enviar lembrete',rsvpSkip:'Pular',notifTitle:'🔔 Receber alertas de eventos',notifDesc:'Escolha seus interesses e notificaremos quando novos eventos forem publicados.',notifCatsLbl:'Que tipo de eventos?',emailLbl:'Seu Email',cityLbl:'Cidade ou CEP',cityPh:'ex. São Paulo ou 01310',pushBtn:'📲 Ativar notificações push',bannerTitle:'Não perca eventos próximos',bannerBody:'Assine para receber alertas quando novos eventos forem publicados na sua área.',setUpAlerts:'Configurar alertas',notNow:'Agora não',distUnit:'km'},
+  DE:{dir:'ltr',searchPh:'Events, Städte, Künstler suchen...',postBtn:'+ Posten',any:'Alle',freeOnly:'🟢 Nur kostenlos',locPrompt:'Tippen Sie für nahe Events den Standort aktivieren',locBtn:'Meinen Standort nutzen',backToEvents:'← Zurück zu Events',savedTitle:'Gespeicherte Events',savedSub:'Events, die Sie gespeichert haben',freeEvent:'KOSTENLOSES EVENT',getTickets:'🎟️ Tickets holen →',imGoing:'✓ Ich gehe hin',whatsapp:'📱 WhatsApp',share:'Teilen',follow:'+ Folgen',following:'✓ Folge ich',googleCal:'📅 Google Kal.',appleCal:'🍎 Apple Kal.',reportEvent:'⚑ Event melden',rsvpTitle:'🎉 Du gehst hin!',rsvpDesc:'Gib deine Email ein, um eine Erinnerung vor dem Event zu erhalten.',rsvpEmailLbl:'Deine Email',rsvpPh:'du@email.de',rsvpSend:'Erinnerung senden',rsvpSkip:'Überspringen',notifTitle:'🔔 Event-Benachrichtigungen erhalten',notifDesc:'Wähle deine Interessen und wir benachrichtigen dich bei passenden Events.',notifCatsLbl:'Welche Art von Events?',emailLbl:'Deine Email',cityLbl:'Stadt oder Postleitzahl',cityPh:'z.B. Berlin oder 10115',pushBtn:'📲 Push-Benachrichtigungen aktivieren',bannerTitle:'Verpasse keine Events in deiner Nähe',bannerBody:'Abonniere per Email für Benachrichtigungen, wenn neue Events in deiner Nähe gepostet werden.',setUpAlerts:'Benachrichtigungen einrichten',notNow:'Nicht jetzt',distUnit:'km'},
+  ZH:{dir:'ltr',searchPh:'搜索活动、城市、艺术家...',postBtn:'+ 发布',any:'全部',freeOnly:'🟢 仅免费',locPrompt:'点击开启位置服务查看附近活动',locBtn:'使用我的位置',backToEvents:'← 返回活动列表',savedTitle:'已保存的活动',savedSub:'您收藏的活动',freeEvent:'免费活动',getTickets:'🎟️ 获取票务 →',imGoing:'✓ 我要参加',whatsapp:'📱 WhatsApp',share:'分享',follow:'+ 关注',following:'✓ 已关注',googleCal:'📅 Google 日历',appleCal:'🍎 Apple 日历',reportEvent:'⚑ 举报此活动',rsvpTitle:'🎉 您已报名！',rsvpDesc:'输入您的邮箱以在活动前收到提醒。',rsvpEmailLbl:'您的邮箱',rsvpPh:'you@example.com',rsvpSend:'发送提醒',rsvpSkip:'跳过',notifTitle:'🔔 获取活动提醒',notifDesc:'选择您的兴趣，我们将在相关活动发布时通知您。',notifCatsLbl:'您感兴趣的活动类型？',emailLbl:'您的邮箱',cityLbl:'城市或邮政编码',cityPh:'例如：北京或 100000',pushBtn:'📲 开启推送通知（即时提醒）',bannerTitle:'不错过附近的任何活动',bannerBody:'订阅邮件，当您所在地区有新活动发布时即时通知您。',setUpAlerts:'设置提醒',notNow:'暂不',distUnit:'公里'},
+  RU:{dir:'ltr',searchPh:'Поиск событий, городов, артистов...',postBtn:'+ Опубликовать',any:'Любое',freeOnly:'🟢 Только бесплатные',locPrompt:'Нажмите для включения геолокации',locBtn:'Использовать мою локацию',backToEvents:'← Вернуться к событиям',savedTitle:'Сохранённые события',savedSub:'События, которые вы сохранили',freeEvent:'БЕСПЛАТНОЕ СОБЫТИЕ',getTickets:'🎟️ Получить билеты →',imGoing:'✓ Я иду',whatsapp:'📱 WhatsApp',share:'Поделиться',follow:'+ Подписаться',following:'✓ Подписан',googleCal:'📅 Google Кал.',appleCal:'🍎 Apple Кал.',reportEvent:'⚑ Пожаловаться на событие',rsvpTitle:'🎉 Вы идёте!',rsvpDesc:'Введите email, чтобы получить напоминание перед событием.',rsvpEmailLbl:'Ваш Email',rsvpPh:'вы@пример.com',rsvpSend:'Отправить напоминание',rsvpSkip:'Пропустить',notifTitle:'🔔 Получать уведомления о событиях',notifDesc:'Выберите интересы, и мы уведомим вас о новых подходящих событиях.',notifCatsLbl:'Какие события вас интересуют?',emailLbl:'Ваш Email',cityLbl:'Город или индекс',cityPh:'напр. Москва или 101000',pushBtn:'📲 Включить push-уведомления',bannerTitle:'Не пропустите события рядом',bannerBody:'Подпишитесь на email-уведомления о новых событиях в вашем районе.',setUpAlerts:'Настроить уведомления',notNow:'Не сейчас',distUnit:'км'}
+};
+const PILL_TO_LANG={'🇺🇸 EN':'EN','🇸🇦 عربي':'AR','🇪🇸 ES':'ES','🇫🇷 FR':'FR','🇧🇷 PT':'PT','🇩🇪 DE':'DE','🇨🇳 中文':'ZH','🇷🇺 RU':'RU'};
+let currentLang='EN';
 function setLang(el){
-  const lang=el.textContent.trim();
   document.querySelectorAll('.lang-pill').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
-  if(lang!=='EN'){
-    toast('Multi-language events coming soon! Showing English for now.');
-    // Reset to EN
-    setTimeout(()=>{
-      document.querySelectorAll('.lang-pill').forEach(p=>p.classList.remove('active'));
-      document.querySelector('.lang-pill').classList.add('active');
-    },2000);
+  const code=PILL_TO_LANG[el.textContent.trim()]||'EN';
+  currentLang=code;
+  applyLang(code);
+}
+function applyLang(code){
+  const S=LANG_STRINGS[code]||LANG_STRINGS.EN;
+  document.documentElement.dir=S.dir;
+  document.documentElement.lang=code.toLowerCase();
+  const gi=id=>document.getElementById(id);
+  const qs=sel=>document.querySelector(sel);
+  const qsa=sel=>document.querySelectorAll(sel);
+  // Search
+  const si=gi('search-input');if(si)si.placeholder=S.searchPh;
+  // Post buttons
+  qsa('.post-btn').forEach(b=>b.textContent=S.postBtn);
+  // Distance pills
+  qsa('.filter-pill').forEach((p,i)=>{
+    if(i===0){p.textContent=S.any;}
+    else{const n=p.textContent.match(/\d+/)?.[0];if(n)p.textContent=n+' '+S.distUnit;}
+  });
+  // Free toggle
+  const fb=gi('free-btn');if(fb){const on=fb.classList.contains('active');fb.textContent=S.freeOnly;if(on)fb.classList.add('active');}
+  // Location bar
+  const lt=gi('loc-text');if(lt&&!lt.dataset.realLoc)lt.textContent=S.locPrompt;
+  const lb=gi('loc-btn');if(lb)lb.textContent=S.locBtn;
+  // Map back
+  const mb=qs('.map-back-btn');if(mb)mb.textContent=S.backToEvents;
+  // Saved view
+  const sh2=qs('#view-saved .view-hdr h2');if(sh2)sh2.textContent=S.savedTitle;
+  const sp=qs('#view-saved .view-hdr p');if(sp)sp.textContent=S.savedSub;
+  // Notif banner
+  const nbt=qs('.nb-title');if(nbt)nbt.textContent=S.bannerTitle;
+  const nbb=qs('.nb-body');if(nbb)nbb.textContent=S.bannerBody;
+  const nba=qs('.nb-allow');if(nba)nba.textContent=S.setUpAlerts;
+  const nbs=qs('.nb-skip');if(nbs)nbs.textContent=S.notNow;
+  // Sheet buttons
+  const sg=gi('sh-going');if(sg&&!sg.dataset.gone)sg.textContent=S.imGoing;
+  const sw=gi('sh-wa');if(sw)sw.textContent=S.whatsapp;
+  const ss=gi('sh-share');if(ss)ss.textContent=S.share;
+  const sf=gi('sh-follow');if(sf&&sf.textContent.trim()!==S.following)sf.textContent=S.follow;
+  const sgc=gi('sh-gcal');if(sgc)sgc.textContent=S.googleCal;
+  const sic=gi('sh-ical');if(sic)sic.textContent=S.appleCal;
+  const rpt=qs('#sheet button[onclick="reportEvent()"]');if(rpt)rpt.textContent=S.reportEvent;
+  const spr=gi('sh-price');if(spr&&spr.classList.contains('price-free'))spr.textContent=S.freeEvent;
+  const stk=gi('sh-ticket');if(stk)stk.textContent=S.getTickets;
+  // RSVP modal
+  const rm=gi('rsvp-modal');
+  if(rm){
+    const h2=rm.querySelector('h2');if(h2)h2.textContent=S.rsvpTitle;
+    const p=rm.querySelector('p');if(p)p.textContent=S.rsvpDesc;
+    const lbl=rm.querySelector('label');if(lbl)lbl.innerHTML=S.rsvpEmailLbl+' <span class="req">*</span>';
+    const ei=gi('rsvp-email');if(ei)ei.placeholder=S.rsvpPh;
+    const btns=rm.querySelectorAll('button:not(.modal-close)');
+    if(btns[0])btns[0].textContent=S.rsvpSend;
+    if(btns[1])btns[1].textContent=S.rsvpSkip;
+  }
+  // Notif modal
+  const nm=gi('notif-modal');
+  if(nm){
+    const h2=nm.querySelector('h2');if(h2)h2.textContent=S.notifTitle;
+    const p=nm.querySelector('p');if(p)p.textContent=S.notifDesc;
+    const lbls=nm.querySelectorAll('label.fl');
+    if(lbls[0])lbls[0].textContent=S.notifCatsLbl;
+    if(lbls[1])lbls[1].innerHTML=S.emailLbl+' <span class="req">*</span>';
+    if(lbls[2])lbls[2].textContent=S.cityLbl;
+    const ne=gi('nsub-email');if(ne)ne.placeholder='you@email.com';
+    const nl=gi('nsub-loc');if(nl)nl.placeholder=S.cityPh;
+    const pb=gi('push-btn');if(pb)pb.textContent=S.pushBtn;
   }
 }
 function toggleFree(){freeOnly=!freeOnly;document.getElementById('free-btn').classList.toggle('active',freeOnly);renderList()}
