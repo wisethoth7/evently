@@ -1195,6 +1195,15 @@ async function updateGoingCount(id){
   }catch(err){}
 }
 
+async function incrementViewCount(id){
+  try{
+    const dbId=String(id).replace('db_','');
+    const{data}=await sb.from('events').select('view_count').eq('id',dbId).single();
+    const cur=(data&&data.view_count)||0;
+    await sb.from('events').update({view_count:cur+1}).eq('id',dbId);
+  }catch(e){}
+}
+
 function addToGoogleCalendar(){
   const e=EVENTS.find(x=>x.id===sheetId); if(!e) return;
   const start=e.date.replace(/-/g,'')+'T'+(e.time||'120000').replace(/:/g,'').padEnd(6,'0');
@@ -1300,6 +1309,7 @@ function openSheet(id){
     else{navigator.clipboard?.writeText(`${e.title}\n${e.date}\n${e.loc}`);toast('Copied!','info')}
   };
   document.getElementById('sheet').classList.add('open');
+  incrementViewCount(id);
 }
 function closeSheet(){document.getElementById('sheet').classList.remove('open');sheetId=null}
 
