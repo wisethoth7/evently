@@ -1425,6 +1425,12 @@ async function submitPost(){
         events_posted: 1,
         last_post_at: now
       }]);
+      // Welcome email for new organisers (non-blocking)
+      fetch('https://hvyfeebazmiqateniupm.supabase.co/functions/v1/send-welcome-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: email, name: orgName, product: 'evently' })
+      }).catch(() => {});
     }
 
     // 2. Geocode the address (Nominatim/OpenStreetMap, free, no key)
@@ -1570,6 +1576,13 @@ if('serviceWorker' in navigator){
       .catch(e=>console.log('SW failed:', e));
   });
 }
+</script>
+<script src="ra-widget.js"></script>
+<script>
+initRa({
+  accentColor: '#6366f1',
+  systemPrompt: 'You are Ra, an AI support agent for Evently — a free community event listing platform. Help organisers with: posting events (free or paid tiers), boost options (Boost $2.99, Boost Plus $4.99), Pro plan ($9.99/mo unlimited events + analytics), Business plan ($29.99 white-label), RSVP management, and WhatsApp sharing. For billing questions, direct to thothwisdom7@gmail.com.'
+});
 </script>
 </body>
 </html>
