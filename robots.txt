@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://wisethoth7.github.io/evently/sitemap.xml
+Sitemap: https://evently.niledreamsdigital.com/sitemap.xml
