@@ -12,7 +12,7 @@
 
     const css = `
       #ra-fab {
-        position: fixed; bottom: 24px; right: 24px; z-index: 99999;
+        position: fixed; bottom: 80px; right: 24px; z-index: 99999;
         display: flex; align-items: center; gap: 8px;
         padding: 12px 18px; border-radius: 28px;
         background: ${ac}; color: #1a0a00;
@@ -22,7 +22,7 @@
       }
       #ra-fab:hover { transform: translateY(-2px); box-shadow: 0 10px 32px ${ac}77; }
       #ra-modal {
-        position: fixed; bottom: 88px; right: 24px; z-index: 99999;
+        position: fixed; bottom: 144px; right: 24px; z-index: 99999;
         width: 360px; max-width: calc(100vw - 32px); max-height: 520px;
         display: none; flex-direction: column;
         background: #100818; border: 1px solid ${acBorder};
@@ -126,6 +126,10 @@
     document.body.appendChild(fab);
     document.body.appendChild(modal);
 
+    // Ensure footer isn't hidden behind the floating button
+    const existingPb = parseInt(getComputedStyle(document.body).paddingBottom) || 0;
+    if (existingPb < 100) document.body.style.paddingBottom = '100px';
+
     const messagesEl = document.getElementById('ra-messages');
     const inputEl = document.getElementById('ra-input');
     const sendBtn = document.getElementById('ra-send');
@@ -182,7 +186,7 @@
         loadingEl.remove();
 
         if (data.error) {
-          appendMessage('bot', 'Sorry, I ran into an issue. Please email thothwisdom7@gmail.com for help.');
+          appendMessage('bot', 'Sorry, I ran into an issue. Please email support@niledreamsdigital.com for help.');
           return;
         }
 
@@ -191,7 +195,7 @@
         appendMessage('bot', reply);
       } catch {
         loadingEl.remove();
-        appendMessage('bot', 'Connection error. Please try again or email thothwisdom7@gmail.com.');
+        appendMessage('bot', 'Connection error. Please try again or email support@niledreamsdigital.com.');
       } finally {
         sendBtn.disabled = false;
         inputEl.focus();
