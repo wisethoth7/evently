@@ -1435,10 +1435,11 @@ async function submitOrgAuth(){
   if(!orgName){msgEl.textContent='Please enter your name or organisation.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Create account';return;}
   const{data,error}=await sb.auth.signUp({email,password});
   if(error){msgEl.textContent=error.message||'Sign up failed.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Create account';return;}
+  // Fire the branded welcome email (non-blocking — don't hold up signup)
+  if(data.user){ sb.functions.invoke('send-welcome-email',{body:{to:email,name:orgName,product:'evently',plan:'free'}}).catch(()=>{}); }
   if(data.user&&!data.session){msgEl.textContent='Check your email to confirm, then come back and log in.';msgEl.style.color='#16A34A';btn.disabled=false;btn.textContent='Create account';return;}
   orgUser=data.user;
   await sb.from('organiser_profiles').insert([{user_id:orgUser.id,organiser_name:orgName,email:orgUser.email,tier:'free',events_posted:0,last_post_at:new Date().toISOString()}]).catch(()=>{});
-  fetch('https://hvyfeebazmiqateniupm.supabase.co/functions/v1/send-welcome-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to:email,name:orgName,product:'evently'})}).catch(()=>{});
   closeOrgAuth(); openPost();
 }
 // Restore org session on page load
@@ -1476,7 +1477,7 @@ async function sendOrgResetEmail() {
   const msgEl=document.getElementById('oat-msg');
   if(!email){msgEl.textContent='Please enter your email.';msgEl.style.color='#EF4444';return;}
   btn.disabled=true; btn.textContent='Sending...';
-  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href.split('#')[0]});
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://evently.niledreamsdigital.com/reset-password'});
   btn.disabled=false; btn.textContent='Send Reset Email';
   msgEl.textContent=error?(error.message||'Could not send reset email.'):'Reset link sent — check your email!';
   msgEl.style.color=error?'#EF4444':'#16A34A';
@@ -1567,11 +1568,9 @@ async function submitPost(){
         events_posted: 1,
         last_post_at: now
       }]);
-      // Welcome email for new organisers (non-blocking)
-      fetch('https://hvyfeebazmiqateniupm.supabase.co/functions/v1/send-welcome-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ to: email, name: orgName, product: 'evently' })
+      // Welcome email for first-time organisers without a profile (non-blocking)
+      sb.functions.invoke('send-welcome-email', {
+        body: { to: email, name: orgName, product: 'evently', plan: 'free' }
       }).catch(() => {});
     }
 
