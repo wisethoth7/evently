@@ -392,10 +392,23 @@ header{position:sticky;top:0;z-index:100;background:#F9FAFB;border-bottom:1px so
       <label class="fl">Your name / Organisation <span class="req">*</span></label>
       <input class="fi" type="text" id="oat-org" placeholder="Your name or brand" autocomplete="name">
     </div>
+    <div id="evently-creds-fields">
     <label class="fl">Email <span class="req">*</span></label>
     <input class="fi" type="email" id="oat-email" placeholder="you@email.com" autocomplete="email">
     <label class="fl">Password <span class="req">*</span></label>
     <input class="fi" type="password" id="oat-password" placeholder="8+ characters" autocomplete="current-password">
+    <div id="evently-forgot-link" style="display:none;text-align:right;margin:-6px 0 10px">
+      <a href="#" onclick="showOrgForgot();return false;" style="color:#6B7280;font-size:12px">Forgot password?</a>
+    </div>
+    </div><!-- /evently-creds-fields -->
+    <div id="evently-forgot-section" style="display:none;padding:10px 0">
+      <p style="font-size:13px;color:#6B7280;margin-bottom:10px">Enter your email and we'll send a reset link.</p>
+      <input class="fi" type="email" id="evently-reset-email" placeholder="you@email.com" style="margin-bottom:10px">
+      <button class="submit-btn" id="evently-reset-btn" onclick="sendOrgResetEmail()">Send Reset Email</button>
+      <div style="text-align:center;margin-top:8px">
+        <a href="#" onclick="hideOrgForgot();return false;" style="color:#6B7280;font-size:12px">← Back to login</a>
+      </div>
+    </div>
     <div id="oat-msg" style="font-size:13px;font-weight:600;text-align:center;margin:10px 0;min-height:20px"></div>
     <button class="submit-btn" id="oat-btn" onclick="submitOrgAuth()">Create account</button>
   </div>
@@ -1400,6 +1413,7 @@ function switchOrgTab(mode){
   document.getElementById('oat-btn').textContent=s?'Create account':'Log in';
   document.getElementById('oat-msg').textContent='';
   document.getElementById('oat-msg').style.color='';
+  hideOrgForgot();
 }
 async function submitOrgAuth(){
   const email=document.getElementById('oat-email').value.trim();
@@ -1428,11 +1442,58 @@ async function submitOrgAuth(){
   closeOrgAuth(); openPost();
 }
 // Restore org session on page load
+const _evRecoveryMode = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery';
 (async()=>{
   const{data:{session}}=await sb.auth.getSession();
-  if(session) orgUser=session.user;
-  sb.auth.onAuthStateChange((_,s)=>{orgUser=s?s.user:null;});
+  if(session && !_evRecoveryMode) orgUser=session.user;
+  sb.auth.onAuthStateChange((event,s)=>{
+    if(event==='PASSWORD_RECOVERY'){
+      document.getElementById('evently-pw-recovery-overlay').style.display='flex';
+      return;
+    }
+    orgUser=s?s.user:null;
+  });
 })();
+
+function showOrgForgot() {
+  document.getElementById('evently-creds-fields').style.display='none';
+  document.getElementById('oat-btn').style.display='none';
+  document.getElementById('oat-msg').textContent='';
+  document.getElementById('evently-forgot-section').style.display='block';
+  document.getElementById('evently-reset-email').value=document.getElementById('oat-email').value;
+}
+
+function hideOrgForgot() {
+  document.getElementById('evently-forgot-section').style.display='none';
+  document.getElementById('evently-creds-fields').style.display='';
+  document.getElementById('oat-btn').style.display='';
+  document.getElementById('evently-forgot-link').style.display=orgAuthMode==='login'?'block':'none';
+}
+
+async function sendOrgResetEmail() {
+  const email=document.getElementById('evently-reset-email').value.trim();
+  const btn=document.getElementById('evently-reset-btn');
+  const msgEl=document.getElementById('oat-msg');
+  if(!email){msgEl.textContent='Please enter your email.';msgEl.style.color='#EF4444';return;}
+  btn.disabled=true; btn.textContent='Sending...';
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href.split('#')[0]});
+  btn.disabled=false; btn.textContent='Send Reset Email';
+  msgEl.textContent=error?(error.message||'Could not send reset email.'):'Reset link sent — check your email!';
+  msgEl.style.color=error?'#EF4444':'#16A34A';
+}
+
+async function submitOrgNewPassword() {
+  const pw=document.getElementById('evently-new-pw-input').value;
+  const btn=document.getElementById('evently-new-pw-btn');
+  const msgEl=document.getElementById('evently-new-pw-msg');
+  if(pw.length<8){msgEl.textContent='Password must be at least 8 characters.';msgEl.style.color='#EF4444';return;}
+  btn.disabled=true; btn.textContent='Updating...';
+  const{error}=await sb.auth.updateUser({password:pw});
+  btn.disabled=false; btn.textContent='Update Password';
+  if(error){msgEl.textContent=error.message||'Could not update password.';msgEl.style.color='#EF4444';}
+  else{msgEl.textContent='Password updated!';msgEl.style.color='#16A34A';setTimeout(()=>{document.getElementById('evently-pw-recovery-overlay').style.display='none';},1500);}
+}
+
 // Gumroad product URLs for each paid tier
 const GUMROAD = {
   'Boost':      'https://thothwisdom.gumroad.com/l/pipcda',
@@ -1658,6 +1719,18 @@ if('serviceWorker' in navigator){
   });
 }
 </script>
+
+<div id="evently-pw-recovery-overlay" style="display:none;position:fixed;inset:0;background:#fff;z-index:999;overflow-y:auto;align-items:flex-start;justify-content:center">
+  <div style="max-width:420px;width:100%;margin:0 auto;padding:80px 24px 40px">
+    <p style="font-size:12px;font-weight:700;color:#6366f1;letter-spacing:1px;margin-bottom:12px">PASSWORD RESET</p>
+    <h2 style="font-size:28px;font-weight:800;margin-bottom:8px;color:#111827">Set your new <span style="color:#6366f1">password.</span></h2>
+    <p style="font-size:14px;color:#6B7280;margin-bottom:28px">Enter a new password for your Evently account.</p>
+    <input class="fi" type="password" id="evently-new-pw-input" placeholder="8+ characters" style="width:100%;margin-bottom:12px">
+    <button class="submit-btn" id="evently-new-pw-btn" onclick="submitOrgNewPassword()">Update Password</button>
+    <div id="evently-new-pw-msg" style="font-size:13px;font-weight:600;text-align:center;margin:10px 0;min-height:20px"></div>
+  </div>
+</div>
+
 <script src="ra-widget.js"></script>
 <script>
 initRa({
