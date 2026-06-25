@@ -379,6 +379,28 @@ header{position:sticky;top:0;z-index:100;background:#F9FAFB;border-bottom:1px so
 </div>
 
 <!-- POST EVENT MODAL -->
+<div class="modal-bg" id="org-auth-modal" onclick="if(event.target.id==='org-auth-modal')closeOrgAuth()">
+  <div class="modal" style="max-width:380px">
+    <button class="modal-close" onclick="closeOrgAuth()">✕</button>
+    <h2 style="font-size:20px;font-weight:800;margin-bottom:8px">Post on Evently</h2>
+    <p style="font-size:13px;color:#6B7280;margin-bottom:18px;line-height:1.5">Create a free account to post and manage your events.</p>
+    <div style="display:flex;border:1.5px solid #E5E7EB;border-radius:10px;overflow:hidden;margin-bottom:18px">
+      <button id="oat-signup" onclick="switchOrgTab('signup')" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:#dbeafe;color:#1D4ED8;border:none;cursor:pointer">Create account</button>
+      <button id="oat-login" onclick="switchOrgTab('login')" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:#F3F4F6;color:#374151;border:none;cursor:pointer">Log in</button>
+    </div>
+    <div id="oat-signup-fields">
+      <label class="fl">Your name / Organisation <span class="req">*</span></label>
+      <input class="fi" type="text" id="oat-org" placeholder="Your name or brand" autocomplete="name">
+    </div>
+    <label class="fl">Email <span class="req">*</span></label>
+    <input class="fi" type="email" id="oat-email" placeholder="you@email.com" autocomplete="email">
+    <label class="fl">Password <span class="req">*</span></label>
+    <input class="fi" type="password" id="oat-password" placeholder="8+ characters" autocomplete="current-password">
+    <div id="oat-msg" style="font-size:13px;font-weight:600;text-align:center;margin:10px 0;min-height:20px"></div>
+    <button class="submit-btn" id="oat-btn" onclick="submitOrgAuth()">Create account</button>
+  </div>
+</div>
+
 <div class="modal-bg" id="post-modal" onclick="if(event.target.id==='post-modal')closePost()">
   <div class="modal">
     <button class="modal-close" onclick="closePost()">✕</button>
@@ -427,9 +449,7 @@ header{position:sticky;top:0;z-index:100;background:#F9FAFB;border-bottom:1px so
     <input class="fi" type="text" id="f-loc-post" placeholder="Full address or venue name">
     <label class="fl">Organiser / Name <span class="req">*</span></label>
     <input class="fi" type="text" id="f-org" placeholder="Your name or organisation">
-    <label class="fl">Your Email <span class="req">*</span></label>
-    <input class="fi" type="email" id="f-email" placeholder="you@email.com">
-    <div class="email-tip">📧 We'll email you when your event is approved and live. Your email stays private.</div>
+    <input type="hidden" id="f-email">
     <label class="fl">Admission</label>
     <div class="price-row">
       <div class="price-opt free" id="opt-free" onclick="setFreePost(true)">Free Entry</div>
@@ -793,6 +813,7 @@ let userLat=null, userLng=null, locationActive=false;
 let savedIds=JSON.parse(localStorage.getItem('ev_saved')||'[]');
 let goingIds=JSON.parse(localStorage.getItem('ev_going')||'[]');
 let mapReady=false, leafMap=null, sheetId=null, isFreePost=true;
+let orgUser=null, orgAuthMode='signup';
 
 // ── DISTANCE UTIL ─────────────────────────────────────────────────────
 function haversine(lat1,lng1,lat2,lng2){
@@ -1351,8 +1372,67 @@ async function subscribeEmail(){
 }
 
 // ── POST ──────────────────────────────────────────────────────────────
-function openPost(){switchView('list');document.getElementById('post-modal').classList.add('open')}
+function openPost(){
+  if(!orgUser){ openOrgAuth('signup'); return; }
+  switchView('list');
+  document.getElementById('post-modal').classList.add('open');
+}
 function closePost(){document.getElementById('post-modal').classList.remove('open')}
+
+// ── ORG AUTH ──────────────────────────────────────────────────────────
+function openOrgAuth(mode){
+  orgAuthMode=mode||'signup';
+  switchOrgTab(orgAuthMode);
+  document.getElementById('org-auth-modal').classList.add('open');
+}
+function closeOrgAuth(){
+  document.getElementById('org-auth-modal').classList.remove('open');
+  document.getElementById('oat-msg').textContent='';
+}
+function switchOrgTab(mode){
+  orgAuthMode=mode;
+  const s=mode==='signup';
+  document.getElementById('oat-signup').style.background=s?'#dbeafe':'#F3F4F6';
+  document.getElementById('oat-signup').style.color=s?'#1D4ED8':'#374151';
+  document.getElementById('oat-login').style.background=s?'#F3F4F6':'#dbeafe';
+  document.getElementById('oat-login').style.color=s?'#374151':'#1D4ED8';
+  document.getElementById('oat-signup-fields').style.display=s?'':'none';
+  document.getElementById('oat-btn').textContent=s?'Create account':'Log in';
+  document.getElementById('oat-msg').textContent='';
+  document.getElementById('oat-msg').style.color='';
+}
+async function submitOrgAuth(){
+  const email=document.getElementById('oat-email').value.trim();
+  const password=document.getElementById('oat-password').value;
+  const btn=document.getElementById('oat-btn');
+  const msgEl=document.getElementById('oat-msg');
+  if(!email||!password){msgEl.textContent='Please fill in all fields.';msgEl.style.color='#EF4444';return;}
+  btn.disabled=true; btn.textContent='Please wait...'; msgEl.textContent='';
+  if(orgAuthMode==='login'){
+    const{data,error}=await sb.auth.signInWithPassword({email,password});
+    if(error){msgEl.textContent=error.message||'Login failed.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Log in';return;}
+    orgUser=data.user;
+    const{data:ex}=await sb.from('organiser_profiles').select('id').eq('user_id',orgUser.id).maybeSingle();
+    if(!ex){const n=document.getElementById('oat-org')?.value?.trim()||email.split('@')[0];await sb.from('organiser_profiles').insert([{user_id:orgUser.id,organiser_name:n,email:orgUser.email,tier:'free',events_posted:0,last_post_at:new Date().toISOString()}]).catch(()=>{});}
+    closeOrgAuth(); openPost(); return;
+  }
+  if(password.length<8){msgEl.textContent='Password must be at least 8 characters.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Create account';return;}
+  const orgName=document.getElementById('oat-org').value.trim();
+  if(!orgName){msgEl.textContent='Please enter your name or organisation.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Create account';return;}
+  const{data,error}=await sb.auth.signUp({email,password});
+  if(error){msgEl.textContent=error.message||'Sign up failed.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Create account';return;}
+  if(data.user&&!data.session){msgEl.textContent='Check your email to confirm, then come back and log in.';msgEl.style.color='#16A34A';btn.disabled=false;btn.textContent='Create account';return;}
+  orgUser=data.user;
+  await sb.from('organiser_profiles').insert([{user_id:orgUser.id,organiser_name:orgName,email:orgUser.email,tier:'free',events_posted:0,last_post_at:new Date().toISOString()}]).catch(()=>{});
+  fetch('https://hvyfeebazmiqateniupm.supabase.co/functions/v1/send-welcome-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to:email,name:orgName,product:'evently'})}).catch(()=>{});
+  closeOrgAuth(); openPost();
+}
+// Restore org session on page load
+(async()=>{
+  const{data:{session}}=await sb.auth.getSession();
+  if(session) orgUser=session.user;
+  sb.auth.onAuthStateChange((_,s)=>{orgUser=s?s.user:null;});
+})();
 // Gumroad product URLs for each paid tier
 const GUMROAD = {
   'Boost':      'https://thothwisdom.gumroad.com/l/pipcda',
@@ -1370,8 +1450,8 @@ function setFreePost(free){
 }
 async function submitPost(){
   const v=id=>document.getElementById(id).value.trim();
-  if(!v('f-title')||!v('f-email')||!v('f-org')||!v('f-loc-post')){toast('Please fill in all required fields','error');return}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('f-email'))){toast('Enter a valid email','error');return}
+  if(!orgUser){ openOrgAuth('signup'); return; }
+  if(!v('f-title')||!v('f-org')||!v('f-loc-post')){toast('Please fill in all required fields','error');return}
   const promo=v('f-promo').toUpperCase();
   if(promo&&!PROMO[promo]){toast('Invalid promo code','error');return}
 
@@ -1384,7 +1464,7 @@ async function submitPost(){
   if(planName==='Boost') featuredDays=3;
   else if(planName==='Boost Plus'||planName==='Pro'||planName==='Business') featuredDays=7;
 
-  const email = v('f-email');
+  const email = orgUser.email;
   const orgName = v('f-org');
 
   const submitBtn = document.querySelector('.submit-btn');
@@ -1394,7 +1474,7 @@ async function submitPost(){
 
   try{
     // 1. Check rate limit + upsert organiser profile (tracks signups)
-    const { data: existing } = await sb.from('organiser_profiles').select('id,events_posted,last_post_at,tier').eq('email', email).maybeSingle();
+    const { data: existing } = await sb.from('organiser_profiles').select('id,events_posted,last_post_at,tier').eq('user_id', orgUser.id).maybeSingle();
 
     // Rate limit: free tier users can post once every 24 hours
     if(existing && existing.last_post_at && (existing.tier==='free' || !existing.tier) && tier==='free'){
@@ -1419,6 +1499,7 @@ async function submitPost(){
       }).eq('id', existing.id);
     } else {
       await sb.from('organiser_profiles').insert([{
+        user_id: orgUser.id,
         organiser_name: orgName,
         email: email,
         tier: tier,
