@@ -1442,6 +1442,7 @@ async function submitOrgAuth(){
     if(error){msgEl.textContent=error.message||'Login failed.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Log in';return;}
     orgUser=data.user;
     await sb.rpc('ensure_organiser',{p_organiser_name:null}).catch(()=>{});
+    reflectAuthUI();
     closeOrgAuth(); openPost(); return;
   }
   if(password.length<8){msgEl.textContent='Password must be at least 8 characters.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Create account';return;}
@@ -1481,11 +1482,10 @@ function closeAccountMenu(){
 }
 async function doOrgSignOut(){
   closeAccountMenu();
-  await sb.auth.signOut().catch(()=>{});
+  try { await sb.auth.signOut(); } catch(e) {}
   orgUser=null;
-  reflectAuthUI();
-  switchView('list');
-  toast('Logged out');
+  // Hard redirect to home guarantees a clean, logged-out state.
+  window.location.replace('index.html');
 }
 document.addEventListener('click',(e)=>{
   const wrap=document.getElementById('account-wrap');
