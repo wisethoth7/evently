@@ -1426,8 +1426,7 @@ async function submitOrgAuth(){
     const{data,error}=await sb.auth.signInWithPassword({email,password});
     if(error){msgEl.textContent=error.message||'Login failed.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Log in';return;}
     orgUser=data.user;
-    const{data:ex}=await sb.from('organiser_profiles').select('id').eq('user_id',orgUser.id).maybeSingle();
-    if(!ex){const n=document.getElementById('oat-org')?.value?.trim()||email.split('@')[0];await sb.from('organiser_profiles').insert([{user_id:orgUser.id,organiser_name:n,email:orgUser.email,tier:'free',events_posted:0,last_post_at:new Date().toISOString()}]).catch(()=>{});}
+    await sb.rpc('ensure_organiser',{p_organiser_name:null}).catch(()=>{});
     closeOrgAuth(); openPost(); return;
   }
   if(password.length<8){msgEl.textContent='Password must be at least 8 characters.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Create account';return;}
@@ -1439,14 +1438,14 @@ async function submitOrgAuth(){
   if(data.user){ sb.functions.invoke('send-welcome-email',{body:{to:email,name:orgName,product:'evently',plan:'free'}}).catch(()=>{}); }
   if(data.user&&!data.session){msgEl.textContent='Check your email to confirm, then come back and log in.';msgEl.style.color='#16A34A';btn.disabled=false;btn.textContent='Create account';return;}
   orgUser=data.user;
-  await sb.from('organiser_profiles').insert([{user_id:orgUser.id,organiser_name:orgName,email:orgUser.email,tier:'free',events_posted:0,last_post_at:new Date().toISOString()}]).catch(()=>{});
+  await sb.rpc('ensure_organiser',{p_organiser_name:orgName||null}).catch(()=>{});
   closeOrgAuth(); openPost();
 }
 // Restore org session on page load
 const _evRecoveryMode = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery';
 (async()=>{
   const{data:{session}}=await sb.auth.getSession();
-  if(session && !_evRecoveryMode) orgUser=session.user;
+  if(session && !_evRecoveryMode){ orgUser=session.user; sb.rpc('ensure_organiser',{p_organiser_name:null}).catch(()=>{}); }
   sb.auth.onAuthStateChange((event,s)=>{
     if(event==='PASSWORD_RECOVERY'){
       document.getElementById('evently-pw-recovery-overlay').style.display='flex';
