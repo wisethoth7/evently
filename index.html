@@ -954,6 +954,9 @@ function dateGroup(ds){
   return '📅 '+M[d.getMonth()]+' '+d.getFullYear();
 }
 
+// Sanitize user text for HTML contexts (strip ALL tags — these are plain-text fields)
+function esc(s){ return DOMPurify.sanitize(String(s==null?'':s), { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }); }
+
 // ── RENDER LIST ───────────────────────────────────────────────────────
 function renderList(){
   const evs=getFiltered();
@@ -988,10 +991,10 @@ function card(e){
       <button class="bm-btn" onclick="toggleSave(event,${e.id})">${bm?'🔖':'🏷️'}</button>
     </div>
     <div class="ec-body">
-      <div class="ec-title">${DOMPurify.sanitize(e.title||'')}</div>
-      <div class="ec-meta">${e.date} · ${e.time}<br>${e.loc}</div>
+      <div class="ec-title">${esc(e.title||'')}</div>
+      <div class="ec-meta">${esc(e.date)} · ${esc(e.time)}<br>${esc(e.loc||'')}</div>
       <div class="ec-footer">
-        <span class="ec-org">by ${e.org}</span>
+        <span class="ec-org">by ${esc(e.org||'')}</span>
         <div class="ec-right">
           ${e.age&&e.age!=='All ages'?`<span class="age-badge">${e.age}</span>`:''}
           ${e.recurring?`<span class="rec-badge">🔄</span>`:''}
@@ -1168,8 +1171,8 @@ function initMap(){
     }
     EVENTS.filter(e=>e.lat&&e.lng).forEach(e=>{
       L.marker([e.lat,e.lng],{icon:mk}).addTo(leafMap)
-       .bindPopup(`<div style="min-width:180px"><b style="font-size:13px;color:#111">${e.title}</b><br>
-         <span style="font-size:11px;color:#666">${e.date} · ${e.free?'Free':e.price||''}</span><br>
+       .bindPopup(`<div style="min-width:180px"><b style="font-size:13px;color:#111">${esc(e.title||'')}</b><br>
+         <span style="font-size:11px;color:#666">${esc(e.date)} · ${e.free?'Free':esc(e.price||'')}</span><br>
          <button onclick="switchView('list');setTimeout(()=>openSheet(${e.id}),200)" style="margin-top:7px;padding:5px 12px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;width:100%">View Details →</button></div>`,{maxWidth:220});
     });
   }
@@ -1193,9 +1196,11 @@ function toggleGoing(evt,id){
   const sid=String(id);
   goingIds=goingIds.map(String);
   const i=goingIds.indexOf(sid);
-  if(i>-1){goingIds.splice(i,1);toast('Removed from going')}
-  else{goingIds.push(sid);toast('You\'re going! ✓')}
+  let delta;
+  if(i>-1){goingIds.splice(i,1);toast('Removed from going');delta=-1;}
+  else{goingIds.push(sid);toast('You\'re going! ✓');delta=1;}
   localStorage.setItem('ev_going',JSON.stringify(goingIds));
+  adjustGoing(sid, delta);
   renderList();
   if(sheetId===id) refreshSheetGoing();
 }
@@ -1205,9 +1210,15 @@ function sheetGoing(){
   const wasGoing=goingIds.includes(sid);
   toggleGoing({stopPropagation:()=>{}},sheetId);
   if(!wasGoing && goingIds.includes(sid)){
-    updateGoingCount(sheetId);
     document.getElementById('rsvp-modal').classList.add('open');
   }
+}
+// RLS: anon may only change going_count via the security-definer RPC (+1 going / -1 un-going).
+function adjustGoing(id, delta){
+  const sid=String(id);
+  if(!sid.startsWith('db_')) return; // demo events aren't in the DB
+  const dbId=sid.replace('db_','');
+  sb.rpc('adjust_going_count',{ p_event_id: dbId, p_delta: delta }).catch(()=>{});
 }
 
 function closeRsvp(){
@@ -1235,23 +1246,9 @@ async function submitRSVP(){
   closeRsvp();
 }
 
-async function updateGoingCount(id){
-  try{
-    const dbId = String(id).replace('db_','');
-    const { data } = await sb.from('events').select('going_count').eq('id', dbId).single();
-    const current = (data && data.going_count) || 0;
-    await sb.from('events').update({ going_count: current + 1 }).eq('id', dbId);
-  }catch(err){}
-}
-
-async function incrementViewCount(id){
-  try{
-    const dbId=String(id).replace('db_','');
-    const{data}=await sb.from('events').select('view_count').eq('id',dbId).single();
-    const cur=(data&&data.view_count)||0;
-    await sb.from('events').update({view_count:cur+1}).eq('id',dbId);
-  }catch(e){}
-}
+// View counting via direct UPDATE is no longer permitted for anon under the
+// hardened RLS. Left as a no-op unless/until a dedicated RPC is added.
+function incrementViewCount(id){ /* no-op: anon events UPDATE removed for security */ }
 
 function addToGoogleCalendar(){
   const e=EVENTS.find(x=>x.id===sheetId); if(!e) return;
