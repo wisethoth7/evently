@@ -217,6 +217,18 @@ header{position:sticky;top:0;z-index:100;background:#F9FAFB;border-bottom:1px so
   </div>
   <button class="icon-btn purple" onclick="openNotifSub()" title="Notifications">?</button>
   <button class="post-btn" onclick="openPost()">+ Post</button>
+  <div id="account-wrap" style="display:none;position:relative">
+    <button class="icon-btn" id="account-btn" onclick="toggleAccountMenu(event)" title="Account" style="font-size:15px">👤</button>
+    <div id="account-menu" style="display:none;position:absolute;right:0;top:42px;background:#fff;border:1px solid #E5E7EB;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:210px;z-index:300;overflow:hidden">
+      <div style="padding:12px 14px;border-bottom:1px solid #F3F4F6">
+        <div style="font-size:11px;color:#9CA3AF;font-weight:600">Signed in as</div>
+        <div id="account-email" style="font-size:13px;font-weight:700;color:#111827;word-break:break-all"></div>
+      </div>
+      <a id="account-myevents" href="my-events.html" style="display:block;padding:11px 14px;font-size:13px;color:#374151;text-decoration:none;font-weight:600">📅 My Events</a>
+      <button onclick="switchView('saved');closeAccountMenu()" style="display:block;width:100%;text-align:left;padding:11px 14px;font-size:13px;color:#374151;background:none;border:none;cursor:pointer;font-weight:600;font-family:inherit">🔖 Saved Events</button>
+      <button onclick="doOrgSignOut()" style="display:block;width:100%;text-align:left;padding:11px 14px;font-size:13px;color:#DC2626;background:none;border:none;cursor:pointer;font-weight:600;font-family:inherit;border-top:1px solid #F3F4F6">Log Out</button>
+    </div>
+  </div>
 </header>
 
 <!-- LANGUAGE STRIP -->
@@ -1442,19 +1454,57 @@ async function submitOrgAuth(){
   if(data.user&&!data.session){msgEl.textContent='Check your email to confirm, then come back and log in.';msgEl.style.color='#16A34A';btn.disabled=false;btn.textContent='Create account';return;}
   orgUser=data.user;
   await sb.rpc('ensure_organiser',{p_organiser_name:orgName||null}).catch(()=>{});
+  reflectAuthUI();
   closeOrgAuth(); openPost();
 }
+
+// ── ACCOUNT AREA ──────────────────────────────────────────────────────
+function reflectAuthUI(){
+  const wrap=document.getElementById('account-wrap');
+  if(orgUser){
+    wrap.style.display='';
+    document.getElementById('account-email').textContent=orgUser.email||'';
+    document.getElementById('account-myevents').href='my-events.html?email='+encodeURIComponent(orgUser.email||'');
+  } else {
+    wrap.style.display='none';
+    closeAccountMenu();
+  }
+}
+function toggleAccountMenu(e){
+  if(e) e.stopPropagation();
+  const m=document.getElementById('account-menu');
+  m.style.display = (m.style.display==='none'||!m.style.display) ? 'block' : 'none';
+}
+function closeAccountMenu(){
+  const m=document.getElementById('account-menu');
+  if(m) m.style.display='none';
+}
+async function doOrgSignOut(){
+  closeAccountMenu();
+  await sb.auth.signOut().catch(()=>{});
+  orgUser=null;
+  reflectAuthUI();
+  switchView('list');
+  toast('Logged out');
+}
+document.addEventListener('click',(e)=>{
+  const wrap=document.getElementById('account-wrap');
+  if(wrap && !wrap.contains(e.target)) closeAccountMenu();
+});
+
 // Restore org session on page load
 const _evRecoveryMode = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery';
 (async()=>{
   const{data:{session}}=await sb.auth.getSession();
   if(session && !_evRecoveryMode){ orgUser=session.user; sb.rpc('ensure_organiser',{p_organiser_name:null}).catch(()=>{}); }
+  reflectAuthUI();
   sb.auth.onAuthStateChange((event,s)=>{
     if(event==='PASSWORD_RECOVERY'){
       document.getElementById('evently-pw-recovery-overlay').style.display='flex';
       return;
     }
     orgUser=s?s.user:null;
+    reflectAuthUI();
   });
 })();
 

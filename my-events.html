@@ -163,6 +163,12 @@ async function deleteEvent(id){
 
 function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+// Auto-load when an email is passed in the URL (from the in-app account menu)
+(function(){
+  const e = new URLSearchParams(location.search).get('email');
+  if (e) { document.getElementById('lookup-email').value = e; loadMyEvents(); }
+})();
+
 function toast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg; el.classList.add('show');
