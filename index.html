@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="ndd-build" content="evently-2026-06-29b post-gates-on-live-session+account-menu+logout+ensure_organiser">
+<meta name="ndd-build" content="evently-2026-06-29c submit-trycatchfinally+timeout (no Please-wait hang)+post-gate+account-menu">
 <title>Evently — Events Near You</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#7C3AED">
@@ -1433,33 +1433,64 @@ function switchOrgTab(mode){
   document.getElementById('oat-msg').style.color='';
   hideOrgForgot();
 }
+// Never let a slow/stuck network call hang the modal: resolve after `ms` no matter what.
+function withTimeout(promise, ms){
+  return Promise.race([
+    Promise.resolve(promise).catch(()=>{}),
+    new Promise(res => setTimeout(res, ms)),
+  ]);
+}
+
 async function submitOrgAuth(){
   const email=document.getElementById('oat-email').value.trim();
   const password=document.getElementById('oat-password').value;
   const btn=document.getElementById('oat-btn');
   const msgEl=document.getElementById('oat-msg');
-  if(!email||!password){msgEl.textContent='Please fill in all fields.';msgEl.style.color='#EF4444';return;}
-  btn.disabled=true; btn.textContent='Please wait...'; msgEl.textContent='';
-  if(orgAuthMode==='login'){
-    const{data,error}=await sb.auth.signInWithPassword({email,password});
-    if(error){msgEl.textContent=error.message||'Login failed.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Log in';return;}
-    orgUser=data.user;
-    await sb.rpc('ensure_organiser',{p_organiser_name:null}).catch(()=>{});
+  const isLogin = orgAuthMode==='login';
+  const setMsg=(t,c)=>{ msgEl.textContent=t; msgEl.style.color=c; };
+
+  if(!email||!password){ setMsg('Please fill in all fields.','#EF4444'); return; }
+
+  btn.disabled=true; btn.textContent='Please wait...'; setMsg('','');
+  try {
+    if(!isLogin){
+      if(password.length<8){ setMsg('Password must be at least 8 characters.','#EF4444'); return; }
+    }
+    const orgName = document.getElementById('oat-org').value.trim();
+    if(!isLogin && !orgName){ setMsg('Please enter your name or organisation.','#EF4444'); return; }
+
+    const { data, error } = isLogin
+      ? await sb.auth.signInWithPassword({ email, password })
+      : await sb.auth.signUp({ email, password });
+
+    if(error){ setMsg(error.message || (isLogin ? 'Login failed.' : 'Sign up failed.'), '#EF4444'); return; }
+
+    // Welcome email — fire-and-forget, never awaited (signup only)
+    if(!isLogin && data.user){
+      sb.functions.invoke('send-welcome-email',{ body:{ to:email, name:orgName, product:'evently', plan:'free' } }).catch(()=>{});
+    }
+
+    // Email-confirmation ON → no session yet; row is created later on login/restore.
+    if(!isLogin && data.user && !data.session){
+      setMsg('Check your email to confirm, then come back and log in.','#16A34A');
+      return;
+    }
+
+    orgUser = data.user;
+    // Stamp the organiser row. Guarded by try/catch AND a timeout so it can NEVER
+    // leave the button stuck on "Please wait..." (the reported bug).
+    try { await withTimeout(sb.rpc('ensure_organiser',{ p_organiser_name:(isLogin ? null : orgName) || null }), 6000); } catch(e){}
+
     reflectAuthUI();
-    closeOrgAuth(); openPost(); return;
+    closeOrgAuth();
+    openPost();
+  } catch(e){
+    setMsg('Something went wrong — please try again.','#EF4444');
+  } finally {
+    // Always release the button, regardless of success/error/timeout.
+    btn.disabled=false;
+    btn.textContent = (orgAuthMode==='login') ? 'Log in' : 'Create account';
   }
-  if(password.length<8){msgEl.textContent='Password must be at least 8 characters.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Create account';return;}
-  const orgName=document.getElementById('oat-org').value.trim();
-  if(!orgName){msgEl.textContent='Please enter your name or organisation.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Create account';return;}
-  const{data,error}=await sb.auth.signUp({email,password});
-  if(error){msgEl.textContent=error.message||'Sign up failed.';msgEl.style.color='#EF4444';btn.disabled=false;btn.textContent='Create account';return;}
-  // Fire the branded welcome email (non-blocking — don't hold up signup)
-  if(data.user){ sb.functions.invoke('send-welcome-email',{body:{to:email,name:orgName,product:'evently',plan:'free'}}).catch(()=>{}); }
-  if(data.user&&!data.session){msgEl.textContent='Check your email to confirm, then come back and log in.';msgEl.style.color='#16A34A';btn.disabled=false;btn.textContent='Create account';return;}
-  orgUser=data.user;
-  await sb.rpc('ensure_organiser',{p_organiser_name:orgName||null}).catch(()=>{});
-  reflectAuthUI();
-  closeOrgAuth(); openPost();
 }
 
 // ── ACCOUNT AREA ──────────────────────────────────────────────────────
