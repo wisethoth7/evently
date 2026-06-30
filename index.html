@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="ndd-build" content="evently-2026-06-29d no-cache-html+persistent-account-on-load+submit-finally">
+<meta name="ndd-build" content="evently-2026-06-29e FIX rpc.catch-threw-before-reflectAuthUI (account icon now persists on load)">
 <title>Evently — Events Near You</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#7C3AED">
@@ -1219,7 +1219,8 @@ function adjustGoing(id, delta){
   const sid=String(id);
   if(!sid.startsWith('db_')) return; // demo events aren't in the DB
   const dbId=sid.replace('db_','');
-  sb.rpc('adjust_going_count',{ p_event_id: dbId, p_delta: delta }).catch(()=>{});
+  // Supabase query builders are thenables without .catch() — wrap in Promise.resolve.
+  Promise.resolve(sb.rpc('adjust_going_count',{ p_event_id: dbId, p_delta: delta })).catch(()=>{});
 }
 
 function closeRsvp(){
@@ -1529,15 +1530,22 @@ document.addEventListener('click',(e)=>{
 // Restore org session on page load
 const _evRecoveryMode = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery';
 (async()=>{
-  const{data:{session}}=await sb.auth.getSession();
-  if(session && !_evRecoveryMode){ orgUser=session.user; sb.rpc('ensure_organiser',{p_organiser_name:null}).catch(()=>{}); }
+  let session=null;
+  try { ({ data: { session } } = await sb.auth.getSession()); } catch(e){}
+  if(session && !_evRecoveryMode) orgUser = session.user;
+  // Render the account control IMMEDIATELY from session — before any RPC, so a
+  // failed/slow ensure_organiser can never block the header from showing.
   reflectAuthUI();
+  if(session && !_evRecoveryMode){
+    try { await sb.rpc('ensure_organiser',{ p_organiser_name:null }); } catch(e){}
+  }
+  // Subscribe once at app level: login/logout updates the header everywhere.
   sb.auth.onAuthStateChange((event,s)=>{
     if(event==='PASSWORD_RECOVERY'){
       document.getElementById('evently-pw-recovery-overlay').style.display='flex';
       return;
     }
-    orgUser=s?s.user:null;
+    orgUser = s ? s.user : null;
     reflectAuthUI();
   });
 })();
