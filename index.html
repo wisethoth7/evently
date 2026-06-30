@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="ndd-build" content="evently-2026-06-29 account-menu+logout+ensure_organiser+centered-modal">
+<meta name="ndd-build" content="evently-2026-06-29b post-gates-on-live-session+account-menu+logout+ensure_organiser">
 <title>Evently — Events Near You</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#7C3AED">
@@ -1398,8 +1398,13 @@ async function subscribeEmail(){
 }
 
 // ── POST ──────────────────────────────────────────────────────────────
-function openPost(){
-  if(!orgUser){ openOrgAuth('signup'); return; }
+async function openPost(){
+  // Always gate on the LIVE auth session (never a possibly-stale variable):
+  // logged out → signup/login first; logged in → the Post Your Event form.
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){ orgUser=null; reflectAuthUI(); openOrgAuth('signup'); return; }
+  orgUser = session.user;
+  reflectAuthUI();
   switchView('list');
   document.getElementById('post-modal').classList.add('open');
 }
