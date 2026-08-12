@@ -3,7 +3,20 @@
 (function () {
   const RA_ENDPOINT = 'https://hvyfeebazmiqateniupm.supabase.co/functions/v1/ra-chat';
 
-  window.initRa = function ({ systemPrompt = '', accentColor = '#FF6B35', productName = 'Ra' } = {}) {
+  // Applied to every product, on top of whatever prompt is passed in. Ra has no
+  // way to know which of its claims are real unless it is told to rely solely on
+  // tool results — without this it will confidently report actions it never took.
+  const HONESTY_GUARDRAIL = `
+
+CRITICAL — NEVER CLAIM AN ACTION YOU DID NOT PERFORM:
+- You may only say you changed, saved, set, or updated something if a tool call returned success in this conversation.
+- If you have no tool for what was asked, say plainly that you cannot do it, and tell the owner exactly where in the dashboard to do it themselves.
+- Never state that a change was saved unless a tool confirmed it.
+- When a tool returns, report its actual result message to the owner. Do not paraphrase it, soften it, or embellish it.
+- If a tool returns an error or a refusal, say so plainly. Never present a failure as a success.`;
+
+  window.initRa = function ({ systemPrompt = '', accentColor = '#FF6B35', productName = 'Ra', tools = [], onToolCall = null } = {}) {
+    systemPrompt = (systemPrompt || '') + HONESTY_GUARDRAIL;
     if (document.getElementById('ra-fab')) return; // already mounted
 
     const ac = accentColor;
@@ -172,26 +185,58 @@
       const loadingEl = appendLoading();
 
       try {
-        const res = await fetch(RA_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system: systemPrompt,
-            messages: conversationHistory,
-            maxTokens: 512,
-          }),
-        });
+        // Tool loop: keep going while the model asks for tools. Bounded so a
+        // confused model can't spin. Tools run here, against the signed-in
+        // owner's own session, so the RPCs can check ownership.
+        let data = null;
+        for (let turn = 0; turn < 5; turn++) {
+          const res = await fetch(RA_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              system: systemPrompt,
+              messages: conversationHistory,
+              maxTokens: 1024,
+              tools,
+            }),
+          });
+          data = await res.json();
+          if (data.error) break;
 
-        const data = await res.json();
+          conversationHistory.push({ role: 'assistant', content: data.content });
+
+          const toolUses = (data.content || []).filter((b) => b.type === 'tool_use');
+          if (data.stop_reason !== 'tool_use' || !toolUses.length) break;
+
+          const results = [];
+          for (const tu of toolUses) {
+            let out;
+            try {
+              out = onToolCall
+                ? await onToolCall(tu.name, tu.input)
+                : 'No tool handler is available, so nothing was changed.';
+            } catch (e) {
+              out = 'That failed and nothing was changed: ' + (e?.message || 'unknown error');
+            }
+            results.push({
+              type: 'tool_result',
+              tool_use_id: tu.id,
+              content: String(out ?? ''),
+            });
+          }
+          conversationHistory.push({ role: 'user', content: results });
+        }
+
         loadingEl.remove();
 
-        if (data.error) {
+        if (!data || data.error) {
           appendMessage('bot', 'Sorry, I ran into an issue. Please email support@niledreamsdigital.com for help.');
           return;
         }
 
-        const reply = data.content?.[0]?.text || 'Sorry, I could not generate a response.';
-        conversationHistory.push({ role: 'assistant', content: reply });
+        const reply = (data.content || [])
+          .filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim()
+          || 'Sorry, I could not generate a response.';
         appendMessage('bot', reply);
       } catch {
         loadingEl.remove();
