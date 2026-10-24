@@ -1,22 +1,11 @@
 // Ra — AI Support Widget | Nile Dreams Digital
-// Usage: initRa({ systemPrompt: '...', accentColor: '#FF6B35' })
+// Usage: initRa({ app: 'replydraft', accentColor: '#FF6B35' })
+// Ra's instructions live in the ra-chat edge function, keyed by `app`; a page
+// cannot choose them. `getAuthToken` is only needed where tools are used.
 (function () {
   const RA_ENDPOINT = 'https://hvyfeebazmiqateniupm.supabase.co/functions/v1/ra-chat';
 
-  // Applied to every product, on top of whatever prompt is passed in. Ra has no
-  // way to know which of its claims are real unless it is told to rely solely on
-  // tool results — without this it will confidently report actions it never took.
-  const HONESTY_GUARDRAIL = `
-
-CRITICAL — NEVER CLAIM AN ACTION YOU DID NOT PERFORM:
-- You may only say you changed, saved, set, or updated something if a tool call returned success in this conversation.
-- If you have no tool for what was asked, say plainly that you cannot do it, and tell the owner exactly where in the dashboard to do it themselves.
-- Never state that a change was saved unless a tool confirmed it.
-- When a tool returns, report its actual result message to the owner. Do not paraphrase it, soften it, or embellish it.
-- If a tool returns an error or a refusal, say so plainly. Never present a failure as a success.`;
-
-  window.initRa = function ({ systemPrompt = '', accentColor = '#FF6B35', productName = 'Ra', tools = [], onToolCall = null } = {}) {
-    systemPrompt = (systemPrompt || '') + HONESTY_GUARDRAIL;
+  window.initRa = function ({ app = '', accentColor = '#FF6B35', productName = 'Ra', tools = [], onToolCall = null, getAuthToken = null } = {}) {
     if (document.getElementById('ra-fab')) return; // already mounted
 
     const ac = accentColor;
@@ -171,6 +160,18 @@ CRITICAL — NEVER CLAIM AN ACTION YOU DID NOT PERFORM:
       appendMessage('bot', "Hi! I'm Ra, your AI support assistant. How can I help you today?");
     }
 
+    // The signed-in visitor's own session token, when the page supplies one. The
+    // server uses it to tell an owner from a stranger before it will accept tools.
+    async function raHeaders() {
+      const h = { 'Content-Type': 'application/json' };
+      if (getAuthToken) {
+        try {
+          const token = await getAuthToken();
+          if (token) h.Authorization = 'Bearer ' + token;
+        } catch (_) { /* no token — the server decides what that may do */ }
+      }
+      return h;
+    }
     async function sendMessage() {
       const text = inputEl.value.trim();
       if (!text) return;
@@ -192,9 +193,9 @@ CRITICAL — NEVER CLAIM AN ACTION YOU DID NOT PERFORM:
         for (let turn = 0; turn < 5; turn++) {
           const res = await fetch(RA_ENDPOINT, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: await raHeaders(),
             body: JSON.stringify({
-              system: systemPrompt,
+              app,
               messages: conversationHistory,
               maxTokens: 1024,
               tools,
