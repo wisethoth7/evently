@@ -505,7 +505,7 @@ body.sheet-open #ra-fab,body.sheet-open #ra-modal{opacity:0;pointer-events:none;
       </div>
     </div>
     <div class="plan-card blue" data-plan="Business" style="margin-bottom:18px" onclick="selectPlan(this)">
-      <div class="ph"><div class="pn">Business <span class="ptag blue">BIZ</span></div><div class="pp blue">$29/mo</div></div>
+      <div class="ph"><div class="pn">Business <span class="ptag blue">BIZ</span></div><div class="pp blue">$29.99/mo</div></div>
       <div class="pf">🏆 Unlimited events · 7-day boost · Branded organiser profile · Multi-user team · Custom logo · Analytics · Priority placement · Dedicated support</div>
     </div>
 
@@ -547,8 +547,6 @@ body.sheet-open #ra-fab,body.sheet-open #ra-modal{opacity:0;pointer-events:none;
       <option value="monthly">Every month</option>
       <option value="daily">Every day</option>
     </select>
-    <label class="fl">Promo Code</label>
-    <input class="fi" type="text" id="f-promo" placeholder="Have a promo code?">
     <label class="fl">Description</label>
     <textarea class="fi" id="f-desc-post" rows="3" style="resize:vertical" placeholder="Tell people what to expect..."></textarea>
     <button class="submit-btn" onclick="submitPost()">Post Event</button>
@@ -880,7 +878,6 @@ const CATS = [
 const EM = {festivals:'🎪','yard-sales':'🛋️',religious:'🕌','open-house':'🏠',markets:'🥦',
             music:'🎵',sports:'⚽',food:'🍕',community:'🤝',business:'💼',arts:'🎨',
             sales:'🏷️',kids:'👨‍👩‍👧',default:'🎉'};
-const PROMO = {EARLYBIRD:20,WELCOME10:10,COMMUNITY:5,NILE2026:25};
 
 // ── SUPABASE ──────────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://hvyfeebazmiqateniupm.supabase.co';
@@ -2079,8 +2076,6 @@ async function submitPost(){
   const v=id=>document.getElementById(id).value.trim();
   if(!orgUser){ openOrgAuth('signup'); return; }
   if(!v('f-title')||!v('f-org')||!v('f-loc-post')){toast('Please fill in all required fields','error');return}
-  const promo=v('f-promo').toUpperCase();
-  if(promo&&!PROMO[promo]){toast('Invalid promo code','error');return}
 
   const selectedCard = document.querySelector('.plan-card.selected');
   // data-plan, not the card's text: the old code read the heading and took
@@ -2178,8 +2173,7 @@ async function submitPost(){
         window.open(url, '_blank');
       }, 1500);
     } else {
-      if(promo&&PROMO[promo]) toast(`Promo applied — ${PROMO[promo]}% off! Event submitted and confirmation sent to ${email} 🎉`);
-      else toast(`Event submitted! Confirmation sent to ${email}`);
+      toast('Your event is posted — people can find it now. 🎉');
       closePost();
       loadDbEvents();
     }
